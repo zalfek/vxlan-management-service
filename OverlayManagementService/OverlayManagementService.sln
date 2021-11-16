@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31727.386
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OverlayManagementService", "OverlayManagementService.csproj", "{E08A3045-5426-4CBC-890A-32E05D109200}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverlayManagementServiceTests", "..\OverlayManagementServiceTests\OverlayManagementServiceTests.csproj", "{607AD514-5897-4F4C-9D21-72A35859FB93}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E08A3045-5426-4CBC-890A-32E05D109200}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E08A3045-5426-4CBC-890A-32E05D109200}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E08A3045-5426-4CBC-890A-32E05D109200}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E08A3045-5426-4CBC-890A-32E05D109200}.Release|Any CPU.Build.0 = Release|Any CPU
+		{607AD514-5897-4F4C-9D21-72A35859FB93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{607AD514-5897-4F4C-9D21-72A35859FB93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{607AD514-5897-4F4C-9D21-72A35859FB93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{607AD514-5897-4F4C-9D21-72A35859FB93}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {84853F7D-5FB9-4797-A439-10DF8484756E}
+	EndGlobalSection
+EndGlobal
