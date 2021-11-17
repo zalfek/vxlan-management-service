@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementService.Network
 {
-    interface IBridge
+    public interface IBridge
     {
+        public void DeployBridge();
+        public void CleanUpBridge();
     }
 }

@@ -17,10 +17,11 @@ namespace OverlayManagementService.Services
         private readonly IRepository jsonRepository;
         private readonly ILogger<VMOverlayConnectionService> _logger;
 
-        public VMOverlayConnectionService(IMembershipResolver membershipResolver, IRepository jsonRepository)
+        public VMOverlayConnectionService(IMembershipResolver membershipResolver, IRepository jsonRepository, ILogger<VMOverlayConnectionService> logger)
         {
             this.membershipResolver = membershipResolver;
             this.jsonRepository = jsonRepository;
+            this._logger = logger;
         }
 
         public IOverlayNetwork GetOverlayNetwork(IMembership membership)

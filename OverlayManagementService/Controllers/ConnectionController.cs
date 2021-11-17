@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using OverlayManagementService.Services;
+using Microsoft.Identity.Web;
 
 namespace OverlayManagementService.Controllers
 {
@@ -32,8 +33,17 @@ namespace OverlayManagementService.Controllers
 
 
         [HttpGet("memberships")]
-        public IEnumerable<IMembership> GetAllMemberships(IUser user)
+        [AuthorizeForScopes(Scopes = new[] { "user.read" })]
+        public IEnumerable<IMembership> GetAllMemberships()
         {
+
+            IUser user = new Student(
+                "John",
+                "Doe",
+                "john.doe@hs-ulm.de",
+                "537faa0c-9461-4be0-85cb-87fcb4105881",
+               "255.255.255.255"
+               );
             //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
             _logger.LogInformation("Processing GET request: " + HttpContext.Request.ToString());
             return _vmOverlayConnectionService.GetUserMemberships(user);

@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementService.Network
 {
-    public interface IOverlayNetwork
+    public interface IVXLANInterface
     {
-
-        public void DeployNetwork();
-        public void CleanUpNetwork();
+        public void DeployVXLANInterface();
+        public void CleanUpVXLANInterface();
     }
 }

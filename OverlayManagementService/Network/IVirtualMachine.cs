@@ -7,7 +7,7 @@ namespace OverlayManagementService.Network
 {
     public interface IVirtualMachine
     {
-        public void CreateConnection(IOpenVirtualSwitch openVirtualSwitch);
-        public void RemoveConnection(IOpenVirtualSwitch openVirtualSwitch);
+        public void DeployVMConnection(IOpenVirtualSwitch openVirtualSwitch);
+        public void CleanUpVMConnection(IOpenVirtualSwitch openVirtualSwitch);
     }
 }
