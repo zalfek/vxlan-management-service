@@ -1,4 +1,5 @@
-﻿using OverlayManagementService.DataTransferObjects;
+﻿using Microsoft.Extensions.Logging;
+using OverlayManagementService.DataTransferObjects;
 using OverlayManagementService.Network;
 using OverlayManagementService.Repositories;
 using OverlayManagementService.Resolvers;
@@ -14,6 +15,7 @@ namespace OverlayManagementService.Services
 
         private readonly IMembershipResolver membershipResolver;
         private readonly IRepository jsonRepository;
+        private readonly ILogger<VMOverlayConnectionService> _logger;
 
         public VMOverlayConnectionService(IMembershipResolver membershipResolver, IRepository jsonRepository)
         {
@@ -21,18 +23,16 @@ namespace OverlayManagementService.Services
             this.jsonRepository = jsonRepository;
         }
 
-        public VXLANOverlayNetwork GetOverlayNetwork(Membership membership)
+        public IOverlayNetwork GetOverlayNetwork(IMembership membership)
         {
             jsonRepository.GetOverlayNetwork(membership);
             return null;
         }
 
-        public List<Membership> GetAllMemberships(User user)
+        public List<IMembership> GetUserMemberships(IUser user)
         {
-            membershipResolver.GetAllMemberships(user);
+            membershipResolver.GetUserMemberships(user);
             return null;
         }
-
-
     }
 }

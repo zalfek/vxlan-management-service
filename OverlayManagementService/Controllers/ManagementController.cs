@@ -37,5 +37,19 @@ namespace OverlayManagementService.Controllers
 
             };
         }
+
+
+        [HttpPost("unregister")]
+        public IVirtualMachine UnRegisterMachine(IVirtualMachine model)
+        {
+            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            return new VirtualMachine
+            {
+                Id = new Guid(),
+                IPAddress = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString()
+
+            };
+        }
+
     }
 }

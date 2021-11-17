@@ -51,7 +51,7 @@ namespace OverlayManagementService.Services.Tests
         public void GetAllMembershipsTest()
         {
             //Arrange
-            var user = new User(
+            var user = new Student(
                 "John",
                 "Doe",
                 "john.doe@hs-ulm.de",
@@ -59,13 +59,13 @@ namespace OverlayManagementService.Services.Tests
                "255.255.255.255"
                );
 
-            _membershipResolverMock.Setup(x => x.GetAllMemberships(user)).Returns(new List<Membership>());
+            _membershipResolverMock.Setup(x => x.GetUserMemberships(user)).Returns(new List<IMembership>());
 
             //Act
-            var result = _sut.GetAllMemberships(user);
+            var result = _sut.GetUserMemberships(user);
 
             //Assert
-            _membershipResolverMock.Verify(s => s.GetAllMemberships(user), Times.Once());
+            _membershipResolverMock.Verify(s => s.GetUserMemberships(user), Times.Once());
 
         }
     }

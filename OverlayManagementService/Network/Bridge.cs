@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
+using Microsoft.Extensions.Logging;
+
 
 namespace OverlayManagementService.Network
 {
     public class Bridge: IBridge
     {
+        private readonly string _name;
+        private readonly ILogger<Bridge> _logger;
+
     }
 }

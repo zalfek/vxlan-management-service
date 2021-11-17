@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementService.DataTransferObjects
 {
-    public class User : IUser
+    public class Student : IUser
     {
-        public User(string name, string surename, string email, string oid, string ipAddress)
+        public Student(string name, string surename, string email, string oid, string ipAddress)
         {
             Name = name;
             Surename = surename;

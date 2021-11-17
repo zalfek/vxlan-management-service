@@ -1,4 +1,5 @@
-﻿using OverlayManagementService.DataTransferObjects;
+﻿using Microsoft.Extensions.Logging;
+using OverlayManagementService.DataTransferObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,9 @@ namespace OverlayManagementService.Resolvers
 {
     public class MembershipResolver : IMembershipResolver
     {
-        public List<Membership> GetAllMemberships(User user)
+        private readonly ILogger<MembershipResolver> _logger;
+
+        public List<IMembership> GetUserMemberships(IUser user)
         {
             throw new NotImplementedException();
         }

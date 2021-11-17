@@ -9,6 +9,9 @@ namespace OverlayManagementService.Repositories
 {
     public interface IRepository
     {
-        IOverlayNetwork GetOverlayNetwork(Membership membership);
+        IOverlayNetwork SaveOverlayNetwork(IMembership membership);
+        IOverlayNetwork FindOverlayNetwork(IMembership membership);
+        IOverlayNetwork UpdateOverlayNetwork(IMembership membership);
+        IOverlayNetwork GetOverlayNetwork(IMembership membership);
     }
 }

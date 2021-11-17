@@ -1,4 +1,5 @@
-﻿using OverlayManagementService.DataTransferObjects;
+﻿using Microsoft.Extensions.Logging;
+using OverlayManagementService.DataTransferObjects;
 using OverlayManagementService.Network;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,25 @@ namespace OverlayManagementService.Repositories
 {
     public class JsonRepository : IRepository
     {
-        public IOverlayNetwork GetOverlayNetwork(Membership membership)
+
+        private readonly ILogger<JsonRepository> _logger;
+
+        public IOverlayNetwork FindOverlayNetwork(IMembership membership)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IOverlayNetwork GetOverlayNetwork(IMembership membership)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IOverlayNetwork SaveOverlayNetwork(IMembership membership)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IOverlayNetwork UpdateOverlayNetwork(IMembership membership)
         {
             throw new NotImplementedException();
         }
