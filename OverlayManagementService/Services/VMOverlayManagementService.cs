@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OverlayManagementService.Dtos;
 using OverlayManagementService.Network;
 using OverlayManagementService.Repositories;
 using System;
@@ -12,14 +13,14 @@ namespace OverlayManagementService.Services
     {
 
         private readonly ILogger<VMOverlayManagementService> _logger;
-        private readonly IRepository jsonRepository;
+        private readonly IRepository _jsonRepository;
 
-        public IOverlayNetwork RegisterMachine(string data)
+        public IOverlayNetwork RegisterMachine(IVmConnectionInfo vmConnectionInfo)
         {
             throw new NotImplementedException();
         }
 
-        public IOverlayNetwork UnRegisterMachine(string data)
+        public IOverlayNetwork UnRegisterMachine(IVmConnectionInfo vmConnectionInfo)
         {
             throw new NotImplementedException();
         }

@@ -1,4 +1,5 @@
-﻿using OverlayManagementService.Network;
+﻿using OverlayManagementService.Dtos;
+using OverlayManagementService.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,8 @@ namespace OverlayManagementService.Services
 {
     public interface IOverlayManagementService
     {
-        public IOverlayNetwork RegisterMachine(String data);
-        public IOverlayNetwork UnRegisterMachine(String data);
-
+        public IOverlayNetwork RegisterMachine(IVmConnectionInfo vmConnectionInfo);
+        public IOverlayNetwork UnRegisterMachine(IVmConnectionInfo vmConnectionInfo);
 
     }
 }

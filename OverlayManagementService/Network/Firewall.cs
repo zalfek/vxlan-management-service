@@ -11,6 +11,11 @@ namespace OverlayManagementService.Network
     {
         private readonly ILogger<Firewall> _logger;
 
+        public Firewall(ILogger<Firewall> logger)
+        {
+            _logger = logger;
+        }
+
         public void AddException(IUser user)
         {
             throw new NotImplementedException();

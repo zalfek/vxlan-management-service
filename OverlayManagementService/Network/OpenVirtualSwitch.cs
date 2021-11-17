@@ -11,8 +11,7 @@ namespace OverlayManagementService.Network
     {
 
         private readonly ILogger<OpenVirtualSwitch> _logger;
-        private readonly IBridge _bridge;
-
+        private IVXLANInterface vXLANInterface;
         public void CreateConnection(IVirtualMachine virtualMachine)
         {
             throw new NotImplementedException();

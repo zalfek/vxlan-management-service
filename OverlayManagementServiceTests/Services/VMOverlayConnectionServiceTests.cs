@@ -10,6 +10,7 @@ using OverlayManagementService.Resolvers;
 using OverlayManagementService.DataTransferObjects;
 using OverlayManagementService.Repositories;
 using OverlayManagementService.Network;
+using Microsoft.Extensions.Logging;
 
 namespace OverlayManagementService.Services.Tests
 {
@@ -19,10 +20,11 @@ namespace OverlayManagementService.Services.Tests
         private readonly VMOverlayConnectionService _sut;
         private readonly Mock<IMembershipResolver> _membershipResolverMock = new Mock<IMembershipResolver>();
         private readonly Mock<IRepository> _jsonRepositoryMock = new Mock<IRepository>();
+        private readonly Mock<ILogger<VMOverlayConnectionService>> _loggerMock = new Mock<ILogger<VMOverlayConnectionService>>();
 
         public VMOverlayConnectionServiceTests()
         {
-            _sut = new VMOverlayConnectionService(_membershipResolverMock.Object, _jsonRepositoryMock.Object);
+            _sut = new VMOverlayConnectionService(_membershipResolverMock.Object, _jsonRepositoryMock.Object, _loggerMock.Object);
         }
 
 
@@ -59,7 +61,7 @@ namespace OverlayManagementService.Services.Tests
                "255.255.255.255"
                );
 
-            _membershipResolverMock.Setup(x => x.GetUserMemberships(user)).Returns(new List<IMembership>());
+            _membershipResolverMock.Setup(x => x.GetUserMemberships(user)).Returns(Task.FromResult(new List<IMembership>()));
 
             //Act
             var result = _sut.GetUserMemberships(user);

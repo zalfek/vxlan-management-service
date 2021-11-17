@@ -10,6 +10,5 @@ namespace OverlayManagementService.Network
         public void CreateConnection(IVirtualMachine virtualMachine);
         public void RemoveConnection(IVirtualMachine virtualMachine);
 
-
     }
 }

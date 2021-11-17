@@ -74,7 +74,7 @@ Vagrant.configure(2) do |config|
       sudo ovs-vsctl add-port tenantB vmB1-sw
       sudo ovs-vsctl add-port tenantB vxlanB -- set interface vxlanB type=vxlan options:remote_ip=192.168.50.6 options:key=100 ofport_request=11 options:src_port=4789
       sudo ovs-vsctl add-port tenantB vxlanA -- set interface vxlanA type=vxlan options:remote_ip=192.168.40.4 options:key=100 ofport_request=10 options:src_port=4789
-      sudo ovs-vsctl add-port tenantB vxlanC -- set interface vxlanA type=vxlan options:remote_ip=192.168.50.7 options:key=100 ofport_request=12 options:src_port=4789
+      sudo ovs-vsctl add-port tenantB vxlanC -- set interface vxlanC type=vxlan options:remote_ip=192.168.50.7 options:key=100 ofport_request=12 options:src_port=4789
       sysctl net.ipv4.ip_forward=1
     SHELL
   end
