@@ -40,13 +40,13 @@ namespace OverlayManagementService.Services.Tests
                 Guid.NewGuid()
                 );
 
-            _jsonRepositoryMock.Setup(x => x.GetOverlayNetwork(membership)).Returns(new VXLANOverlayNetwork());
+            _jsonRepositoryMock.Setup(x => x.GetOverlayNetwork(membership.MembershipId)).Returns(new VXLANOverlayNetwork());
 
             //Act
             var result = _sut.GetOverlayNetwork(membership);
 
             //Assert
-            _jsonRepositoryMock.Verify(r => r.GetOverlayNetwork(membership), Times.Once());
+            _jsonRepositoryMock.Verify(r => r.GetOverlayNetwork(membership.MembershipId), Times.Once());
         }
 
         [TestMethod()]
