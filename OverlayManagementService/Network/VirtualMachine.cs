@@ -17,7 +17,7 @@ namespace OverlayManagementService.Network
         }
 
         private Guid Guid { get; set; }
-        private string IPAddress { get; set; }
+        public string IPAddress { get; set; }
         private IVmConnectionInfo VmConnectionInfo { get; set; }
         public List<ILinuxVXLANInterface> VXLANInterfaces;
 

@@ -38,9 +38,9 @@ namespace OverlayManagementService.Services
         public IOverlayNetwork DeployNetwork(IVmConnectionInfo vmConnectionInfo)
         {
 
+            string vni = _vni.GenerateUniqueVNI();
             IVeth veth = new Veth(Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14), IpAddress.GenerarteUniqueIPV4Address());
-            IBridge bridge = new Bridge(Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0,14), veth);
-            IVXLANInterface vXLANInterface = new VXLANInterface(Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14),  "vxlan", vmConnectionInfo.IPAddress, "10", "10", "4789");
+            IBridge bridge = new Bridge(Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0,14), veth, vni);
             _openVirtualSwitch.AddBridge(bridge);
 
             List<IOpenVirtualSwitch> openVirtualSwitches = new List<IOpenVirtualSwitch>();
@@ -51,7 +51,7 @@ namespace OverlayManagementService.Services
             virtualMachines.Add(virtualMachine);
 
 
-            IOverlayNetwork overlayNetwork = new VXLANOverlayNetwork(_vni.GenerateUniqueVNI(), openVirtualSwitches, virtualMachines, new List<IUser>());
+            IOverlayNetwork overlayNetwork = new VXLANOverlayNetwork(vni, openVirtualSwitches, virtualMachines, new List<IUser>());
 
 
             _jsonRepository.SaveOverlayNetwork(vmConnectionInfo.Membership, overlayNetwork);
