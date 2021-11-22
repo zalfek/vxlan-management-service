@@ -10,7 +10,7 @@ BPF_HASH(host2nat, u64, struct peer4_t); // mac -> nat
 int handle_ingress(struct __sk_buff *skb){
 	u8 *cursor = 0;
 	struct ethernet_t *eth = cursor_advance(cursor, sizeof(*eth));
-	if(eth->type != 0x800){
+	if((eth->dst & (1ULL << 40)) || eth->type != 0x800){
 		return 1;
 	}
 	struct ip_t *ip = cursor_advance(cursor, sizeof(*ip));

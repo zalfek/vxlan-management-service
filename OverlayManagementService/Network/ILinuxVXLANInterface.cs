@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementService.Network
 {
-    public interface IAddress
+    public interface ILinuxVXLANInterface
     {
-        public string GenerarteUniqueIPV4Address();
+        public void DeployInterface();
+        public void CleanUpInterface();
+
 
     }
 }

@@ -1,24 +1,38 @@
 ﻿
 using Microsoft.Extensions.Logging;
-
+using System;
+using System.Collections.Generic;
 
 namespace OverlayManagementService.Network
 {
     public class Bridge: IBridge
     {
-        private readonly ILogger<Bridge> _logger;
+        private readonly ILogger<IBridge> _logger;
 
-        public Bridge(ILogger<Bridge> logger, string name, string switchPort, IVeth virtualInterface)
+        public Bridge(string name, IVeth virtualInterface, string vni)
         {
-            _logger = logger;
+            _logger = new LoggerFactory().CreateLogger<IBridge>();
             Name = name;
-            SwitchPort = switchPort;
             VirtualInterface = virtualInterface;
+            VNI = vni;
         }
 
-        private string Name { get; set; }
-        private string SwitchPort { get; set; }
-        private IVeth VirtualInterface { get; set; }
+        public string VNI { get; set; }
+        public string Name { get; set; }
+        public IVeth VirtualInterface { get; set; }
+        public List<IVXLANInterface> VXLANInterfaces { get; set; }
+
+        public void DeployVXLANInterface(IVirtualMachine virtualMachine)
+        {
+            IVXLANInterface vXLANInterface = new VXLANInterface(Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14),
+                "vxlan",
+                virtualMachine.IPAddress,
+                VNI,
+                this
+                );
+            vXLANInterface.DeployVXLANInterface();
+            VXLANInterfaces.Add(vXLANInterface);
+        }
 
         public void CleanUpBridge()
         {

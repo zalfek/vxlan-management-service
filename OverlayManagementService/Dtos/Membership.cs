@@ -12,9 +12,9 @@ namespace OverlayManagementService.DataTransferObjects
             NetworkId = networkId;
         }
 
-        private string MembershipId { get; set; }
-        private string Subject { get; set; }
-        private Guid NetworkId { get; set; }
+        public string MembershipId { get; set; }
+        public string Subject { get; set; }
+        public Guid NetworkId { get; set; }
 
     }
 }

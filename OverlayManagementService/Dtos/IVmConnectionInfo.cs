@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 namespace OverlayManagementService.Dtos
 {
     public interface IVmConnectionInfo
+
     {
+        string IPAddress { get; set; }
+        string Membership { get; set; }
     }
 }

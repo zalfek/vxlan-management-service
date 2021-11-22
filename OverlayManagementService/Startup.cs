@@ -63,19 +63,20 @@ namespace OverlayManagementService
 
 
             services.AddScoped<IOverlayConnectionService, VMOverlayConnectionService>();
+            services.AddScoped<IOverlayManagementService, VMOverlayManagementService>();
             services.AddScoped<IMembershipResolver, MembershipResolver>();
             services.AddScoped<GraphServiceClient, GraphServiceClient>();
-            services.AddScoped<IRepository, JsonRepository>();
+            services.AddSingleton<IRepository, JsonRepository>();
             services.AddScoped<IFirewall, Firewall>();
-            services.AddScoped<IBridge, Bridge>();
-            services.AddScoped<IAddress, IPAddress>();
-            services.AddScoped<IOpenVirtualSwitch, OpenVirtualSwitch>();
-            services.AddScoped<IIdentifier, VNI>();
-            services.AddScoped<IOverlayNetwork, VXLANOverlayNetwork>();
-            services.AddScoped<IVeth, Veth>();
-            services.AddScoped<IVirtualMachine, VirtualMachine>();
-            services.AddScoped<IVXLANInterface, VXLANInterface>();
-            services.AddScoped<IOverlayNetwork, VXLANOverlayNetwork>();
+            //services.AddScoped<IBridge, Bridge>();
+            services.AddSingleton<IAddress, IPAddress>();
+            //services.AddScoped<IOpenVirtualSwitch, OpenVirtualSwitch>();
+            services.AddSingleton<IIdentifier, VNI>();
+            //services.AddScoped<IOverlayNetwork, VXLANOverlayNetwork>();
+            //services.AddScoped<IVeth, Veth>();
+            //services.AddScoped<IVirtualMachine, VirtualMachine>();
+            //services.AddScoped<IVXLANInterface, VXLANInterface>();
+            //services.AddScoped<IOverlayNetwork, VXLANOverlayNetwork>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -97,6 +98,7 @@ namespace OverlayManagementService
 
             app.UseEndpoints(endpoints =>
             {
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

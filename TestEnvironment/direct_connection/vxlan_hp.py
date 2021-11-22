@@ -15,3 +15,6 @@ ipr.tc("add", "ingress", ifc.index, "ffff:")
 ipr.tc("add-filter", "bpf", ifc.index, ":1", fd=fin.fd, name=fin.name, parent="ffff:", action="ok", classid=1)
 ipr.tc("add", "sfq", ifc.index, "1:")
 ipr.tc("add-filter", "bpf", ifc.index, ":1", fd=fout.fd, name=fout.name, parent="1:", action="ok", classid=1)
+
+while True:
+	time.sleep(5)

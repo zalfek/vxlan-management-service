@@ -7,6 +7,7 @@ namespace OverlayManagementService.Network
 {
     public interface IVeth
     {
+        string IpAddress { get; set; }
         public void DeployVeth();
         public void CleanUpVeth();
     }

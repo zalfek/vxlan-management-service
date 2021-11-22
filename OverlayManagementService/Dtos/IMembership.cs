@@ -7,5 +7,6 @@ namespace OverlayManagementService.DataTransferObjects
 {
     public interface IMembership
     {
+        string MembershipId { get; set; }
     }
 }

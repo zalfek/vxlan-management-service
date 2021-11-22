@@ -7,14 +7,14 @@ namespace OverlayManagementService.Network
 {
     public class Veth : IVeth
     {
-        public Veth(string name, IAddress ipAddress)
+        public Veth(string name, string ipAddress)
         {
             Name = name;
             IpAddress = ipAddress;
         }
 
-        private string Name { get; set; }
-        private IAddress IpAddress{ get; set;}
+        public string Name { get; set; }
+        public string IpAddress{ get; set;}
 
         public void CleanUpVeth()
         {

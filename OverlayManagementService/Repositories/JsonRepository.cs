@@ -1,9 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using OverlayManagementService.DataTransferObjects;
 using OverlayManagementService.Network;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace OverlayManagementService.Repositories
@@ -11,26 +14,34 @@ namespace OverlayManagementService.Repositories
     public class JsonRepository : IRepository
     {
 
-        private readonly ILogger<JsonRepository> _logger;
-
-        public IOverlayNetwork FindOverlayNetwork(IMembership membership)
+        private readonly ILogger<IRepository> _logger;
+        private static IDictionary<string, IOverlayNetwork> _dbMock;
+        public JsonRepository()
         {
-            throw new NotImplementedException();
+            _logger = new LoggerFactory().CreateLogger<IRepository>();
+            _dbMock = new Dictionary<string, IOverlayNetwork>();
         }
 
-        public IOverlayNetwork GetOverlayNetwork(IMembership membership)
+        public void DeleteOverlayNetwork(string membership)
         {
-            throw new NotImplementedException();
+            _dbMock.Remove(membership);
         }
 
-        public IOverlayNetwork SaveOverlayNetwork(IMembership membership)
+        public IOverlayNetwork GetOverlayNetwork(string membership)
         {
-            throw new NotImplementedException();
+            return _dbMock[membership];
         }
 
-        public IOverlayNetwork UpdateOverlayNetwork(IMembership membership)
+        public IOverlayNetwork SaveOverlayNetwork(string membership, IOverlayNetwork overlayNetwork)
         {
-            throw new NotImplementedException();
+            _dbMock.Add(membership, overlayNetwork);
+            return overlayNetwork;
+        }
+
+        public IOverlayNetwork UpdateOverlayNetwork(string membership, IOverlayNetwork overlayNetwork)
+        {
+            _dbMock[membership] = overlayNetwork;
+            return overlayNetwork;
         }
     }
 }
