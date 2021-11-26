@@ -29,11 +29,11 @@ namespace OverlayManagementService.Controllers
             _vmOverlayManagementService = vmOverlayManagementService;
         }
 
-        [AllowAnonymous]
+
         [HttpPost("deploy/machine")]
         public IActionResult DeployMachine(VmConnectionInfo vmConnectionInfo)
         {
-            //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
             _vmOverlayManagementService.RegisterMachine(vmConnectionInfo);
             return null;
         }
@@ -42,16 +42,16 @@ namespace OverlayManagementService.Controllers
         [HttpPost("suspend/machine")]
         public IActionResult SuspendrMachine(VmConnectionInfo vmConnectionInfo)
         {
-            //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
             _vmOverlayManagementService.UnRegisterMachine(vmConnectionInfo);
             return null;
         }
 
-        [AllowAnonymous]
+
         [HttpPost("deploy/network")]
         public IOverlayNetwork DeployNetwork(VmConnectionInfo vmConnectionInfo)
         {
-            //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
             return _vmOverlayManagementService.DeployNetwork(vmConnectionInfo);
 
         }
@@ -60,18 +60,19 @@ namespace OverlayManagementService.Controllers
         [HttpPost("suspend/network")]
         public IActionResult SuspendNetwork(Membership membership)
         {
-            //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
             _vmOverlayManagementService.SuspendNetwork(membership);
             return null;
         }
 
 
-        [HttpPost("delete/network")]
-        public IActionResult DeleteNetwork(Membership membership)
+        [HttpDelete("delete/network/{id}")]
+        public IActionResult DeleteNetwork(int id)
         {
-            _vmOverlayManagementService.DeleteNetwork(membership);
-            //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-            return null;
+            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            //_vmOverlayManagementService.DeleteNetwork(membership);
+
+            return Ok(id);
         }
 
     }

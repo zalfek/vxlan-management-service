@@ -1,13 +1,12 @@
 Vagrant.configure(2) do |config|
-  config.vm.box = "ubuntu/jammy64"
+  config.vm.box = "generic/ubuntu2004"
   config.vm.synced_folder ".", "/vagrant", disabled: true
   config.ssh.insert_key = false
-  config.vm.provider "virtualbox" do |vb|
-      # Display the VirtualBox GUI when booting the machine
+  config.vm.provider "vmware_desktop" do |vb|
       vb.gui = true
   end
   config.vm.define :client1 do |node|
-    node.vm.network :private_network, ip: "192.168.30.2", virtualbox__intnet: "home_network"
+    node.vm.network :private_network, ip: "192.168.30.2"
     node.vm.provision :shell, inline: <<-SHELL
       sudo apt -y update
       sudo apt install net-tools
@@ -19,8 +18,22 @@ Vagrant.configure(2) do |config|
     SHELL
   end
 
+
+    config.vm.define :client3 do |node|
+    node.vm.network :private_network, ip: "192.168.30.3"
+    node.vm.provision :shell, inline: <<-SHELL
+      sudo apt -y update
+      sudo apt install net-tools
+      ip route add 192.168.40.0/24 via 192.168.30.4
+      ip link add vxlan1 type vxlan id 100 dstport 4789 srcport 4789 4790
+      ip addr add 192.168.5.4/24 dev vxlan1
+      ip link set up vxlan1
+      bridge fdb add 00:00:00:00:00:00 dev vxlan1 dst 192.168.40.5
+    SHELL
+  end
+
   config.vm.define :client2 do |node|
-    node.vm.network :private_network, ip: "192.168.40.6", virtualbox__intnet: "internet"
+    node.vm.network :private_network, ip: "192.168.40.6"
     node.vm.provision :shell, inline: <<-SHELL
       sudo apt -y update
       sudo apt install net-tools
@@ -32,8 +45,8 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.define :natRouter do |node|
-    node.vm.network :private_network, ip: "192.168.30.4", virtualbox__intnet: "home_network"
-    node.vm.network :private_network, ip: "192.168.40.4", virtualbox__intnet: "internet"
+    node.vm.network :private_network, ip: "192.168.30.4"
+    node.vm.network :private_network, ip: "192.168.40.4"
     node.vm.provision :shell, inline: <<-SHELL
       sudo apt -y update
       sudo apt install net-tools
@@ -46,8 +59,8 @@ Vagrant.configure(2) do |config|
 
 
   config.vm.define :ovs do |node|
-    node.vm.network :private_network, ip: "192.168.40.5", virtualbox__intnet: "internet"
-    node.vm.network :private_network, ip: "192.168.50.5", virtualbox__intnet: "campus"
+    node.vm.network :private_network, ip: "192.168.40.5"
+    node.vm.network :private_network, ip: "192.168.50.5"
     node.vm.provision :file, source: "flows.txt", destination: "flows.txt"
     node.vm.provision :file, source: "vxlan_hp.py", destination: "vxlan_hp.py"
     node.vm.provision :file, source: "vxlan_hp.c", destination: "vxlan_hp.c"
@@ -58,41 +71,27 @@ Vagrant.configure(2) do |config|
       sudo apt-get -y install bpfcc-tools linux-headers-$(uname -r)
       sudo apt -y install python3-pip
       pip3 install pyroute2
-      sudo apt-get -y update
-      sudo apt-get -y install xfce4
-      sudo startxfce4&
       sudo apt -y install openvswitch-switch
-      sudo ip link add dev vmA1-sw type veth peer name vmA1
-      sudo ip link set vmA1-sw up
-      sudo ip link set vmA1 up
-      sudo ovs-vsctl add-br tenantA
-      sudo ovs-vsctl add-port tenantA vmA1-sw
-      sudo ip link add dev vmB1-sw type veth peer name vmB1
-      sudo ip link set vmB1-sw up
-      sudo ip link set vmB1 up
-      sudo ip addr add 192.168.5.8/24 dev vmB1
-      sudo ovs-vsctl add-br tenantB
-      sudo ovs-vsctl add-port tenantB vmB1-sw
-      sudo ovs-vsctl add-port tenantB vxlanB -- set interface vxlanB type=vxlan options:remote_ip=192.168.50.6 options:key=100 ofport_request=11 options:src_port=4789
-      sudo ovs-vsctl add-port tenantB vxlanA -- set interface vxlanA type=vxlan options:remote_ip=192.168.40.4 options:key=100 ofport_request=10 options:src_port=4789
-      sudo ovs-vsctl add-port tenantB vxlanC -- set interface vxlanC type=vxlan options:remote_ip=192.168.50.7 options:key=200 ofport_request=12 options:src_port=4789
-      sudo ovs-vsctl add-port tenantB vxlanD -- set interface vxlanD type=vxlan options:remote_ip=192.168.40.6 options:key=200 ofport_request=13 options:src_port=4789
-      sysctl net.ipv4.ip_forward=1
+      sudo ovs-vsctl add-br br0
+      sudo ovs-vsctl add-port br0 vxlanA -- set interface vxlanA type=vxlan options:remote_ip=192.168.50.7 options:key=100
+      sudo ovs-vsctl add-port br0 vxlanB -- set interface vxlanB type=vxlan options:remote_ip=192.168.40.4 options:key=100
+      sudo ovs-vsctl add-br br1
+      sudo ovs-vsctl add-port br0 vxlanA -- set interface vxlanA type=vxlan options:remote_ip=192.168.40.4 options:key=200
+      sudo ovs-vsctl add-port br0 vxlanB -- set interface vxlanB type=vxlan options:remote_ip=192.168.50.8 options:key=200
+      sudo ovs-vsctl add-port br0 vxlanC -- set interface vxlanC type=vxlan options:remote_ip=192.168.40.6 options:key=200
+      sudo sysctl net.ipv4.ip_forward=1
     SHELL
   end
 
 
   config.vm.define :targetVM1 do |node|
-    node.vm.network :private_network, ip: "192.168.50.6", virtualbox__intnet: "campus"
+    node.vm.network :private_network, ip: "192.168.50.7"
     node.vm.provision :file, source: "vxlan_hp.py", destination: "vxlan_hp.py"
     node.vm.provision :file, source: "vxlan_hp.c", destination: "vxlan_hp.c"
     node.vm.provision :shell, inline: <<-SHELL
       sudo apt -y update
       sudo apt install net-tools
       sudo apt install iftop
-      sudo apt-get -y install bpfcc-tools linux-headers-$(uname -r)
-      sudo apt -y install python3-pip
-      pip3 install pyroute2
       ip link add vxlan1 type vxlan id 100 dstport 4789 srcport 4789 4790
       ip addr add 192.168.5.5/24 dev vxlan1
       ip link set up vxlan1
@@ -100,16 +99,13 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.define :targetVM2 do |node|
-    node.vm.network :private_network, ip: "192.168.50.7", virtualbox__intnet: "campus"
+    node.vm.network :private_network, ip: "192.168.50.8"
     node.vm.provision :file, source: "vxlan_hp.py", destination: "vxlan_hp.py"
     node.vm.provision :file, source: "vxlan_hp.c", destination: "vxlan_hp.c"
     node.vm.provision :shell, inline: <<-SHELL
       sudo apt -y update
       sudo apt install net-tools
       sudo apt install iftop
-      sudo apt-get -y install bpfcc-tools linux-headers-$(uname -r)
-      sudo apt -y install python3-pip
-      pip3 install pyroute2
       ip link add vxlan1 type vxlan id 200 dstport 4789 srcport 4789 4790
       ip addr add 192.168.5.6/24 dev vxlan1
       ip link set up vxlan1

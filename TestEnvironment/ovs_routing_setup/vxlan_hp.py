@@ -9,7 +9,7 @@ fout = b.load_func("handle_egress", bcc.BPF.SCHED_CLS)
 ipr = IPRoute()
 ipdb = IPDB(nl=ipr)
 
-ifc = ipdb.interfaces.enp0s8
+ifc = ipdb.interfaces.eth1
 
 ipr.tc("add", "ingress", ifc.index, "ffff:")
 ipr.tc("add-filter", "bpf", ifc.index, ":1", fd=fin.fd, name=fin.name, parent="ffff:", action="ok", classid=1)

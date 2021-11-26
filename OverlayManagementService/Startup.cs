@@ -32,27 +32,18 @@ namespace OverlayManagementService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApp(Configuration.GetSection("AzureAd"));
-            //        .EnableTokenAcquisitionToCallDownstreamApi(new string[] { "user.read" })
-            //        .AddInMemoryTokenCaches();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"))
+                    .EnableTokenAcquisitionToCallDownstreamApi()
+                    .AddInMemoryTokenCaches();
 
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy("CorsPolicy",
-            //        builder => builder.WithOrigins("http://localhost:3000", "https://localhost:44323/")
-            //        .AllowAnyMethod()
-            //        .AllowAnyHeader());
-            //});
-            services.AddControllersWithViews(options =>
+            services.AddCors(options =>
             {
-                var policy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-                options.Filters.Add(new AuthorizeFilter(policy));
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.WithOrigins("http://localhost:3000", "https://localhost:44323/")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
             });
-            services.AddRazorPages()
-            .AddMicrosoftIdentityUI();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -90,19 +81,16 @@ namespace OverlayManagementService
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+
             app.UseRouting();
-            //app.UseCors("CorsPolicy");
+
+            app.UseCors("CorsPolicy");
+
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
                 endpoints.MapControllers();
             });
         }

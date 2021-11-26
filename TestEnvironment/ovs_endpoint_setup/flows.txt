@@ -1,7 +1,0 @@
-table=0,in_port=1,actions=set_field:100->tun_id,resubmit(,1)
-table=0,actions=resubmit(,1)
-table=1,tun_id=100,dl_dst=08:00:27:e8:9f:6d,actions=output:11
-table=1,tun_id=100,dl_dst=08:00:27:3b:a4:9c,actions=output:10
-table=1,tun_id=100,arp,nw_dst=192.168.5.5,actions=output:11
-table=1,tun_id=100,arp,nw_dst=192.168.5.2,actions=output:10
-table=1,priority=100,actions=drop
