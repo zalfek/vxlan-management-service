@@ -7,5 +7,9 @@ namespace OverlayManagementService.Network
 {
     public interface IVirtualMachine
     {
+        string IPAddress { get; set; }
+
+        public void DeployVMConnection(string ipAddress, IOverlayNetwork overlayNetwork);
+        public void CleanUpVMConnection();
     }
 }

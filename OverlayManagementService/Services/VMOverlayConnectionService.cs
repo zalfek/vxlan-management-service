@@ -1,38 +1,39 @@
-﻿using OverlayManagementService.DataTransferObjects;
+﻿using Microsoft.Extensions.Logging;
+using OverlayManagementService.DataTransferObjects;
 using OverlayManagementService.Network;
 using OverlayManagementService.Repositories;
 using OverlayManagementService.Resolvers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace OverlayManagementService.Services
 {
     public class VMOverlayConnectionService : IOverlayConnectionService
     {
 
-        private readonly IMembershipResolver membershipResolver;
-        private readonly IRepository jsonRepository;
+        private readonly IMembershipResolver _membershipResolver;
+        private readonly IRepository _jsonRepository;
+        private readonly ILogger<VMOverlayConnectionService> _logger;
+        private readonly IFirewall _firewall;
 
-        public VMOverlayConnectionService(IMembershipResolver membershipResolver, IRepository jsonRepository)
+        public VMOverlayConnectionService(IMembershipResolver membershipResolver, IRepository jsonRepository, ILogger<VMOverlayConnectionService> logger)
         {
-            this.membershipResolver = membershipResolver;
-            this.jsonRepository = jsonRepository;
+            this._membershipResolver = membershipResolver;
+            this._jsonRepository = jsonRepository;
+            this._logger = logger;
         }
 
-        public VXLANOverlayNetwork GetOverlayNetwork(Membership membership)
+        public IOverlayNetwork GetOverlayNetwork(IMembership membership)
         {
-            jsonRepository.GetOverlayNetwork(membership);
+            _jsonRepository.GetOverlayNetwork(membership.MembershipId);
             return null;
         }
 
-        public List<Membership> GetAllMemberships(User user)
+        public List<IMembership> GetUserMemberships(IUser user)
         {
-            membershipResolver.GetAllMemberships(user);
+            _membershipResolver.GetUserMemberships(user);
             return null;
         }
-
-
     }
 }

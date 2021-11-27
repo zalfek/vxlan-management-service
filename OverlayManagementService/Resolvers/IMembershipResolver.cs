@@ -9,7 +9,7 @@ namespace OverlayManagementService.Resolvers
     public interface IMembershipResolver
     {
 
-        public List<Membership> GetAllMemberships(User user); 
+        public Task<List<IMembership>> GetUserMemberships(IUser user);
 
     }
 }

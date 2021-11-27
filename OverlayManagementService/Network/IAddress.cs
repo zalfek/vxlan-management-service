@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementService.Network
 {
-    interface IAddress
+    public interface IAddress
     {
+        public string GenerarteUniqueIPV4Address();
+
     }
 }

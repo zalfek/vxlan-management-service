@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementService.Network
 {
-    interface IIdentifier
+    public interface IIdentifier
     {
+        public string GenerateUniqueVNI();
     }
 }

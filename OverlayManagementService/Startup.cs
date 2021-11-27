@@ -4,21 +4,19 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.Graph;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Threading.Tasks;
+using OverlayManagementService.Network;
+using OverlayManagementService.Repositories;
+using OverlayManagementService.Resolvers;
+using OverlayManagementService.Services;
+
 
 namespace OverlayManagementService
 {
@@ -34,8 +32,11 @@ namespace OverlayManagementService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApp(Configuration.GetSection("AzureAd"));
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"))
+                    .EnableTokenAcquisitionToCallDownstreamApi()
+                    .AddInMemoryTokenCaches();
+
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
@@ -43,21 +44,30 @@ namespace OverlayManagementService
                     .AllowAnyMethod()
                     .AllowAnyHeader());
             });
-            services.AddControllersWithViews(options =>
-            {
-                var policy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-                options.Filters.Add(new AuthorizeFilter(policy));
-            });
-            services.AddRazorPages()
-     .AddMicrosoftIdentityUI();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "OverlayManagementService", Version = "v1" });
             });
+
+
+
+            services.AddScoped<IOverlayConnectionService, VMOverlayConnectionService>();
+            services.AddScoped<IOverlayManagementService, VMOverlayManagementService>();
+            services.AddScoped<IMembershipResolver, MembershipResolver>();
+            services.AddScoped<GraphServiceClient, GraphServiceClient>();
+            services.AddSingleton<IRepository, JsonRepository>();
+            services.AddScoped<IFirewall, Firewall>();
+            //services.AddScoped<IBridge, Bridge>();
+            services.AddSingleton<IAddress, IPAddress>();
+            //services.AddScoped<IOpenVirtualSwitch, OpenVirtualSwitch>();
+            services.AddSingleton<IIdentifier, VNI>();
+            //services.AddScoped<IOverlayNetwork, VXLANOverlayNetwork>();
+            //services.AddScoped<IVeth, Veth>();
+            //services.AddScoped<IVirtualMachine, VirtualMachine>();
+            //services.AddScoped<IVXLANInterface, VXLANInterface>();
+            //services.AddScoped<IOverlayNetwork, VXLANOverlayNetwork>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,18 +81,16 @@ namespace OverlayManagementService
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+
             app.UseRouting();
+
             app.UseCors("CorsPolicy");
+
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
                 endpoints.MapControllers();
             });
         }

@@ -10,6 +10,7 @@ using OverlayManagementService.Resolvers;
 using OverlayManagementService.DataTransferObjects;
 using OverlayManagementService.Repositories;
 using OverlayManagementService.Network;
+using Microsoft.Extensions.Logging;
 
 namespace OverlayManagementService.Services.Tests
 {
@@ -19,10 +20,11 @@ namespace OverlayManagementService.Services.Tests
         private readonly VMOverlayConnectionService _sut;
         private readonly Mock<IMembershipResolver> _membershipResolverMock = new Mock<IMembershipResolver>();
         private readonly Mock<IRepository> _jsonRepositoryMock = new Mock<IRepository>();
+        private readonly Mock<ILogger<VMOverlayConnectionService>> _loggerMock = new Mock<ILogger<VMOverlayConnectionService>>();
 
         public VMOverlayConnectionServiceTests()
         {
-            _sut = new VMOverlayConnectionService(_membershipResolverMock.Object, _jsonRepositoryMock.Object);
+            _sut = new VMOverlayConnectionService(_membershipResolverMock.Object, _jsonRepositoryMock.Object, _loggerMock.Object);
         }
 
 
@@ -38,20 +40,20 @@ namespace OverlayManagementService.Services.Tests
                 Guid.NewGuid()
                 );
 
-            _jsonRepositoryMock.Setup(x => x.GetOverlayNetwork(membership)).Returns(new VXLANOverlayNetwork());
+            _jsonRepositoryMock.Setup(x => x.GetOverlayNetwork(membership.MembershipId)).Returns(new VXLANOverlayNetwork());
 
             //Act
             var result = _sut.GetOverlayNetwork(membership);
 
             //Assert
-            _jsonRepositoryMock.Verify(r => r.GetOverlayNetwork(membership), Times.Once());
+            _jsonRepositoryMock.Verify(r => r.GetOverlayNetwork(membership.MembershipId), Times.Once());
         }
 
         [TestMethod()]
         public void GetAllMembershipsTest()
         {
             //Arrange
-            var user = new User(
+            var user = new Student(
                 "John",
                 "Doe",
                 "john.doe@hs-ulm.de",
@@ -59,13 +61,13 @@ namespace OverlayManagementService.Services.Tests
                "255.255.255.255"
                );
 
-            _membershipResolverMock.Setup(x => x.GetAllMemberships(user)).Returns(new List<Membership>());
+            _membershipResolverMock.Setup(x => x.GetUserMemberships(user)).Returns(Task.FromResult(new List<IMembership>()));
 
             //Act
-            var result = _sut.GetAllMemberships(user);
+            var result = _sut.GetUserMemberships(user);
 
             //Assert
-            _membershipResolverMock.Verify(s => s.GetAllMemberships(user), Times.Once());
+            _membershipResolverMock.Verify(s => s.GetUserMemberships(user), Times.Once());
 
         }
     }
