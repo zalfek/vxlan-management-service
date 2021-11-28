@@ -1,4 +1,4 @@
-﻿using OverlayManagementService.DataTransferObjects;
+﻿using OverlayManagementService.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace OverlayManagementService.Resolvers
     public interface IMembershipResolver
     {
 
-        public Task<List<IMembership>> GetUserMemberships(IUser user);
+        public Task<List<String>> GetUserMemberships(Student user);
 
     }
 }

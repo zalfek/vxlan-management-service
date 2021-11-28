@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using OverlayManagementService.DataTransferObjects;
+using OverlayManagementService.Dtos;
 using OverlayManagementService.Network;
 using OverlayManagementService.Repositories;
 using OverlayManagementService.Resolvers;
@@ -24,13 +24,13 @@ namespace OverlayManagementService.Services
             this._logger = logger;
         }
 
-        public IOverlayNetwork GetOverlayNetwork(IMembership membership)
+        public IOverlayNetwork GetOverlayNetwork(Membership membership)
         {
             _jsonRepository.GetOverlayNetwork(membership.MembershipId);
             return null;
         }
 
-        public List<IMembership> GetUserMemberships(IUser user)
+        public List<Membership> GetUserMemberships(Student user)
         {
             _membershipResolver.GetUserMemberships(user);
             return null;

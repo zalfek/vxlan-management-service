@@ -4,10 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OverlayManagementService.DataTransferObjects
+namespace OverlayManagementService.Dtos
 {
-    public class Student : IUser
-    {
+    public class Student    {
         public Student(string name, string surename, string email, string oid, string ipAddress)
         {
             Name = name;

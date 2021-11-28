@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using OverlayManagementService.DataTransferObjects;
+using OverlayManagementService.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,12 +16,12 @@ namespace OverlayManagementService.Network
             _logger = logger;
         }
 
-        public void AddException(IUser user)
+        public void AddException(Student user)
         {
             throw new NotImplementedException();
         }
 
-        public void RemoveException(IUser user)
+        public void RemoveException(Student user)
         {
             throw new NotImplementedException();
         }

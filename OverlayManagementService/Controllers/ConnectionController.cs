@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web.Resource;
 using OverlayManagementService.Network;
-using OverlayManagementService.DataTransferObjects;
+using OverlayManagementService.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,10 +34,10 @@ namespace OverlayManagementService.Controllers
 
         [HttpGet("memberships")]
         [AuthorizeForScopes(Scopes = new[] { "user.read" })]
-        public IEnumerable<IMembership> GetAllMemberships()
+        public IEnumerable<Membership> GetAllMemberships()
         {
 
-            IUser user = new Student(
+            Student user = new Student(
                 "John",
                 "Doe",
                 "john.doe@hs-ulm.de",
@@ -52,7 +52,7 @@ namespace OverlayManagementService.Controllers
 
 
         [HttpGet("connection")]
-        public IOverlayNetwork GetConnectionInfo([FromQuery] IMembership membership)
+        public IOverlayNetwork GetConnectionInfo([FromQuery] Membership membership)
         {
             //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
             _logger.LogInformation("Processing GET request: " + HttpContext.Request.ToString());

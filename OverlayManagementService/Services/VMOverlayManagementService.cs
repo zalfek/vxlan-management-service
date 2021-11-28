@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
-using OverlayManagementService.DataTransferObjects;
 using OverlayManagementService.Dtos;
 using OverlayManagementService.Network;
 using OverlayManagementService.Repositories;
+using Renci.SshNet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,18 +16,18 @@ namespace OverlayManagementService.Services
         private readonly ILogger<VMOverlayManagementService> _logger;
         private readonly IRepository _jsonRepository;
         private readonly IIdentifier _vni;
-        private readonly IOpenVirtualSwitch _openVirtualSwitch;
         private readonly IAddress IpAddress;
+        private IDictionary<string, IOpenVirtualSwitch> OpenVirtualSwitches;
         public VMOverlayManagementService(ILogger<VMOverlayManagementService> logger, IRepository jsonRepository, IIdentifier vni, IAddress ipAddress)
         {
+            OpenVirtualSwitches = new Dictionary<string, IOpenVirtualSwitch>();
             _logger = logger;
             _jsonRepository = jsonRepository;
             _vni = vni;
-            _openVirtualSwitch = new OpenVirtualSwitch();
             IpAddress = ipAddress;
         }
 
-        public void DeleteNetwork(IMembership membership)
+        public void DeleteNetwork(Membership membership)
         {
 
             IOverlayNetwork overlayNetwork =_jsonRepository.GetOverlayNetwork(membership.MembershipId);
@@ -35,49 +35,50 @@ namespace OverlayManagementService.Services
             _jsonRepository.DeleteOverlayNetwork(membership.MembershipId);
         }
 
-        public IOverlayNetwork DeployNetwork(IVmConnectionInfo vmConnectionInfo)
+        public IOverlayNetwork DeployNetwork(OVSConnection oVSConnection)
         {
 
             string vni = _vni.GenerateUniqueVNI();
-            IVeth veth = new Veth(Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14), IpAddress.GenerarteUniqueIPV4Address());
-            IBridge bridge = new Bridge(Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0,14), veth, vni);
-            _openVirtualSwitch.AddBridge(bridge);
 
-            List<IOpenVirtualSwitch> openVirtualSwitches = new List<IOpenVirtualSwitch>();
-            openVirtualSwitches.Add(_openVirtualSwitch);
+            IBridge bridge = new Bridge(Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0,14), vni, OpenVirtualSwitches[oVSConnection.Key].SSHConnectionInfo);
+            OpenVirtualSwitches[oVSConnection.Key].AddBridge(bridge);
 
-            IVirtualMachine virtualMachine = new VirtualMachine(Guid.NewGuid(), vmConnectionInfo);
-            List<IVirtualMachine> virtualMachines = new List<IVirtualMachine>();
-            virtualMachines.Add(virtualMachine);
-
-
-            IOverlayNetwork overlayNetwork = new VXLANOverlayNetwork(vni, openVirtualSwitches, virtualMachines, new List<IUser>());
-
-
-            _jsonRepository.SaveOverlayNetwork(vmConnectionInfo.Membership, overlayNetwork);
-
-
+            IOverlayNetwork overlayNetwork = new VXLANOverlayNetwork(vni, OpenVirtualSwitches[oVSConnection.Key]);
+            _jsonRepository.SaveOverlayNetwork(oVSConnection.membershipId, overlayNetwork);
             overlayNetwork.DeployNetwork();
+            if (oVSConnection.vmConnection != null) { RegisterMachine(oVSConnection.vmConnection); }
 
             return overlayNetwork;
         }
 
-        public IOverlayNetwork RegisterMachine(IVmConnectionInfo vmConnectionInfo)
+        public IOverlayNetwork RegisterMachine(VmConnection vmConnection)
         {
-           IOverlayNetwork overlayNetwork = _jsonRepository.GetOverlayNetwork(vmConnectionInfo.Membership);
-            IVirtualMachine virtualMachine = new VirtualMachine(Guid.NewGuid(), vmConnectionInfo);
-            virtualMachine.DeployVMConnection(IpAddress.GenerarteUniqueIPV4Address(), overlayNetwork);
+           IOverlayNetwork overlayNetwork = _jsonRepository.GetOverlayNetwork(vmConnection.Membership);
+            IVirtualMachine virtualMachine = new VirtualMachine(Guid.NewGuid(), vmConnection.IPAddress, overlayNetwork.VNI, IpAddress.GenerarteUniqueIPV4Address(), OpenVirtualSwitches[vmConnection.Key].PrivateIP);
+            virtualMachine.DeployVMConnection();
+            _jsonRepository.SaveOverlayNetwork(vmConnection.Membership, overlayNetwork);
             return overlayNetwork;
         }
 
-        public IOverlayNetwork SuspendNetwork(IMembership membership)
+        public IOverlayNetwork SuspendNetwork(Membership membership)
         {
             throw new NotImplementedException();
         }
 
-        public IOverlayNetwork UnRegisterMachine(IVmConnectionInfo vmConnectionInfo)
+        public IOverlayNetwork UnRegisterMachine(VmConnection vmConnectionInfo)
         {
             throw new NotImplementedException();
+        }
+
+        public IOpenVirtualSwitch AddSwitch(string key)
+        {
+            ConnectionInfo SSHConnectionInfo = new ConnectionInfo("192.168.56.103", "vagrant", new AuthenticationMethod[]{
+                            new PasswordAuthenticationMethod("vagrant", "vagrant")
+            });
+            IOpenVirtualSwitch openVirtualSwitch = new OpenVirtualSwitch(SSHConnectionInfo);
+            OpenVirtualSwitches.Add(key, openVirtualSwitch);
+            return openVirtualSwitch;
+
         }
     }
 }

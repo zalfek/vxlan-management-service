@@ -14,12 +14,9 @@ namespace OverlayManagementService.Network
         public readonly string DstIP;
         public readonly string LocalIP;
         private ConnectionInfo SSHConnectionInfo;
-        public LinuxVXLANInterface(string name, string vNI, string dstPort, string dstIP, string localIP)
+        public LinuxVXLANInterface(string name, string vNI, string dstPort, string dstIP, string localIP, ConnectionInfo sSHConnectionInfo)
         {
-            SSHConnectionInfo = new ConnectionInfo("192.168.56.106", "vagrant", new AuthenticationMethod[]{
-                            new PasswordAuthenticationMethod("vagrant", "vagrant")
-            });
-
+            SSHConnectionInfo = sSHConnectionInfo;
             Name = name;
             VNI = vNI;
             DstPort = dstPort;

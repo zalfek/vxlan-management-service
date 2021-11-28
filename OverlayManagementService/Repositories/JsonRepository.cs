@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using OverlayManagementService.DataTransferObjects;
+using OverlayManagementService.Dtos;
 using OverlayManagementService.Network;
 using System;
 using System.Collections.Generic;

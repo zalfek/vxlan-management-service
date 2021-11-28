@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
 using Microsoft.Identity.Web;
-using OverlayManagementService.DataTransferObjects;
+using OverlayManagementService.Dtos;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,7 +22,7 @@ namespace OverlayManagementService.Resolvers
         }
 
 
-        public async Task<List<IMembership>> GetUserMemberships(IUser user)
+        public async Task<List<String>> GetUserMemberships(Student user)
         {
             var groupIds = new List<String>()
             {
@@ -35,7 +35,7 @@ namespace OverlayManagementService.Resolvers
                 .PostAsync();
             Console.WriteLine(groupIds);
 
-            return null;
+            return groupIds;
         }
     }
 }

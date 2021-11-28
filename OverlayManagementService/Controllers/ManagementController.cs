@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web.Resource;
-using OverlayManagementService.DataTransferObjects;
 using OverlayManagementService.Dtos;
 using OverlayManagementService.Network;
 using OverlayManagementService.Services;
@@ -31,28 +30,28 @@ namespace OverlayManagementService.Controllers
 
 
         [HttpPost("deploy/machine")]
-        public IActionResult DeployMachine(VmConnectionInfo vmConnectionInfo)
+        public IActionResult DeployMachine(VmConnection vmConnection)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-            _vmOverlayManagementService.RegisterMachine(vmConnectionInfo);
+            _vmOverlayManagementService.RegisterMachine(vmConnection);
             return null;
         }
 
 
         [HttpPost("suspend/machine")]
-        public IActionResult SuspendrMachine(VmConnectionInfo vmConnectionInfo)
+        public IActionResult SuspendrMachine(VmConnection vmConnection)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-            _vmOverlayManagementService.UnRegisterMachine(vmConnectionInfo);
+            _vmOverlayManagementService.UnRegisterMachine(vmConnection);
             return null;
         }
 
 
         [HttpPost("deploy/network")]
-        public IOverlayNetwork DeployNetwork(VmConnectionInfo vmConnectionInfo)
+        public IOverlayNetwork DeployNetwork(OVSConnection oVSConnection)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-            return _vmOverlayManagementService.DeployNetwork(vmConnectionInfo);
+            return _vmOverlayManagementService.DeployNetwork(oVSConnection);
 
         }
 

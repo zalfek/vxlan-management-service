@@ -55,7 +55,7 @@ namespace OverlayManagementService
 
             services.AddScoped<IOverlayConnectionService, VMOverlayConnectionService>();
             services.AddScoped<IOverlayManagementService, VMOverlayManagementService>();
-            services.AddScoped<IMembershipResolver, MembershipResolver>();
+            services.AddScoped<MembershipResolver, MembershipResolver>();
             services.AddScoped<GraphServiceClient, GraphServiceClient>();
             services.AddSingleton<IRepository, JsonRepository>();
             services.AddScoped<IFirewall, Firewall>();

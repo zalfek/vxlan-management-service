@@ -1,5 +1,5 @@
 ﻿
-using OverlayManagementService.DataTransferObjects;
+using OverlayManagementService.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +9,8 @@ namespace OverlayManagementService.Network
 {
     public interface IFirewall
     {
-        public void AddException(IUser user);
-        public void RemoveException(IUser user);
+        public void AddException(Student user);
+        public void RemoveException(Student user);
 
     }
 }

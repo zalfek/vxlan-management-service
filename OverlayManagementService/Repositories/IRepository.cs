@@ -1,5 +1,4 @@
-﻿using OverlayManagementService.DataTransferObjects;
-using OverlayManagementService.Network;
+﻿using OverlayManagementService.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;

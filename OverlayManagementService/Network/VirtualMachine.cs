@@ -8,32 +8,35 @@ namespace OverlayManagementService.Network
     public class VirtualMachine : IVirtualMachine
     {
 
-        public VirtualMachine(Guid guid, IVmConnectionInfo vmConnectionInfo)
+        public VirtualMachine(Guid guid, string ipAddress, string vni, string vxlanIp, string destIP)
         {
+            SSHConnectionInfo = new ConnectionInfo(ipAddress, "vagrant", new AuthenticationMethod[]{
+                            new PasswordAuthenticationMethod("vagrant", "vagrant")
+            });
             Guid = guid;
-            IPAddress = vmConnectionInfo.IPAddress;
-            VmConnectionInfo = vmConnectionInfo;
-            VXLANInterfaces = new List<ILinuxVXLANInterface>();
+            IPAddress = ipAddress;
+            VNI = vni;
+            VxlanIp = vxlanIp;
+            DestIp = destIP;
+            VXLANInterface = new LinuxVXLANInterface(Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14), VNI, "4789", DestIp, VxlanIp, SSHConnectionInfo);
         }
 
         private Guid Guid { get; set; }
+        public string VNI { get; set; }
         public string IPAddress { get; set; }
-        private IVmConnectionInfo VmConnectionInfo { get; set; }
-        public List<ILinuxVXLANInterface> VXLANInterfaces;
+        public string DestIp { get; set; }
+        public string VxlanIp { get; set; }
+        public ILinuxVXLANInterface VXLANInterface;
+        private ConnectionInfo SSHConnectionInfo;
 
         public void CleanUpVMConnection()
         {
-            VXLANInterfaces.ForEach(infs =>
-            {
-                infs.CleanUpInterface();
-            });
+            VXLANInterface.CleanUpInterface();
         }
 
-        public void DeployVMConnection(string ipAddress, IOverlayNetwork overlayNetwork)
+        public void DeployVMConnection()
         {
-            ILinuxVXLANInterface linuxVXLANInterface = new LinuxVXLANInterface(Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14),overlayNetwork.VNI,"4789", overlayNetwork.OpenVirtualSwitches[0].Bridges[0].VirtualInterface.IpAddress, ipAddress);
-            linuxVXLANInterface.DeployInterface();
-            VXLANInterfaces.Add(linuxVXLANInterface);
+            VXLANInterface.DeployInterface();
         }
     }
 }
