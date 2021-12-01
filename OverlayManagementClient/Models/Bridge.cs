@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OverlayManagementClient.Services
+namespace OverlayManagementClient.Models
 {
     public class Bridge
     {

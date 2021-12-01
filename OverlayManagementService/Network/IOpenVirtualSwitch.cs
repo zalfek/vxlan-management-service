@@ -12,10 +12,10 @@ namespace OverlayManagementService.Network
         public void AddBridge(IBridge bridge);
         public void DeployVXLANInterface(IVirtualMachine virtualMachine);
         public IDictionary<string, IBridge> Bridges { get; set; }
-        public ConnectionInfo SSHConnectionInfo { get; set; }
         public void DeployOVSConnection(string vni);
         public void CleanUpOVSConnection(IVirtualMachine virtualMachine);
         public string PrivateIP { get; set; }
         public string PublicIP { get; set; }
+        public string ManagementIp { get; set; }
     }
 }

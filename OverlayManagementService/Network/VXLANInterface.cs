@@ -3,43 +3,43 @@ using Renci.SshNet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OverlayManagementService.Network
 {
     public class VXLANInterface : IVXLANInterface                                                                                                   
     {
-
+        public string Name { get; set; }
+        public string BridgeName { get; set; }
+        public string Type { get; set; }
+        public string RemoteIp { get; set; }
+        public string Vni { get; set; }
+        public string ManagementIp { get; set; }
         private readonly ILogger<IVXLANInterface> _logger;
-        private ConnectionInfo SSHConnectionInfo;
-        public VXLANInterface(string name, string type, string remoteIp, string key, IBridge parent)
-        {
-            SSHConnectionInfo = new ConnectionInfo("192.168.56.106", "vagrant", new AuthenticationMethod[]{
-                            new PasswordAuthenticationMethod("vagrant", "vagrant")
-            });
 
+        public VXLANInterface(string name, string type, string remoteIp, string vni, string bridgeName, string managementIp)
+        {
+            ManagementIp = managementIp;
             _logger = new LoggerFactory().CreateLogger<IVXLANInterface>();
             Name = name;
             Type = type;
             RemoteIp = remoteIp;
-            Key = key;
-            Parent = parent;
+            Vni = vni;
+            BridgeName = bridgeName;
         }
 
-        private string Name { get; set; }
-        private IBridge Parent { get; set; }
-        private string Type { get; set; }
-        private string RemoteIp { get; set; }
-        private string Key { get; set; }
-        private string OpenFlowPort { get; set; }
-        private string SourcePort { get; set; }
+
 
         public void CleanUpVXLANInterface()
         {
-            using (var sshclient = new SshClient(SSHConnectionInfo))
+            ConnectionInfo sSHConnectionInfo = new ConnectionInfo(ManagementIp, "vagrant", new AuthenticationMethod[]{
+                            new PasswordAuthenticationMethod("vagrant", "vagrant")});
+
+            using (var sshclient = new SshClient(sSHConnectionInfo))
             {
                 sshclient.Connect();
-                using (var cmd = sshclient.CreateCommand("sudo ovs-vsctl del-port " + Parent.Name + " " + Name))
+                using (var cmd = sshclient.CreateCommand("sudo ovs-vsctl del-port " + BridgeName + " " + Name))
                 {
                     cmd.Execute();
                     Console.WriteLine("Command>" + cmd.CommandText);
@@ -51,10 +51,13 @@ namespace OverlayManagementService.Network
 
         public void DeployVXLANInterface()
         {
-            using (var sshclient = new SshClient(SSHConnectionInfo))
+            ConnectionInfo sSHConnectionInfo = new ConnectionInfo(ManagementIp, "vagrant", new AuthenticationMethod[]{
+                            new PasswordAuthenticationMethod("vagrant", "vagrant")});
+
+            using (var sshclient = new SshClient(sSHConnectionInfo))
             {
                 sshclient.Connect();
-                using (var cmd = sshclient.CreateCommand("sudo ovs-vsctl add-port " + Parent.Name + " " + Name + " -- set interface " + Name + " type " + Type + " options:remote_ip=" + RemoteIp + " options:key=" + Key))
+                using (var cmd = sshclient.CreateCommand("sudo ovs-vsctl add-port " + BridgeName + " " + Name + " -- set interface " + Name + " type=" + Type + " options:remote_ip=" + RemoteIp + " options:key=" + Key))
                 {
                     cmd.Execute();
                     Console.WriteLine("Command>" + cmd.CommandText);

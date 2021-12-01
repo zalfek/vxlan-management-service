@@ -7,8 +7,10 @@ namespace OverlayManagementService.Network
 {
     public interface IVirtualMachine
     {
-        public string IPAddress { get; set; }
+        public string ManagementIp { get; set; }
         public string VNI { get; set; }
+        public string CommunicationIP { get; set; }
+
         public void DeployVMConnection();
         public void CleanUpVMConnection();
     }

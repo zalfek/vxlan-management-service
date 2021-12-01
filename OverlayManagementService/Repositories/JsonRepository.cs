@@ -34,7 +34,14 @@ namespace OverlayManagementService.Repositories
 
         public IOverlayNetwork SaveOverlayNetwork(string membership, IOverlayNetwork overlayNetwork)
         {
-            _dbMock.Add(membership, overlayNetwork);
+            if (_dbMock.ContainsKey(membership))
+            {
+                _dbMock[membership] = overlayNetwork;
+            }
+            else
+            {
+                _dbMock.Add(membership, overlayNetwork);
+            }
             return overlayNetwork;
         }
 
@@ -42,6 +49,11 @@ namespace OverlayManagementService.Repositories
         {
             _dbMock[membership] = overlayNetwork;
             return overlayNetwork;
+        }
+
+        public IDictionary<string, IOverlayNetwork> GetAllNetworks()
+        {
+            return _dbMock;
         }
     }
 }

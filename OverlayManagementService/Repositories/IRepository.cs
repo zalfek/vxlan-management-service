@@ -12,5 +12,6 @@ namespace OverlayManagementService.Repositories
         void DeleteOverlayNetwork(string membership);
         IOverlayNetwork UpdateOverlayNetwork(string membership, IOverlayNetwork overlayNetwork);
         IOverlayNetwork GetOverlayNetwork(string membership);
+        IDictionary<string, IOverlayNetwork> GetAllNetworks();
     }
 }

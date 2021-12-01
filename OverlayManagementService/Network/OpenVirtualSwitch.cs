@@ -4,6 +4,7 @@ using Renci.SshNet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OverlayManagementService.Network
@@ -12,18 +13,21 @@ namespace OverlayManagementService.Network
     {
 
         private readonly ILogger<OpenVirtualSwitch> _logger;
-        public ConnectionInfo SSHConnectionInfo { get; set; }
+
         public IDictionary<string, IBridge> Bridges { get; set; }
         public string PrivateIP { get; set; }
         public string PublicIP { get; set; }
         public string Key { get; set; }
+        public string ManagementIp { get; set; }
 
 
-
-        public OpenVirtualSwitch(ConnectionInfo sSHConnectionInfo)
+        public OpenVirtualSwitch(string key, string managementIp, string privateIP, string publicIp)
         {
-            SSHConnectionInfo = sSHConnectionInfo;
+            Key = key;
+            PrivateIP = privateIP;
+            PublicIP = publicIp;
             Bridges = new Dictionary<string, IBridge>();
+            ManagementIp = managementIp;
         }
 
 

@@ -40,7 +40,7 @@ namespace OverlayManagementService.Services
 
             string vni = _vni.GenerateUniqueVNI();
 
-            IBridge bridge = new Bridge(Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0,14), vni, OpenVirtualSwitches[oVSConnection.Key].SSHConnectionInfo);
+            IBridge bridge = new Bridge(Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0,14), vni, OpenVirtualSwitches[oVSConnection.Key].ManagementIp);
             OpenVirtualSwitches[oVSConnection.Key].AddBridge(bridge);
 
             IOverlayNetwork overlayNetwork = new VXLANOverlayNetwork(vni, OpenVirtualSwitches[oVSConnection.Key]);
@@ -54,8 +54,9 @@ namespace OverlayManagementService.Services
         public IOverlayNetwork RegisterMachine(VmConnection vmConnection)
         {
            IOverlayNetwork overlayNetwork = _jsonRepository.GetOverlayNetwork(vmConnection.Membership);
-            IVirtualMachine virtualMachine = new VirtualMachine(Guid.NewGuid(), vmConnection.IPAddress, overlayNetwork.VNI, IpAddress.GenerarteUniqueIPV4Address(), OpenVirtualSwitches[vmConnection.Key].PrivateIP);
+            IVirtualMachine virtualMachine = new VirtualMachine(Guid.NewGuid(), vmConnection.ManagementIp, overlayNetwork.VNI, IpAddress.GenerarteUniqueIPV4Address(), OpenVirtualSwitches[vmConnection.Key].PrivateIP, vmConnection.CommunicationIP);
             virtualMachine.DeployVMConnection();
+            overlayNetwork.AddVMachine(virtualMachine);
             _jsonRepository.SaveOverlayNetwork(vmConnection.Membership, overlayNetwork);
             return overlayNetwork;
         }
@@ -70,15 +71,18 @@ namespace OverlayManagementService.Services
             throw new NotImplementedException();
         }
 
-        public IOpenVirtualSwitch AddSwitch(string key)
+        public IOpenVirtualSwitch AddSwitch(IOpenVirtualSwitch openVirtualSwitch)
         {
-            ConnectionInfo SSHConnectionInfo = new ConnectionInfo("192.168.56.103", "vagrant", new AuthenticationMethod[]{
-                            new PasswordAuthenticationMethod("vagrant", "vagrant")
-            });
-            IOpenVirtualSwitch openVirtualSwitch = new OpenVirtualSwitch(SSHConnectionInfo);
-            OpenVirtualSwitches.Add(key, openVirtualSwitch);
+            OpenVirtualSwitches.Add(openVirtualSwitch.Key, openVirtualSwitch);
             return openVirtualSwitch;
 
         }
+
+        public IEnumerable<IOverlayNetwork> GetAllNetworks()
+        {
+            return _jsonRepository.GetAllNetworks().Values.ToArray();
+        }
+
+
     }
 }

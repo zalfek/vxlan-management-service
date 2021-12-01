@@ -14,7 +14,7 @@ using Microsoft.Identity.Web;
 
 namespace OverlayManagementService.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "2a0e3b19-4ec1-42f1-b049-ffd57d75996f")]
     [ApiController]
     [Route("[controller]")]
     public class ConnectionController : ControllerBase
