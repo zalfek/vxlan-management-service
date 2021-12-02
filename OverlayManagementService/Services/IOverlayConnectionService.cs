@@ -10,7 +10,6 @@ namespace OverlayManagementService.Services
     public interface IOverlayConnectionService
     {
         public IOverlayNetwork GetOverlayNetwork(Membership membership);
-        public List<Membership> GetUserMemberships(Student user);
 
     }
 }

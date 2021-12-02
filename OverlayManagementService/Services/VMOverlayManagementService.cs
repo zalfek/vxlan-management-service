@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using OverlayManagementService.Dtos;
+using OverlayManagementService.Factories;
 using OverlayManagementService.Network;
 using OverlayManagementService.Repositories;
 using Renci.SshNet;
@@ -18,13 +19,20 @@ namespace OverlayManagementService.Services
         private readonly IIdentifier _vni;
         private readonly IAddress IpAddress;
         private IDictionary<string, IOpenVirtualSwitch> OpenVirtualSwitches;
-        public VMOverlayManagementService(ILogger<VMOverlayManagementService> logger, IRepository jsonRepository, IIdentifier vni, IAddress ipAddress)
+        private readonly INetworkFactory NetworkFactory;
+        private readonly IBridgeFactory BridgeFactory;
+        private readonly IVirtualMachineFactory VirtualMachineFactory;
+        public VMOverlayManagementService(ILogger<VMOverlayManagementService> logger, IRepository jsonRepository, IIdentifier vni, IAddress ipAddress, INetworkFactory networkFactory,
+            IBridgeFactory bridgeFactory, IVirtualMachineFactory virtualMachineFactory)
         {
             OpenVirtualSwitches = new Dictionary<string, IOpenVirtualSwitch>();
             _logger = logger;
             _jsonRepository = jsonRepository;
             _vni = vni;
             IpAddress = ipAddress;
+            NetworkFactory = networkFactory;
+            BridgeFactory = bridgeFactory;
+            VirtualMachineFactory = virtualMachineFactory;
         }
 
         public void DeleteNetwork(Membership membership)
@@ -37,14 +45,10 @@ namespace OverlayManagementService.Services
 
         public IOverlayNetwork DeployNetwork(OVSConnection oVSConnection)
         {
-
             string vni = _vni.GenerateUniqueVNI();
-
-            IBridge bridge = new Bridge(Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0,14), vni, OpenVirtualSwitches[oVSConnection.Key].ManagementIp);
-            OpenVirtualSwitches[oVSConnection.Key].AddBridge(bridge);
-
-            IOverlayNetwork overlayNetwork = new VXLANOverlayNetwork(vni, OpenVirtualSwitches[oVSConnection.Key]);
-            _jsonRepository.SaveOverlayNetwork(oVSConnection.membershipId, overlayNetwork);
+            OpenVirtualSwitches[oVSConnection.Key].AddBridge(BridgeFactory.CreateBridge(Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14), vni, OpenVirtualSwitches[oVSConnection.Key].ManagementIp));
+            IOverlayNetwork overlayNetwork = NetworkFactory.CreateOverlayNetwork(vni, OpenVirtualSwitches[oVSConnection.Key]);
+            _jsonRepository.SaveOverlayNetwork(oVSConnection.MembershipId, overlayNetwork);
             overlayNetwork.DeployNetwork();
             if (oVSConnection.vmConnection != null) { RegisterMachine(oVSConnection.vmConnection); }
 
@@ -54,10 +58,11 @@ namespace OverlayManagementService.Services
         public IOverlayNetwork RegisterMachine(VmConnection vmConnection)
         {
            IOverlayNetwork overlayNetwork = _jsonRepository.GetOverlayNetwork(vmConnection.Membership);
-            IVirtualMachine virtualMachine = new VirtualMachine(Guid.NewGuid(), vmConnection.ManagementIp, overlayNetwork.VNI, IpAddress.GenerarteUniqueIPV4Address(), OpenVirtualSwitches[vmConnection.Key].PrivateIP, vmConnection.CommunicationIP);
-            virtualMachine.DeployVMConnection();
-            overlayNetwork.AddVMachine(virtualMachine);
-            _jsonRepository.SaveOverlayNetwork(vmConnection.Membership, overlayNetwork);
+           IVirtualMachine virtualMachine = VirtualMachineFactory.CreateVirtualMachine(Guid.NewGuid(), vmConnection.ManagementIp, overlayNetwork.VNI, IpAddress.GenerarteUniqueIPV4Address(), OpenVirtualSwitches[vmConnection.Key].PrivateIP, vmConnection.CommunicationIP);
+           virtualMachine.DeployVMConnection();
+           overlayNetwork.AddVMachine(virtualMachine);
+           _jsonRepository.SaveOverlayNetwork(vmConnection.Membership, overlayNetwork);
+
             return overlayNetwork;
         }
 

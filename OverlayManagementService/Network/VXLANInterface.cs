@@ -57,7 +57,7 @@ namespace OverlayManagementService.Network
             using (var sshclient = new SshClient(sSHConnectionInfo))
             {
                 sshclient.Connect();
-                using (var cmd = sshclient.CreateCommand("sudo ovs-vsctl add-port " + BridgeName + " " + Name + " -- set interface " + Name + " type=" + Type + " options:remote_ip=" + RemoteIp + " options:key=" + Key))
+                using (var cmd = sshclient.CreateCommand("sudo ovs-vsctl add-port " + BridgeName + " " + Name + " -- set interface " + Name + " type=" + Type + " options:remote_ip=" + RemoteIp + " options:key=" + Vni))
                 {
                     cmd.Execute();
                     Console.WriteLine("Command>" + cmd.CommandText);

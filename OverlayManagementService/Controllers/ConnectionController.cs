@@ -14,7 +14,7 @@ using Microsoft.Identity.Web;
 
 namespace OverlayManagementService.Controllers
 {
-    [Authorize(Roles = "2a0e3b19-4ec1-42f1-b049-ffd57d75996f")]
+
     [ApiController]
     [Route("[controller]")]
     public class ConnectionController : ControllerBase
@@ -31,26 +31,16 @@ namespace OverlayManagementService.Controllers
             _vmOverlayConnectionService = vmOverlayConnectionService;
         }
 
-
+        [Authorize(Policy = "Member")]
         [HttpGet("memberships")]
         [AuthorizeForScopes(Scopes = new[] { "user.read" })]
         public IEnumerable<Membership> GetAllMemberships()
         {
-
-            Student user = new Student(
-                "John",
-                "Doe",
-                "john.doe@hs-ulm.de",
-                "537faa0c-9461-4be0-85cb-87fcb4105881",
-               "255.255.255.255"
-               );
-            //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-            _logger.LogInformation("Processing GET request: " + HttpContext.Request.ToString());
-            return _vmOverlayConnectionService.GetUserMemberships(user);
+            return null;
         }
 
 
-
+        [Authorize(Policy = "Member")]
         [HttpGet("connection")]
         public IOverlayNetwork GetConnectionInfo([FromQuery] Membership membership)
         {

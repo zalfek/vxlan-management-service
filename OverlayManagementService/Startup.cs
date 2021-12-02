@@ -12,10 +12,10 @@ using Microsoft.Graph;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
 using Microsoft.OpenApi.Models;
+using OverlayManagementService.Factories;
 using OverlayManagementService.Infrastructure;
 using OverlayManagementService.Network;
 using OverlayManagementService.Repositories;
-using OverlayManagementService.Resolvers;
 using OverlayManagementService.Services;
 
 
@@ -66,12 +66,14 @@ namespace OverlayManagementService
 
             services.AddScoped<IOverlayConnectionService, VMOverlayConnectionService>();
             services.AddSingleton<IOverlayManagementService, VMOverlayManagementService>();
-            services.AddScoped<IMembershipResolver, MembershipResolver>();
             services.AddScoped<GraphServiceClient, GraphServiceClient>();
             services.AddSingleton<IRepository, JsonRepository>();
             services.AddScoped<IFirewall, Firewall>();
             services.AddSingleton<IAddress, IPAddress>();
             services.AddSingleton<IIdentifier, VNI>();
+            services.AddSingleton<INetworkFactory, NetworkFactory>();
+            services.AddSingleton<IBridgeFactory, BridgeFactory>();
+            services.AddSingleton<IVirtualMachineFactory, VirtualMachineFactory>();
 
         }
 
