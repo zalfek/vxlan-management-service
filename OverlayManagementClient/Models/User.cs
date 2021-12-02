@@ -1,4 +1,4 @@
-﻿namespace OverlayManagementClient.Services
+﻿namespace OverlayManagementClient.Models
 {
     public class User
     {

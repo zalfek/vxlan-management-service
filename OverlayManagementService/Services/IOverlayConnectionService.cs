@@ -1,4 +1,4 @@
-﻿using OverlayManagementService.DataTransferObjects;
+﻿using OverlayManagementService.Dtos;
 using OverlayManagementService.Network;
 using System;
 using System.Collections.Generic;
@@ -9,8 +9,7 @@ namespace OverlayManagementService.Services
 {
     public interface IOverlayConnectionService
     {
-        public IOverlayNetwork GetOverlayNetwork(IMembership membership);
-        public List<IMembership> GetUserMemberships(IUser user);
+        public IOverlayNetwork GetOverlayNetwork(Membership membership);
 
     }
 }

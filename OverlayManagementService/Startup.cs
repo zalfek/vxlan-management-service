@@ -12,9 +12,10 @@ using Microsoft.Graph;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
 using Microsoft.OpenApi.Models;
+using OverlayManagementService.Factories;
+using OverlayManagementService.Infrastructure;
 using OverlayManagementService.Network;
 using OverlayManagementService.Repositories;
-using OverlayManagementService.Resolvers;
 using OverlayManagementService.Services;
 
 
@@ -45,7 +46,17 @@ namespace OverlayManagementService
                     .AllowAnyHeader());
             });
 
-            services.AddControllers();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin",
+                policy => policy.Requirements.Add(new GroupPolicyRequirement(Configuration["Groups:Admin"])));
+                options.AddPolicy("Member",
+              policy => policy.Requirements.Add(new GroupPolicyRequirement(Configuration["Groups:Member"])));
+            });
+            services.AddSingleton<IAuthorizationHandler, GroupPolicyHandler>();
+
+            services.AddControllers().AddNewtonsoftJson();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "OverlayManagementService", Version = "v1" });
@@ -54,20 +65,16 @@ namespace OverlayManagementService
 
 
             services.AddScoped<IOverlayConnectionService, VMOverlayConnectionService>();
-            services.AddScoped<IOverlayManagementService, VMOverlayManagementService>();
-            services.AddScoped<IMembershipResolver, MembershipResolver>();
+            services.AddSingleton<IOverlayManagementService, VMOverlayManagementService>();
             services.AddScoped<GraphServiceClient, GraphServiceClient>();
             services.AddSingleton<IRepository, JsonRepository>();
             services.AddScoped<IFirewall, Firewall>();
-            //services.AddScoped<IBridge, Bridge>();
             services.AddSingleton<IAddress, IPAddress>();
-            //services.AddScoped<IOpenVirtualSwitch, OpenVirtualSwitch>();
             services.AddSingleton<IIdentifier, VNI>();
-            //services.AddScoped<IOverlayNetwork, VXLANOverlayNetwork>();
-            //services.AddScoped<IVeth, Veth>();
-            //services.AddScoped<IVirtualMachine, VirtualMachine>();
-            //services.AddScoped<IVXLANInterface, VXLANInterface>();
-            //services.AddScoped<IOverlayNetwork, VXLANOverlayNetwork>();
+            services.AddSingleton<INetworkFactory, NetworkFactory>();
+            services.AddSingleton<IBridgeFactory, BridgeFactory>();
+            services.AddSingleton<IVirtualMachineFactory, VirtualMachineFactory>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

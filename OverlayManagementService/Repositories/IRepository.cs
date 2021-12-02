@@ -1,5 +1,4 @@
-﻿using OverlayManagementService.DataTransferObjects;
-using OverlayManagementService.Network;
+﻿using OverlayManagementService.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +12,6 @@ namespace OverlayManagementService.Repositories
         void DeleteOverlayNetwork(string membership);
         IOverlayNetwork UpdateOverlayNetwork(string membership, IOverlayNetwork overlayNetwork);
         IOverlayNetwork GetOverlayNetwork(string membership);
+        IDictionary<string, IOverlayNetwork> GetAllNetworks();
     }
 }

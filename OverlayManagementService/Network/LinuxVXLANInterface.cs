@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OverlayManagementService.Network
@@ -13,23 +14,28 @@ namespace OverlayManagementService.Network
         public readonly string DstPort;
         public readonly string DstIP;
         public readonly string LocalIP;
-        private ConnectionInfo SSHConnectionInfo;
-        public LinuxVXLANInterface(string name, string vNI, string dstPort, string dstIP, string localIP)
-        {
-            SSHConnectionInfo = new ConnectionInfo("192.168.56.106", "vagrant", new AuthenticationMethod[]{
-                            new PasswordAuthenticationMethod("vagrant", "vagrant")
-            });
+        public readonly string ManagementIp;
 
+        public LinuxVXLANInterface(string name, string vNI, string dstPort, string dstIP, string localIP, string managementIp)
+        {
+            
             Name = name;
             VNI = vNI;
             DstPort = dstPort;
             DstIP = dstIP;
             LocalIP = localIP;
+            ManagementIp = managementIp;
+
+
         }
 
         public void CleanUpInterface()
         {
-            using (var sshclient = new SshClient(SSHConnectionInfo))
+
+            ConnectionInfo sSHConnectionInfo = new ConnectionInfo(ManagementIp, "vagrant", new AuthenticationMethod[]{
+                            new PasswordAuthenticationMethod("vagrant", "vagrant")});
+
+            using (var sshclient = new SshClient(sSHConnectionInfo))
             {
                 sshclient.Connect();
                 using (var cmd = sshclient.CreateCommand("sudo ip link del " + Name))
@@ -44,7 +50,11 @@ namespace OverlayManagementService.Network
 
         public void DeployInterface()
         {
-            using (var sshclient = new SshClient(SSHConnectionInfo))
+
+            ConnectionInfo sSHConnectionInfo = new ConnectionInfo(ManagementIp, "vagrant", new AuthenticationMethod[]{
+                            new PasswordAuthenticationMethod("vagrant", "vagrant")});
+
+            using (var sshclient = new SshClient(sSHConnectionInfo))
             {
                 sshclient.Connect();
                 using (var cmd = sshclient.CreateCommand("sudo ip link add " + Name + " type vxlan id " + VNI + " dstport " + DstPort + " srcport " + DstPort + " 4790"))

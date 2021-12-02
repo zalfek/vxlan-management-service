@@ -2,38 +2,40 @@ using OverlayManagementService.Dtos;
 using Renci.SshNet;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace OverlayManagementService.Network
 {
     public class VirtualMachine : IVirtualMachine
     {
 
-        public VirtualMachine(Guid guid, IVmConnectionInfo vmConnectionInfo)
+        public VirtualMachine(Guid guid, string managementIp, string vni, string vxlanIp, string destIP, string communicationIP)
         {
             Guid = guid;
-            IPAddress = vmConnectionInfo.IPAddress;
-            VmConnectionInfo = vmConnectionInfo;
-            VXLANInterfaces = new List<ILinuxVXLANInterface>();
+            ManagementIp = managementIp;
+            VNI = vni;
+            VxlanIp = vxlanIp;
+            DestIp = destIP;
+            CommunicationIP = communicationIP;
+            VXLANInterface = new LinuxVXLANInterface(Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14), VNI, "4789", DestIp, VxlanIp, managementIp);
         }
 
         private Guid Guid { get; set; }
-        public string IPAddress { get; set; }
-        private IVmConnectionInfo VmConnectionInfo { get; set; }
-        public List<ILinuxVXLANInterface> VXLANInterfaces;
+        public string VNI { get; set; }
+        public string ManagementIp { get; set; }
+        public string DestIp { get; set; }
+        public string VxlanIp { get; set; }
+        public ILinuxVXLANInterface VXLANInterface;
+        public string CommunicationIP { get; set; }
 
         public void CleanUpVMConnection()
         {
-            VXLANInterfaces.ForEach(infs =>
-            {
-                infs.CleanUpInterface();
-            });
+            VXLANInterface.CleanUpInterface();
         }
 
-        public void DeployVMConnection(string ipAddress, IOverlayNetwork overlayNetwork)
+        public void DeployVMConnection()
         {
-            ILinuxVXLANInterface linuxVXLANInterface = new LinuxVXLANInterface(Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14),overlayNetwork.VNI,"4789", overlayNetwork.OpenVirtualSwitches[0].Bridges[0].VirtualInterface.IpAddress, ipAddress);
-            linuxVXLANInterface.DeployInterface();
-            VXLANInterfaces.Add(linuxVXLANInterface);
+            VXLANInterface.DeployInterface();
         }
     }
 }

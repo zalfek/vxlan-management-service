@@ -1,4 +1,4 @@
-﻿using OverlayManagementService.DataTransferObjects;
+﻿using OverlayManagementService.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +9,10 @@ namespace OverlayManagementService.Network
     public interface IOverlayNetwork
     {
         string VNI { get; set; }
-        List<IOpenVirtualSwitch> OpenVirtualSwitches { get; set; }
+        public IOpenVirtualSwitch OpenVirtualSwitch { get; set; }
 
-        public void RemoveClient(IUser user);
-        public void AddClient(IUser user);
+        public void RemoveClient(Student user);
+        public void AddClient(Student user);
         public void RemoveVMachine(IVirtualMachine virtualMachine);
         public void AddVMachine(IVirtualMachine virtualMachine);
         public void RemoveSwitch(IOpenVirtualSwitch openVirtualSwitch);

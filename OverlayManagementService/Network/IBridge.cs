@@ -8,8 +8,8 @@ namespace OverlayManagementService.Network
 {
     public interface IBridge
     {
+        public string VNI { get; set; }
         string Name { get; }
-        IVeth VirtualInterface { get; }
         public void DeployVXLANInterface(IVirtualMachine virtualMachine);
         public void DeployBridge();
         public void CleanUpBridge();

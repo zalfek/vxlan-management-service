@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web.Resource;
-using OverlayManagementService.DataTransferObjects;
+using Microsoft.Net.Http.Headers;
 using OverlayManagementService.Dtos;
 using OverlayManagementService.Network;
 using OverlayManagementService.Services;
@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace OverlayManagementService.Controllers
 {
-    [Authorize]
+
     [ApiController]
     [Route("[controller]")]
     public class ManagementController : ControllerBase
@@ -29,34 +29,40 @@ namespace OverlayManagementService.Controllers
             _vmOverlayManagementService = vmOverlayManagementService;
         }
 
-
+        [Authorize(Policy = "Admin")]
         [HttpPost("deploy/machine")]
-        public IActionResult DeployMachine(VmConnectionInfo vmConnectionInfo)
+        public IOverlayNetwork DeployMachine(VmConnection vmConnection)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-            _vmOverlayManagementService.RegisterMachine(vmConnectionInfo);
-            return null;
+            return _vmOverlayManagementService.RegisterMachine(vmConnection);
         }
 
+        [Authorize(Policy = "Admin")]
+        [HttpPost("register/switch")]
+        public IOpenVirtualSwitch RegisterSwitch(OpenVirtualSwitch openVirtualSwitch)
+        {
+            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            return _vmOverlayManagementService.AddSwitch(openVirtualSwitch); ;
+        }
 
+        [Authorize(Policy = "Admin")]
         [HttpPost("suspend/machine")]
-        public IActionResult SuspendrMachine(VmConnectionInfo vmConnectionInfo)
+        public IOverlayNetwork SuspendMachine(VmConnection vmConnection)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-            _vmOverlayManagementService.UnRegisterMachine(vmConnectionInfo);
-            return null;
+            return _vmOverlayManagementService.UnRegisterMachine(vmConnection);
         }
 
-
+        [Authorize(Policy = "Admin")]
         [HttpPost("deploy/network")]
-        public IOverlayNetwork DeployNetwork(VmConnectionInfo vmConnectionInfo)
+        public IOverlayNetwork DeployNetwork(OVSConnection oVSConnection)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-            return _vmOverlayManagementService.DeployNetwork(vmConnectionInfo);
+            return _vmOverlayManagementService.DeployNetwork(oVSConnection);
 
         }
 
-
+        [Authorize(Policy = "Admin")]
         [HttpPost("suspend/network")]
         public IActionResult SuspendNetwork(Membership membership)
         {
@@ -65,7 +71,7 @@ namespace OverlayManagementService.Controllers
             return null;
         }
 
-
+        [Authorize(Policy = "Admin")]
         [HttpDelete("delete/network/{id}")]
         public IActionResult DeleteNetwork(int id)
         {
@@ -73,6 +79,22 @@ namespace OverlayManagementService.Controllers
             //_vmOverlayManagementService.DeleteNetwork(membership);
 
             return Ok(id);
+        }
+
+
+        [Authorize(Policy = "Admin")]
+        [HttpGet("get/token")]
+        public string GetToken()
+        {
+            return HttpContext.Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+        }
+
+            
+        [HttpGet("list/networks")]
+        public IEnumerable<IOverlayNetwork> GetOverlayNetworks()
+        {
+            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            return _vmOverlayManagementService.GetAllNetworks();
         }
 
     }

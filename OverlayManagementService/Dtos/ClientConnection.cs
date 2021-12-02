@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OverlayManagementService.DataTransferObjects
+namespace OverlayManagementService.Dtos
 {
-    public interface IUser
+    public class ClientConnection
     {
+
+
     }
 }

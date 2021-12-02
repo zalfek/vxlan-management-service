@@ -4,6 +4,7 @@ using Renci.SshNet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OverlayManagementService.Network
@@ -12,55 +13,46 @@ namespace OverlayManagementService.Network
     {
 
         private readonly ILogger<OpenVirtualSwitch> _logger;
-        private ConnectionInfo SSHConnectionInfo;
-        public List<IBridge> Bridges { get; set; }
-        public string PrivateIP;
-        public string PublicIP;
+
+        public IDictionary<string, IBridge> Bridges { get; set; }
+        public string PrivateIP { get; set; }
+        public string PublicIP { get; set; }
+        public string Key { get; set; }
+        public string ManagementIp { get; set; }
 
 
-        public OpenVirtualSwitch()
+        public OpenVirtualSwitch(string key, string managementIp, string privateIP, string publicIp)
         {
-            SSHConnectionInfo = new ConnectionInfo("192.168.56.103", "vagrant", new AuthenticationMethod[]{
-                            new PasswordAuthenticationMethod("vagrant", "vagrant")
-            });
-            Bridges = new List<IBridge>();
+            Key = key;
+            PrivateIP = privateIP;
+            PublicIP = publicIp;
+            Bridges = new Dictionary<string, IBridge>();
+            ManagementIp = managementIp;
         }
 
 
         public void AddBridge(IBridge bridge) {
-            Bridges.Add(bridge);
+            Bridges.Add(bridge.VNI, bridge);
         }
 
 
         public void DeployVXLANInterface(IVirtualMachine virtualMachine)
         {
-            Bridges[0].DeployVXLANInterface(virtualMachine);
+            Bridges[virtualMachine.VNI].DeployVXLANInterface(virtualMachine);
         }
 
-        public void DeployOVSConnection(IVirtualMachine virtualMachine)
+        public void DeployOVSConnection(string vni)
         {
-            using (var sshclient = new SshClient(SSHConnectionInfo))
-            {
-                sshclient.Connect();
-                Bridges.ForEach(br =>
-               {
-                   using (var cmd = sshclient.CreateCommand("sudo ovs-vsctl add-br " + br.Name))
-                   {
-                       cmd.Execute();
-                       Console.WriteLine("Command>" + cmd.CommandText);
-                       Console.WriteLine("Return Value = {0}", cmd.ExitStatus);
-                   }
-               });
-                sshclient.Disconnect();
-            }
+            Bridges[vni].DeployBridge();
         }
 
         public void CleanUpOVSConnection(IVirtualMachine virtualMachine)
         {
-            Bridges.ForEach(br => {
-                br.CleanUpBridge();
-                Bridges.Remove(br);
-                });
+            foreach (KeyValuePair<string, IBridge> entry in Bridges)
+            {
+                entry.Value.CleanUpBridge();
+                Bridges.Remove(entry.Key);
+            }
         }
     }
 }

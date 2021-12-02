@@ -1,0 +1,57 @@
+﻿@model IEnumerable<OverlayManagementClient.Models.OverlayNetwork>
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Overlay Network List</h2>
+        </div>
+        <div class="col-6 text-right">
+            <a asp-controller="Home" asp-action="CallApi" class="btn btn-primary">Create Network</a>
+        </div>
+    </div>
+    <br />
+
+    @if (Model.Count() > 0)
+    {
+        <table class="table table-bordered table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>
+                        Clients
+                    </th>
+                    <th>
+                        Open Virtual Switch
+                    </th>
+                    <th>
+                        Target system
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var network in Model)
+                {
+                    <tr>
+                        <td width="25%">@network.Clients</td>
+                        <td width="25%">@network.OpenVirtualSwitches</td>
+                        <td width="25%">@network.VirtualMachines</td>
+                        <td width="25%">
+                            <div class="w-100 btn-group" role="group">
+                                <a asp-controller="Home" asp-action="Update" asp-route-Id="@network.Guid" class="btn btn-primary mx-1">Update</a>
+                                <a asp-controller="Home" asp-action="Delete" asp-route-Id="@network.Guid" class="btn btn-danger mx-1">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No items created yet</p>
+    }
+
+</div>
+
+@*<div class="text-center">
+    <a asp-area="" asp-controller="Home" asp-action="CallApi" class="navbar-brand">Call API</a>
+</div>*@

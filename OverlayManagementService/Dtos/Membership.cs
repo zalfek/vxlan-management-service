@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 
-namespace OverlayManagementService.DataTransferObjects
+namespace OverlayManagementService.Dtos
 {
-    public class Membership : IMembership
+    public class Membership
     {
         public Membership(string membershipId, string subject, Guid networkId)
         {

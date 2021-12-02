@@ -1,4 +1,4 @@
-using OverlayManagementService.DataTransferObjects;
+using OverlayManagementService.Dtos;
 using OverlayManagementService.Network;
 using System;
 using System.Collections.Generic;
@@ -11,54 +11,64 @@ namespace OverlayManagementService.Network
         {
         }
 
-        public VXLANOverlayNetwork(string vNI, List<IOpenVirtualSwitch> openVirtualSwitches, List<IVirtualMachine> virtualMachines, List<IUser> clients)
+        public VXLANOverlayNetwork(string vNI, IOpenVirtualSwitch openVirtualSwitch, List<IVirtualMachine> virtualMachines, List<Student> clients)
         {
             VNI = vNI;
             Guid = Guid.NewGuid();
-            OpenVirtualSwitches = openVirtualSwitches;
+            OpenVirtualSwitch = openVirtualSwitch;
             VirtualMachines = virtualMachines;
             Clients = clients;
             IsDeployed = false;
         }
 
+        public VXLANOverlayNetwork(string vNI, IOpenVirtualSwitch openVirtualSwitch)
+        {
+            VNI = vNI;
+            Guid = Guid.NewGuid();
+            OpenVirtualSwitch = openVirtualSwitch;
+            VirtualMachines = new List<IVirtualMachine>();
+            Clients = new List<Student>();
+            IsDeployed = false;
+        }
+
         public string VNI { get; set; }
         public Guid Guid { get; set; }
-        public List<IOpenVirtualSwitch> OpenVirtualSwitches { get; set; }
+        public IOpenVirtualSwitch OpenVirtualSwitch { get; set; }
         public List<IVirtualMachine> VirtualMachines { get; set; }
-        public List<IUser> Clients { get; set; }
+        public List<Student> Clients { get; set; }
         public bool IsDeployed { get; set; }
 
-        public void AddClient(IUser user)
+        public void AddClient(Student user)
         {
             Clients.Add(user);
         }
 
         public void AddSwitch(IOpenVirtualSwitch openVirtualSwitch)
         {
-            OpenVirtualSwitches.Add(openVirtualSwitch);
+            
         }
 
         public void AddVMachine(IVirtualMachine virtualMachine)
         {
-            OpenVirtualSwitches[0].DeployVXLANInterface(virtualMachine);
+            OpenVirtualSwitch.DeployVXLANInterface(virtualMachine);
             VirtualMachines.Add(virtualMachine);
         }
 
         public void CleanUpNetwork()
         {
-            VirtualMachines.ForEach(vm => OpenVirtualSwitches.ForEach(sw => { 
+            VirtualMachines.ForEach(vm => { 
                 vm.CleanUpVMConnection();
-                sw.CleanUpOVSConnection(vm);
-            }));
+                OpenVirtualSwitch.CleanUpOVSConnection(vm);
+            });
         }
 
         public void DeployNetwork()
         {
-            VirtualMachines.ForEach(vm => OpenVirtualSwitches[0].DeployOVSConnection(vm));
+            OpenVirtualSwitch.DeployOVSConnection(VNI);
             IsDeployed = true;
         }
 
-        public void RemoveClient(IUser user)
+        public void RemoveClient(Student user)
         {
             Clients.Remove(user);
         }
@@ -69,15 +79,12 @@ namespace OverlayManagementService.Network
                 openVirtualSwitch.CleanUpOVSConnection(vm);
                 vm.CleanUpVMConnection();
             });
-            OpenVirtualSwitches.Remove(openVirtualSwitch);
         }
 
         public void RemoveVMachine(IVirtualMachine virtualMachine)
         {
-            OpenVirtualSwitches.ForEach(sw => { 
-                sw.CleanUpOVSConnection(virtualMachine);
-                virtualMachine.CleanUpVMConnection();
-            });
+            OpenVirtualSwitch.CleanUpOVSConnection(virtualMachine);
+            virtualMachine.CleanUpVMConnection();
             VirtualMachines.Remove(virtualMachine);
         }
     }

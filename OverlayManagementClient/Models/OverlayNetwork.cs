@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OverlayManagementClient.Services
+namespace OverlayManagementClient.Models
 {
     public class OverlayNetwork
     {

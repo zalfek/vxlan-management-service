@@ -12,6 +12,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using OverlayManagementClient.Models;
 
 namespace OverlayManagementClient.Services
 {
@@ -98,7 +99,7 @@ namespace OverlayManagementClient.Services
         public async Task<IEnumerable<OverlayNetwork>> GetAsync()
         {
             await PrepareAuthenticatedClient();
-            var response = await _httpClient.GetAsync($"{ _BaseAddress}/api/OverlayNetworklist");
+            var response = await _httpClient.GetAsync($"{ _BaseAddress}/management/list/networks");
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();

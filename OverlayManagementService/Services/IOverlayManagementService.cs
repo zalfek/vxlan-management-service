@@ -1,5 +1,4 @@
-﻿using OverlayManagementService.DataTransferObjects;
-using OverlayManagementService.Dtos;
+﻿using OverlayManagementService.Dtos;
 using OverlayManagementService.Network;
 using System;
 using System.Collections.Generic;
@@ -10,11 +9,13 @@ namespace OverlayManagementService.Services
 {
     public interface IOverlayManagementService
     {
-        public IOverlayNetwork DeployNetwork(IVmConnectionInfo vmConnectionInfo);
-        public IOverlayNetwork SuspendNetwork(IMembership membership);
-        public void DeleteNetwork(IMembership membership);
-        public IOverlayNetwork RegisterMachine(IVmConnectionInfo vmConnectionInfo);
-        public IOverlayNetwork UnRegisterMachine(IVmConnectionInfo vmConnectionInfo);
+        public IOpenVirtualSwitch AddSwitch(IOpenVirtualSwitch openVirtualSwitch);
+        public IOverlayNetwork DeployNetwork(OVSConnection oVSConnection);
+        public IOverlayNetwork SuspendNetwork(Membership membership);
+        public void DeleteNetwork(Membership membership);
+        public IOverlayNetwork RegisterMachine(VmConnection vmConnection);
+        public IOverlayNetwork UnRegisterMachine(VmConnection vmConnection);
+        public IEnumerable<IOverlayNetwork> GetAllNetworks();
 
     }
 }
