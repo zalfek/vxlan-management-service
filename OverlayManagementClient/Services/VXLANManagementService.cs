@@ -119,10 +119,11 @@ namespace OverlayManagementClient.Services
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public async Task<OverlayNetwork> GetAsync(int id)
+        public async Task<OverlayNetwork> GetAsync(string id)
         {
             await PrepareAuthenticatedClient();
-            var response = await _httpClient.GetAsync($"{ _BaseAddress}/api/OverlayNetworklist/{id}");
+            var request = $"{ _BaseAddress}/management/get/network/{id}";
+            var response = await _httpClient.GetAsync($"{ _BaseAddress}/management/get/network/{id}");
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();

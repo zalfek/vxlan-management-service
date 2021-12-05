@@ -16,6 +16,6 @@ namespace OverlayManagementService.Services
         public IOverlayNetwork RegisterMachine(VmConnection vmConnection);
         public IOverlayNetwork UnRegisterMachine(VmConnection vmConnection);
         public IEnumerable<IOverlayNetwork> GetAllNetworks();
-
+        IOverlayNetwork GetNetwork(string id);
     }
 }

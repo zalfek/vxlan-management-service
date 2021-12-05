@@ -88,6 +88,9 @@ namespace OverlayManagementService.Services
             return _jsonRepository.GetAllNetworks().Values.ToArray();
         }
 
-
+        public IOverlayNetwork GetNetwork(string id)
+        {
+            return _jsonRepository.GetOverlayNetwork(id);
+        }
     }
 }

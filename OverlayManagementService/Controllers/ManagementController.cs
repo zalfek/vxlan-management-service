@@ -38,6 +38,14 @@ namespace OverlayManagementService.Controllers
         }
 
         [Authorize(Policy = "Admin")]
+        [HttpGet("get/network/{id}")]
+        public IOverlayNetwork GetNetwork(string id)
+        {
+            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            return _vmOverlayManagementService.GetNetwork(id);
+        }
+
+        [Authorize(Policy = "Admin")]
         [HttpPost("register/switch")]
         public IOpenVirtualSwitch RegisterSwitch(OpenVirtualSwitch openVirtualSwitch)
         {

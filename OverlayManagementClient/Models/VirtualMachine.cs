@@ -5,9 +5,12 @@ namespace OverlayManagementClient.Models
 {
     public class VirtualMachine
     {
-        private Guid Guid { get; set; }
-        public string IPAddress { get; set; }
-        private VmConnection VmConnectionInfo { get; set; }
-        public List<LinuxVXLANInterface> VXLANInterfaces;
+        public Guid Guid { get; set; }
+        public string VNI { get; set; }
+        public string ManagementIp { get; set; }
+        public string DestIp { get; set; }
+        public string VxlanIp { get; set; }
+        public LinuxVXLANInterface VXLANInterface;
+        public string CommunicationIP { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using OverlayManagementClient.Models;
 using OverlayManagementClient.Services;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,14 @@ namespace OverlayManagementClient.Controllers
 
         public IActionResult Index()
         {
-            return View(_vXLANManagementService.GetAsync().Result);
+            var result = _vXLANManagementService.GetAsync().Result;
+            return View(result);
         }
+
+        public IActionResult NetworkDetails(string id)
+        {
+            return PartialView("_networkDetails", _vXLANManagementService.GetAsync(id).Result);
+        }
+
     }
 }
