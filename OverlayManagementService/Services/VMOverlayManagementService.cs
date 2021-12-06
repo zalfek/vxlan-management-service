@@ -90,7 +90,17 @@ namespace OverlayManagementService.Services
 
         public IOverlayNetwork GetNetwork(string id)
         {
-            return _jsonRepository.GetOverlayNetwork(id);
+            return _jsonRepository.GetOverlayNetworkByVni(id);
+        }
+
+        public IEnumerable<IOpenVirtualSwitch> GetAllSwitches()
+        {
+            return OpenVirtualSwitches.Values.ToArray();
+        }
+
+        public IOpenVirtualSwitch GetSwitch(string key)
+        {
+            return OpenVirtualSwitches[key];
         }
     }
 }

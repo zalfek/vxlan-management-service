@@ -10,14 +10,13 @@ namespace OverlayManagementClient.Services
     {
 
 
-        public Task<OverlayNetwork> AddAsync(OverlayNetwork OverlayNetwork);
-        public Task DeleteAsync(int id);
-        public Task<OverlayNetwork> EditAsync(OverlayNetwork OverlayNetwork);
-        public Task<IEnumerable<OverlayNetwork>> GetAsync();
-        public Task<OverlayNetwork> GetAsync(string id);
-       
-
-
-
+        public Task<OverlayNetwork> AddNetworkAsync(OVSConnection oVSConnection);
+        public Task DeleteNetworkAsync(int id);
+        public Task<OverlayNetwork> EditNetworkAsync(OverlayNetwork OverlayNetwork);
+        public Task<IEnumerable<OverlayNetwork>> GetNetworksAsync();
+        public Task<OverlayNetwork> GetNetworkAsync(string id);
+        public Task<IEnumerable<OpenVirtualSwitch>> GetSwitchesAsync();
+        public Task<OpenVirtualSwitch> GetSwitchAsync(string key);
+        void AddSwitchAsync(OpenVirtualSwitch openVirtualSwitch);
     }
 }

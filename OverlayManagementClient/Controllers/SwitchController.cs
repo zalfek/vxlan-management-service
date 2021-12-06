@@ -10,22 +10,34 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementClient.Controllers
 {
-    public class OverlayNetworkController : Controller
+    public class SwitchController : Controller
     {
-        private readonly ILogger<OverlayNetworkController> _logger;
+
+
+        private readonly ILogger<SwitchController> _logger;
         private readonly IVXLANManagementService _vXLANManagementService;
 
-        public OverlayNetworkController(ILogger<OverlayNetworkController> logger, IVXLANManagementService vXLANManagementService)
+        public SwitchController(ILogger<SwitchController> logger, IVXLANManagementService vXLANManagementService)
         {
             _logger = logger;
             _vXLANManagementService = vXLANManagementService;
         }
 
-        public IActionResult Index()
+
+
+        // GET: SwitchController
+        public ActionResult Index()
         {
-            return View(_vXLANManagementService.GetNetworksAsync().Result);
+            return View(_vXLANManagementService.GetSwitchesAsync().Result);
         }
 
+        // GET: SwitchController/Details/5
+        public ActionResult Details(string key)
+        {
+            return PartialView("_SwitchDetails", _vXLANManagementService.GetSwitchAsync(key).Result);
+        }
+
+        // GET: SwitchController/Create
         public ActionResult Create()
         {
             return PartialView("_Create");
@@ -34,9 +46,10 @@ namespace OverlayManagementClient.Controllers
         // POST: SwitchController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(OVSConnection oVSConnection)
+        public ActionResult Create(OpenVirtualSwitch openVirtualSwitch)
         {
-            _vXLANManagementService.AddNetworkAsync(oVSConnection);
+
+            _vXLANManagementService.AddSwitchAsync(openVirtualSwitch);
             try
             {
                 return RedirectToAction(nameof(Index));
@@ -48,17 +61,16 @@ namespace OverlayManagementClient.Controllers
         }
 
         // GET: SwitchController/Edit/5
-        public ActionResult Edit(string id)
+        public ActionResult Edit(int id)
         {
-            return PartialView("_NetworkDetails", _vXLANManagementService.GetNetworkAsync(id).Result);
+            return View();
         }
 
         // POST: SwitchController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(OverlayNetwork  overlayNetwork)
+        public ActionResult Edit(int id, IFormCollection collection)
         {
-
             try
             {
                 return RedirectToAction(nameof(Index));
@@ -89,9 +101,5 @@ namespace OverlayManagementClient.Controllers
                 return View();
             }
         }
-
-
-
-
     }
 }

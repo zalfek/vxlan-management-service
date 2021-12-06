@@ -15,14 +15,14 @@
                 <label class="control-label">VXLAN network identifier</label>
             </div>
             <div class="col-md-3">
-                <input type="text"  class="form-control" id="Vni" name="Vni" value="@(Model.VNI)">
+                <input type="text" class="form-control" id="Vni" name="Vni" value="@(Model.VNI)">
             </div>
 
             <div class="col-md-2">
                 <label class="control-label">Guid</label>
             </div>
             <div class="col-md-4">
-                <input type="text"  class="form-control" id="Guid" name="Guid" value="@(Model.Guid)">
+                <input type="text" class="form-control" id="Guid" name="Guid" value="@(Model.Guid)">
             </div>
         </div>
 
@@ -34,14 +34,14 @@
                 <label class="control-label">Network prefix</label>
             </div>
             <div class="col-md-3">
-                <input type="text" class="form-control"  id="Key" name="Key" value="@(Model.OpenVirtualSwitch.Key)">
+                <input type="text" class="form-control" id="Key" name="Key" value="@(Model.OpenVirtualSwitch.Key)">
             </div>
 
             <div class="col-md-2">
                 <label class="control-label">Management IP</label>
             </div>
             <div class="col-md-3">
-                <input type="text" class="form-control"  id="ManagementIP" name="ManagementIP" value="@(Model.OpenVirtualSwitch.ManagementIp)">
+                <input type="text" class="form-control" id="ManagementIP" name="ManagementIP" value="@(Model.OpenVirtualSwitch.ManagementIp)">
             </div>
         </div>
 
@@ -52,14 +52,14 @@
                 <label class="control-label">Private IP</label>
             </div>
             <div class="col-md-3">
-                <input type="text"  class="form-control" id="PrivateIP" name="PrivateIP" value="@(Model.OpenVirtualSwitch.PrivateIP)">
+                <input type="text" class="form-control" id="PrivateIP" name="PrivateIP" value="@(Model.OpenVirtualSwitch.PrivateIP)">
             </div>
 
             <div class="col-md-2">
                 <label class="control-label">Public IP</label>
             </div>
             <div class="col-md-3">
-                <input type="text"  class="form-control" id="PublicIP" name="PublicIP" value="@(Model.OpenVirtualSwitch.PublicIP)">
+                <input type="text" class="form-control" id="PublicIP" name="PublicIP" value="@(Model.OpenVirtualSwitch.PublicIP)">
             </div>
         </div>
 
@@ -72,7 +72,7 @@
                 <label class="control-label">Name</label>
             </div>
             <div class="col-md-3">
-                <input type="text" class="form-control"  id="Name" name="Name" value="@(Model.OpenVirtualSwitch.Bridges[Model.VNI].Name)">
+                <input type="text" class="form-control" id="Name" name="Name" value="@(Model.OpenVirtualSwitch.Bridges[Model.VNI].Name)">
             </div>
             <br>
         </div>
@@ -103,14 +103,14 @@
                                     <label class="control-label">Remote IP</label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="text"  class="form-control" id="RemoteIP" name="RemoteIP" value="@(intrfce.RemoteIp)">
+                                    <input type="text" class="form-control" id="RemoteIP" name="RemoteIP" value="@(intrfce.RemoteIp)">
                                 </div>
 
                                 <div class="col-md-2">
                                     <label class="control-label">Type</label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="text"  class="form-control" id="Type" name="Type" value="@(intrfce.Type)">
+                                    <input type="text" class="form-control" id="Type" name="Type" value="@(intrfce.Type)">
                                 </div>
                             </div>
 
@@ -143,7 +143,7 @@
                                     <label class="control-label">VXLAN interface </label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="text" class="form-control"  id="InterfaceName" name="InterfaceName" value="@(targetMachine.VXLANInterface.Name)">
+                                    <input type="text" class="form-control" id="InterfaceName" name="InterfaceName" value="@(targetMachine.VXLANInterface.Name)">
                                 </div>
 
 
@@ -151,7 +151,7 @@
                                     <label class="control-label">Management IP</label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="text"  class="form-control" id="RemoteIP" name="RemoteIP" value="@(targetMachine.ManagementIp)">
+                                    <input type="text" class="form-control" id="RemoteIP" name="RemoteIP" value="@(targetMachine.ManagementIp)">
                                 </div>
                             </div>
                             <br>
@@ -160,7 +160,7 @@
                                     <label class="control-label">VXLAN Ip</label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="text"  class="form-control" id="VxlanIp" name="VxlanIp" value="@(targetMachine.VxlanIp)">
+                                    <input type="text" class="form-control" id="VxlanIp" name="VxlanIp" value="@(targetMachine.VxlanIp)">
                                 </div>
                             </div>
                             <br>
@@ -210,7 +210,7 @@
                                     <label class="control-label">Type</label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="text"  class="form-control" id="Type" name="Type" value="@(client.IpAddress)">
+                                    <input type="text" class="form-control" id="Type" name="Type" value="@(client.IpAddress)">
                                 </div>
                             </div>
                             <br>
@@ -220,3 +220,4 @@
             }
         </div>
     </div>
+</div>

@@ -9,5 +9,21 @@ namespace OverlayManagementClient.Models
         public string PublicIP { get; set; }
         public string Key { get; set; }
         public string ManagementIp { get; set; }
+
+
+        public OpenVirtualSwitch(string key, string managementIp, string privateIP, string publicIp)
+        {
+            Key = key;
+            PrivateIP = privateIP;
+            PublicIP = publicIp;
+            Bridges = new Dictionary<string, Bridge>();
+            ManagementIp = managementIp;
+        }
+
+        public OpenVirtualSwitch()
+        {
+            Bridges = new Dictionary<string, Bridge>();
+        }
+
     }
 }

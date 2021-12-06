@@ -55,5 +55,19 @@ namespace OverlayManagementService.Repositories
         {
             return _dbMock;
         }
+
+        public IEnumerable<IOverlayNetwork> GetAllSwitches()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IOverlayNetwork GetOverlayNetworkByVni(string id)
+        {
+            foreach (KeyValuePair<string, IOverlayNetwork> keyValuePair in _dbMock)
+            {
+                if (keyValuePair.Value.VNI == id) { return keyValuePair.Value; }
+            }
+            throw new KeyNotFoundException();
+        }
     }
 }

@@ -44,26 +44,26 @@ namespace OverlayManagementClient.Services
             _BaseAddress = configuration["OverlayManagementService:OverlayManagementServiceBaseAddress"];
         }
 
-        public async Task<OverlayNetwork> AddAsync(OverlayNetwork OverlayNetwork)
+        public async Task<OverlayNetwork> AddNetworkAsync(OVSConnection oVSConnection)
         {
             await PrepareAuthenticatedClient();
 
-            var jsonRequest = JsonConvert.SerializeObject(OverlayNetwork);
+            var jsonRequest = JsonConvert.SerializeObject(oVSConnection);
             var jsoncontent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            var response = await this._httpClient.PostAsync($"{ _BaseAddress}/api/OverlayNetworklist", jsoncontent);
+            var response = await this._httpClient.PostAsync($"{ _BaseAddress}/management/deploy/network", jsoncontent);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                OverlayNetwork = JsonConvert.DeserializeObject<OverlayNetwork>(content);
+                OverlayNetwork overlayNetwork = JsonConvert.DeserializeObject<OverlayNetwork>(content);
 
-                return OverlayNetwork;
+                return overlayNetwork;
             }
 
             throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteNetworkAsync(int id)
         {
             await PrepareAuthenticatedClient();
 
@@ -77,7 +77,7 @@ namespace OverlayManagementClient.Services
             throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
         }
 
-        public async Task<OverlayNetwork> EditAsync(OverlayNetwork OverlayNetwork)
+        public async Task<OverlayNetwork> EditNetworkAsync(OverlayNetwork OverlayNetwork)
         {
             await PrepareAuthenticatedClient();
 
@@ -96,7 +96,7 @@ namespace OverlayManagementClient.Services
             throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
         }
 
-        public async Task<IEnumerable<OverlayNetwork>> GetAsync()
+        public async Task<IEnumerable<OverlayNetwork>> GetNetworksAsync()
         {
             await PrepareAuthenticatedClient();
             var response = await _httpClient.GetAsync($"{ _BaseAddress}/management/list/networks");
@@ -119,10 +119,9 @@ namespace OverlayManagementClient.Services
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public async Task<OverlayNetwork> GetAsync(string id)
+        public async Task<OverlayNetwork> GetNetworkAsync(string id)
         {
             await PrepareAuthenticatedClient();
-            var request = $"{ _BaseAddress}/management/get/network/{id}";
             var response = await _httpClient.GetAsync($"{ _BaseAddress}/management/get/network/{id}");
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -136,7 +135,51 @@ namespace OverlayManagementClient.Services
         }
 
 
+        public async Task<IEnumerable<OpenVirtualSwitch>> GetSwitchesAsync()
+        {
+            await PrepareAuthenticatedClient();
+            var response = await _httpClient.GetAsync($"{ _BaseAddress}/management/list/switches");
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                IEnumerable<OpenVirtualSwitch> openVirtualSwitches = JsonConvert.DeserializeObject<IEnumerable<OpenVirtualSwitch>>(content);
 
+                return openVirtualSwitches;
+            }
 
+            throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
+        }
+
+        public async  Task<OpenVirtualSwitch> GetSwitchAsync(string key)
+        {
+            await PrepareAuthenticatedClient();
+            var request = $"{ _BaseAddress}/management/get/switch/{key}";
+            var response = await _httpClient.GetAsync($"{ _BaseAddress}/management/get/switch/{key}");
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                OpenVirtualSwitch openVirtualSwitch = JsonConvert.DeserializeObject<OpenVirtualSwitch>(content);
+
+                return openVirtualSwitch;
+            }
+
+            throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
+        }
+
+        public async void AddSwitchAsync(OpenVirtualSwitch openVirtualSwitch)
+        {
+            await PrepareAuthenticatedClient();
+
+            var jsonRequest = JsonConvert.SerializeObject(openVirtualSwitch);
+            var jsoncontent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+            var response = await this._httpClient.PostAsync($"{ _BaseAddress}/management/register/switch", jsoncontent);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
+            }
+
+           
+        }
     }
 }

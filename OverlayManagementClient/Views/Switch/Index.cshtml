@@ -1,0 +1,105 @@
+﻿@model IEnumerable<OverlayManagementClient.Models.OpenVirtualSwitch>
+
+@{
+    ViewData["Title"] = "Manage Switches";
+}
+
+<div class="container p-3">
+    <div id="header" class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Open Virtual Switches</h2>
+        </div>
+        <div class="col-6 text-right">
+            <a id="createSwitch" class="btn btn-primary">Create Switch</a>
+        </div>
+    </div>
+    <br />
+    @if (Model.Count() > 0)
+    {
+        <table id="switches" class="table table-borderless table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PrivateIP)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PublicIP)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Key)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ManagementIp)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Key)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PrivateIP)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PublicIP)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ManagementIp)
+                        </td>
+                        <td width="25%">
+                            <div class="w-100 btn-group" role="group">
+                                <button id="details" class="btn btn-success mx-1">Details</button>
+                                <button asp-controller="Switch" asp-action="Delete" asp-route-Id="" class="btn btn-danger mx-1">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No items created yet</p>
+    }
+    <div id="showmodal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+
+        </div>
+    </div>
+</div>
+@section Scripts{
+
+    <script>
+        $("#switches").on("click", "#details", function () {
+            var key = $(this).closest("tr").find("td").eq(0).html().trim();
+             $.ajax({
+                url: "@Url.Action("Details", "Switch")",
+                data: { key: key },
+                 success: function (data) {
+                     $("#showmodal .modal-dialog").addClass("modal-xl").html(data);
+                    $("#showmodal").modal("show");
+                }
+            });
+        });
+
+    </script>
+
+    <script>
+        $("#header").on("click", "#createSwitch", function () {
+             $.ajax({
+                 url: "@Url.Action("Create", "Switch")",
+                 data: {},
+                 success: function (data) {
+                     $("#showmodal .modal-dialog").addClass("modal-xl").html(data);
+                    $("#showmodal").modal("show");
+                }
+            });
+        });
+    </script>
+
+}
