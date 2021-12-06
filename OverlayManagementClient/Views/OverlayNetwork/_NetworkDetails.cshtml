@@ -1,0 +1,223 @@
+﻿@model OverlayManagementClient.Models.OverlayNetwork
+
+
+<div class="modal-content">
+    <div class="modal-header">
+        <h3 class="modal-title">Network Details</h3>
+        <div class="btn-group" role="group">
+            <button asp-controller="OverlayNetwork" asp-action="Update" asp-route-Id="@Model.VNI" class="btn btn-success mx-1">Save changes</button>
+            <button type="button" class="btn btn-danger mx-1" data-bs-dismiss="modal" aria-hidden="true">X</button>
+        </div>
+    </div>
+    <div class="modal-body">
+        <div class="row dataTable">
+            <div class="col-md-2">
+                <label class="control-label">VXLAN network identifier</label>
+            </div>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="Vni" name="Vni" value="@(Model.VNI)">
+            </div>
+
+            <div class="col-md-2">
+                <label class="control-label">Guid</label>
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control" id="Guid" name="Guid" value="@(Model.Guid)">
+            </div>
+        </div>
+
+        <br>
+        <h5>Open Virtual Switch</h5>
+        <br>
+        <div class="row dataTable">
+            <div class="col-md-2">
+                <label class="control-label">Network prefix</label>
+            </div>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="Key" name="Key" value="@(Model.OpenVirtualSwitch.Key)">
+            </div>
+
+            <div class="col-md-2">
+                <label class="control-label">Management IP</label>
+            </div>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="ManagementIP" name="ManagementIP" value="@(Model.OpenVirtualSwitch.ManagementIp)">
+            </div>
+        </div>
+
+        <br>
+
+        <div class="row dataTable">
+            <div class="col-md-2">
+                <label class="control-label">Private IP</label>
+            </div>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="PrivateIP" name="PrivateIP" value="@(Model.OpenVirtualSwitch.PrivateIP)">
+            </div>
+
+            <div class="col-md-2">
+                <label class="control-label">Public IP</label>
+            </div>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="PublicIP" name="PublicIP" value="@(Model.OpenVirtualSwitch.PublicIP)">
+            </div>
+        </div>
+
+        <br />
+
+        <h5>Bridge</h5>
+        <br>
+        <div class="row dataTable">
+            <div class="col-md-2">
+                <label class="control-label">Name</label>
+            </div>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="Name" name="Name" value="@(Model.OpenVirtualSwitch.Bridges[Model.VNI].Name)">
+            </div>
+            <br>
+        </div>
+
+        <br>
+
+        <div class="d-grid gap-2">
+            <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#interfaces"
+                    aria-expanded="false" aria-controls="interfaces">
+                Show Interfaces
+            </button>
+        </div>
+        <br>
+        <div class="collapse" id="interfaces">
+            @if (Model.OpenVirtualSwitch.Bridges[Model.VNI].VXLANInterfaces.Count() == 0)
+            {
+                <p>No interfaces created</p> }
+            else
+            {
+                <div class=" card card-body">
+
+                    @foreach (var intrfce in Model.OpenVirtualSwitch.Bridges[Model.VNI].VXLANInterfaces)
+                    {
+                        <div class="border border-1 p-3">
+                            <h5>Interface: @(intrfce.Name)</h5>
+                            <div class="row dataTable">
+                                <div class="col-md-2">
+                                    <label class="control-label">Remote IP</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" id="RemoteIP" name="RemoteIP" value="@(intrfce.RemoteIp)">
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label class="control-label">Type</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" id="Type" name="Type" value="@(intrfce.Type)">
+                                </div>
+                            </div>
+
+                            <br>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+        <br>
+        <div class="d-grid gap-2">
+            <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#targetVM"
+                    aria-expanded="false" aria-controls="targetVM">
+                Show target machines
+            </button>
+        </div>
+        <br>
+        <div class="collapse" id="targetVM">
+            @if (Model.VirtualMachines.Count() == 0)
+            {
+                <p>No target machines paired.</p> }
+            else
+            {
+                <div class=" card card-body">
+                    @foreach (var targetMachine in Model.VirtualMachines)
+                    {
+                        <div class="border border-1 p-3">
+                            <div class="row dataTable">
+                                <div class="col-md-2">
+                                    <label class="control-label">VXLAN interface </label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" id="InterfaceName" name="InterfaceName" value="@(targetMachine.VXLANInterface.Name)">
+                                </div>
+
+
+                                <div class="col-md-2">
+                                    <label class="control-label">Management IP</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" id="RemoteIP" name="RemoteIP" value="@(targetMachine.ManagementIp)">
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row dataTable">
+                                <div class="col-md-2">
+                                    <label class="control-label">VXLAN Ip</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" id="VxlanIp" name="VxlanIp" value="@(targetMachine.VxlanIp)">
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+        <br>
+
+        <div class="d-grid gap-2">
+            <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#clients"
+                    aria-expanded="false" aria-controls="clients">
+                Show clients
+            </button>
+        </div>
+        <br>
+        <div class="collapse" id="clients">
+            @if (Model.Clients.Count() == 0)
+            {
+                <p>No clients paired.</p> }
+            else
+            {
+                <div class=" card card-body">
+                    @foreach (var client in Model.Clients)
+                    {
+                        <div class="border border-1 p-3">
+                            <div class="row dataTable  card card-body">
+                                <div class="col-md-2">
+                                    <label class="control-label">VXLAN inteface name</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" readonly id="InterfaceName" name="InterfaceName" value="@(client.Oid)">
+                                </div>
+
+
+                                <div class="col-md-2">
+                                    <label class="control-label">Remote IP</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" readonly class="form-control" id="RemoteIP" name="RemoteIP" value="@(client.Name) @(client.Surename)">
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row dataTable">
+                                <div class="col-md-2">
+                                    <label class="control-label">Type</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" id="Type" name="Type" value="@(client.IpAddress)">
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

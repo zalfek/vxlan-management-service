@@ -2,12 +2,12 @@
 {
     public class VXLANInterface
     {
-        private string Name { get; set; }
+        public string Name { get; set; }
         private Bridge Parent { get; set; }
-        private string Type { get; set; }
-        private string RemoteIp { get; set; }
-        private string Key { get; set; }
-        private string OpenFlowPort { get; set; }
-        private string SourcePort { get; set; }
+        public string Type { get; set; }
+        public string RemoteIp { get; set; }
+        public string Key { get; set; }
+        public string OpenFlowPort { get; set; }
+        public string SourcePort { get; set; }
     }
 }

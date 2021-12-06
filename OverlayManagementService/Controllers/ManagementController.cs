@@ -38,6 +38,23 @@ namespace OverlayManagementService.Controllers
         }
 
         [Authorize(Policy = "Admin")]
+        [HttpGet("get/network/{id}")]
+        public IOverlayNetwork GetNetwork(string id)
+        {
+            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            return _vmOverlayManagementService.GetNetwork(id);
+        }
+
+        [Authorize(Policy = "Admin")]
+        [HttpGet("get/switch/{key}")]
+        public IOpenVirtualSwitch GetSwitch(string key)
+        {
+            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            return _vmOverlayManagementService.GetSwitch(key);
+        }
+
+
+        [Authorize(Policy = "Admin")]
         [HttpPost("register/switch")]
         public IOpenVirtualSwitch RegisterSwitch(OpenVirtualSwitch openVirtualSwitch)
         {
@@ -81,20 +98,20 @@ namespace OverlayManagementService.Controllers
             return Ok(id);
         }
 
-
         [Authorize(Policy = "Admin")]
-        [HttpGet("get/token")]
-        public string GetToken()
-        {
-            return HttpContext.Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
-        }
-
-            
         [HttpGet("list/networks")]
         public IEnumerable<IOverlayNetwork> GetOverlayNetworks()
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
             return _vmOverlayManagementService.GetAllNetworks();
+        }
+
+        [Authorize(Policy = "Admin")]
+        [HttpGet("list/switches")]
+        public IEnumerable<IOpenVirtualSwitch> GetSwitches()
+        {
+            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            return _vmOverlayManagementService.GetAllSwitches();
         }
 
     }

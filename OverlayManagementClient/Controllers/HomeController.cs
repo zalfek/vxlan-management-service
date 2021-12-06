@@ -33,12 +33,6 @@ namespace OverlayManagementClient.Controllers
             return View();
         }
 
-        public IActionResult CallApi()
-        {
-            return Ok(_vXLANManagementService.DeleteAsync(5));
-        }
-
-
         [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

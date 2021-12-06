@@ -2,10 +2,10 @@
 {
     public class User
     {
-        private string Name { get; set; }
-        private string Surename { get; set; }
-        private string Email { get; set; }
-        private string oid { get; set; }
-        private string IpAddress { get; set; }
+        public string Name { get; set; }
+        public string Surename { get; set; }
+        public string Email { get; set; }
+        public string Oid { get; set; }
+        public string IpAddress { get; set; }
     }
 }
