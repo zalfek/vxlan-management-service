@@ -50,7 +50,6 @@ namespace OverlayManagementService.Services.Tests
 
             //Assert
             _jsonRepositoryMock.VerifyAll();
-            _jsonRepositoryMock.VerifyAll();
         }
 
         [TestMethod()]

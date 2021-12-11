@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -68,6 +69,11 @@ namespace OverlayManagementService.Repositories
                 if (keyValuePair.Value.VNI == id) { return keyValuePair.Value; }
             }
             throw new KeyNotFoundException();
+        }
+
+        public IOverlayNetwork GetOverlayNetwork(Claim claim)
+        {
+            return _dbMock[claim.Value];
         }
     }
 }

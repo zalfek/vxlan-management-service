@@ -10,6 +10,7 @@ using OverlayManagementService.Dtos;
 using OverlayManagementService.Repositories;
 using OverlayManagementService.Network;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace OverlayManagementService.Services.Tests
 {
@@ -25,26 +26,32 @@ namespace OverlayManagementService.Services.Tests
             _sut = new VMOverlayConnectionService(_jsonRepositoryMock.Object, _loggerMock.Object);
         }
 
+        [TestMethod()]
+        public void GetAllNetworksTest()
+        {
+            List<Claim> claims = new List<Claim>();
+            claims.Add(new Claim("group", "adggjdasd45t54zuw46us"));
+            claims.Add(new Claim("group", "adgasdajkjdjghzuw46us"));
+            claims.Add(new Claim("group", "adgsdfgaz5645f90mmsds"));
+            Mock<IOverlayNetwork> overlayNetworkMock = new Mock<IOverlayNetwork>();
+            _jsonRepositoryMock.Setup(x => x.GetOverlayNetwork(It.IsAny<Claim>())).Returns(overlayNetworkMock.Object);
+
+            _sut.GetAllNetworks(claims);
+
+            _jsonRepositoryMock.VerifyAll();
+        }
 
         [TestMethod()]
-        public void GetOverlayNetworkTest()
+        public void CreateConnectionTest()
         {
+            Mock<IOverlayNetwork> overlayNetworkMock = new Mock<IOverlayNetwork>();
+            _jsonRepositoryMock.Setup(x => x.GetOverlayNetwork(It.IsAny<string>())).Returns(overlayNetworkMock.Object);
+            overlayNetworkMock.Setup(n => n.AddClient(It.IsAny<string>()));
 
-            //Arrange
+            _sut.CreateConnection(It.IsAny<string>(), It.IsAny<string>());
 
-            var membership = new Membership(
-                "S-1-5-21-3490585887-3336927534-2905204395-41603",
-                "Subject",
-                Guid.NewGuid()
-                );
-
-            _jsonRepositoryMock.Setup(x => x.GetOverlayNetwork(membership.MembershipId)).Returns(new VXLANOverlayNetwork());
-
-            //Act
-            var result = _sut.GetOverlayNetwork(membership);
-
-            //Assert
-            _jsonRepositoryMock.Verify(r => r.GetOverlayNetwork(membership.MembershipId), Times.Once());
+            _jsonRepositoryMock.VerifyAll();
+            overlayNetworkMock.VerifyAll();
         }
     }
 }

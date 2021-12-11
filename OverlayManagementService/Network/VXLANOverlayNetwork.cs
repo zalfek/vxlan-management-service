@@ -11,7 +11,7 @@ namespace OverlayManagementService.Network
         {
         }
 
-        public VXLANOverlayNetwork(string vNI, IOpenVirtualSwitch openVirtualSwitch, List<IVirtualMachine> virtualMachines, List<Student> clients)
+        public VXLANOverlayNetwork(string vNI, IOpenVirtualSwitch openVirtualSwitch, List<IVirtualMachine> virtualMachines, List<string> clients)
         {
             VNI = vNI;
             Guid = Guid.NewGuid();
@@ -27,7 +27,7 @@ namespace OverlayManagementService.Network
             Guid = Guid.NewGuid();
             OpenVirtualSwitch = openVirtualSwitch;
             VirtualMachines = new List<IVirtualMachine>();
-            Clients = new List<Student>();
+            Clients = new List<string>();
             IsDeployed = false;
         }
 
@@ -35,12 +35,12 @@ namespace OverlayManagementService.Network
         public Guid Guid { get; set; }
         public IOpenVirtualSwitch OpenVirtualSwitch { get; set; }
         public List<IVirtualMachine> VirtualMachines { get; set; }
-        public List<Student> Clients { get; set; }
+        public List<string> Clients { get; set; }
         public bool IsDeployed { get; set; }
 
-        public void AddClient(Student user)
+        public void AddClient(string ip)
         {
-            Clients.Add(user);
+            Clients.Add(ip);
         }
 
         public void AddSwitch(IOpenVirtualSwitch openVirtualSwitch)
@@ -68,9 +68,9 @@ namespace OverlayManagementService.Network
             IsDeployed = true;
         }
 
-        public void RemoveClient(Student user)
+        public void RemoveClient(string ip)
         {
-            Clients.Remove(user);
+            Clients.Remove(ip);
         }
 
         public void RemoveSwitch(IOpenVirtualSwitch openVirtualSwitch)

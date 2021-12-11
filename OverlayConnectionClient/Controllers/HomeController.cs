@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using OverlayConnectionClient.Models;
+using OverlayManagementClient.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,15 +15,17 @@ namespace OverlayConnectionClient.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IVXLANConnectionService _vXLANConnectionService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IVXLANConnectionService vXLANConnectionService)
         {
             _logger = logger;
+            _vXLANConnectionService = vXLANConnectionService;
         }
 
         public IActionResult Index()
         {
-            return View();
+            return View(_vXLANConnectionService.GetNetworksAsync());
         }
 
         public IActionResult Privacy()

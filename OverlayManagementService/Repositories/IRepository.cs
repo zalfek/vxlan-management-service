@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace OverlayManagementService.Repositories
@@ -15,5 +16,6 @@ namespace OverlayManagementService.Repositories
         IDictionary<string, IOverlayNetwork> GetAllNetworks();
         IEnumerable<IOverlayNetwork> GetAllSwitches();
         IOverlayNetwork GetOverlayNetworkByVni(string id);
+        IOverlayNetwork GetOverlayNetwork(Claim claim);
     }
 }

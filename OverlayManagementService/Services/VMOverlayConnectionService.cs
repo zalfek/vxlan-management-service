@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
-using OverlayManagementService.Dtos;
 using OverlayManagementService.Network;
 using OverlayManagementService.Repositories;
 using System;
 using System.Collections.Generic;
-
+using System.Security.Claims;
 
 namespace OverlayManagementService.Services
 {
@@ -21,11 +20,28 @@ namespace OverlayManagementService.Services
             this._logger = logger;
         }
 
-        public IOverlayNetwork GetOverlayNetwork(Membership membership)
+        public IEnumerable<IOverlayNetwork> GetAllNetworks(IEnumerable<Claim> claims)
         {
-            _jsonRepository.GetOverlayNetwork(membership.MembershipId);
-            return null;
+            List<IOverlayNetwork> networks = new();
+            _logger.LogInformation("Searching for assigned networks");
+            foreach (var claim in claims)
+            {
+                IOverlayNetwork network = _jsonRepository.GetOverlayNetwork(claim);
+                if (network != null) {
+                    _logger.LogInformation("Network found: " + network.ToString());
+                    networks.Add(network);
+                }
+            }
+            return networks;
         }
 
+        public IOverlayNetwork CreateConnection(string membership, string ip)
+        {
+            _logger.LogInformation("Searching requested network");
+            IOverlayNetwork overlayNetwork = _jsonRepository.GetOverlayNetwork(membership);
+            _logger.LogInformation("Initiating connection on Open Virtual Switch");
+            overlayNetwork.AddClient(ip);
+            return overlayNetwork;
+        }
     }
 }
