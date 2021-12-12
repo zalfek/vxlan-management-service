@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using OverlayConnectionClient.Models;
-using OverlayManagementClient.Services;
+using OverlayConnectionClient.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,7 +25,14 @@ namespace OverlayConnectionClient.Controllers
 
         public IActionResult Index()
         {
-            return View(_vXLANConnectionService.GetNetworksAsync());
+            return View(_vXLANConnectionService.GetAllNetworks());
+        }
+
+        [HttpPost]
+        public IActionResult CreateConnection(string groupId)
+        {
+            _vXLANConnectionService.CreateConnection(groupId);
+            return Ok();
         }
 
         public IActionResult Privacy()

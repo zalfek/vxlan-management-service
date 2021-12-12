@@ -37,7 +37,7 @@ namespace OverlayManagementService.Controllers
 
         [Authorize(Policy = "Member")]
         [HttpGet("list/networks")]
-        public IEnumerable<IOverlayNetwork> GetAllNetworks()
+        public IEnumerable<ClientConnection> GetAllNetworks()
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
             _logger.LogInformation("Processing GET request: " + HttpContext.Request.ToString());
@@ -50,13 +50,13 @@ namespace OverlayManagementService.Controllers
 
 
         [Authorize(Policy = "Member")]
-        [HttpGet("get/network/{id}")]
-        public IOverlayNetwork CreateConnection(string membership)
+        [HttpGet("get/network/{groupId}")]
+        public ClientConnection CreateConnection(string groupId)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
             var ip = _accessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
             _logger.LogInformation("Processing GET request: " + HttpContext.Request.ToString());
-            return _vmOverlayConnectionService.CreateConnection(membership, ip);
+            return _vmOverlayConnectionService.CreateConnection(groupId, ip);
         }
     }
 }

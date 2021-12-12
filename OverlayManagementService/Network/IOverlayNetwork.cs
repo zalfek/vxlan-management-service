@@ -14,8 +14,6 @@ namespace OverlayManagementService.Network
         public void AddClient(string ip);
         public void RemoveVMachine(IVirtualMachine virtualMachine);
         public void AddVMachine(IVirtualMachine virtualMachine);
-        public void RemoveSwitch(IOpenVirtualSwitch openVirtualSwitch);
-        public void AddSwitch(IOpenVirtualSwitch openVirtualSwitch);
         public void DeployNetwork();
         public void CleanUpNetwork();
 

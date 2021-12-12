@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using OverlayManagementService.Dtos;
+using OverlayManagementService.Factories;
 using OverlayManagementService.Network;
 using OverlayManagementService.Repositories;
 using System;
@@ -13,35 +15,40 @@ namespace OverlayManagementService.Services
         private readonly IRepository _jsonRepository;
         private readonly ILogger<VMOverlayConnectionService> _logger;
         private readonly IFirewall _firewall;
+        private readonly IAddress _ipAddress;
+        private readonly IClientConnectionFactory _clientConnectionFactory;
 
-        public VMOverlayConnectionService(IRepository jsonRepository, ILogger<VMOverlayConnectionService> logger)
+        public VMOverlayConnectionService(IRepository jsonRepository, ILogger<VMOverlayConnectionService> logger, IAddress ipAddress, IClientConnectionFactory clientConnectionFactory)
         {
-            this._jsonRepository = jsonRepository;
-            this._logger = logger;
+            _jsonRepository = jsonRepository;
+            _logger = logger;
+            _ipAddress = ipAddress;
+            _clientConnectionFactory = clientConnectionFactory;
         }
 
-        public IEnumerable<IOverlayNetwork> GetAllNetworks(IEnumerable<Claim> claims)
+        public IEnumerable<ClientConnection> GetAllNetworks(IEnumerable<Claim> claims)
         {
-            List<IOverlayNetwork> networks = new();
+            List<ClientConnection> networks = new();
             _logger.LogInformation("Searching for assigned networks");
             foreach (var claim in claims)
             {
                 IOverlayNetwork network = _jsonRepository.GetOverlayNetwork(claim);
                 if (network != null) {
                     _logger.LogInformation("Network found: " + network.ToString());
-                    networks.Add(network);
+                    ClientConnection clientConnection = _clientConnectionFactory.CreateClientConnectionDto(network.VNI, claim.Value, network.OpenVirtualSwitch.PublicIP, null);
+                    networks.Add(clientConnection);
                 }
             }
             return networks;
         }
 
-        public IOverlayNetwork CreateConnection(string membership, string ip)
+        public ClientConnection CreateConnection(string groupId, string ip)
         {
             _logger.LogInformation("Searching requested network");
-            IOverlayNetwork overlayNetwork = _jsonRepository.GetOverlayNetwork(membership);
+            IOverlayNetwork overlayNetwork = _jsonRepository.GetOverlayNetwork(groupId);
             _logger.LogInformation("Initiating connection on Open Virtual Switch");
             overlayNetwork.AddClient(ip);
-            return overlayNetwork;
+            return _clientConnectionFactory.CreateClientConnectionDto(overlayNetwork.VNI, groupId, overlayNetwork.OpenVirtualSwitch.PublicIP, _ipAddress.GenerarteUniqueIPV4Address());
         }
     }
 }

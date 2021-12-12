@@ -23,32 +23,32 @@ namespace OverlayManagementService.Repositories
             _dbMock = new Dictionary<string, IOverlayNetwork>();
         }
 
-        public void DeleteOverlayNetwork(string membership)
+        public void DeleteOverlayNetwork(string groupId)
         {
-            _dbMock.Remove(membership);
+            _dbMock.Remove(groupId);
         }
 
-        public IOverlayNetwork GetOverlayNetwork(string membership)
+        public IOverlayNetwork GetOverlayNetwork(string groupId)
         {
-            return _dbMock[membership];
+            return _dbMock[groupId];
         }
 
-        public IOverlayNetwork SaveOverlayNetwork(string membership, IOverlayNetwork overlayNetwork)
+        public IOverlayNetwork SaveOverlayNetwork(string groupId, IOverlayNetwork overlayNetwork)
         {
-            if (_dbMock.ContainsKey(membership))
+            if (_dbMock.ContainsKey(groupId))
             {
-                _dbMock[membership] = overlayNetwork;
+                _dbMock[groupId] = overlayNetwork;
             }
             else
             {
-                _dbMock.Add(membership, overlayNetwork);
+                _dbMock.Add(groupId, overlayNetwork);
             }
             return overlayNetwork;
         }
 
-        public IOverlayNetwork UpdateOverlayNetwork(string membership, IOverlayNetwork overlayNetwork)
+        public IOverlayNetwork UpdateOverlayNetwork(string groupId, IOverlayNetwork overlayNetwork)
         {
-            _dbMock[membership] = overlayNetwork;
+            _dbMock[groupId] = overlayNetwork;
             return overlayNetwork;
         }
 
@@ -62,18 +62,22 @@ namespace OverlayManagementService.Repositories
             throw new NotImplementedException();
         }
 
-        public IOverlayNetwork GetOverlayNetworkByVni(string id)
+        public IOverlayNetwork GetOverlayNetworkByVni(string vni)
         {
             foreach (KeyValuePair<string, IOverlayNetwork> keyValuePair in _dbMock)
             {
-                if (keyValuePair.Value.VNI == id) { return keyValuePair.Value; }
+                if (keyValuePair.Value.VNI == vni) { return keyValuePair.Value; }
             }
             throw new KeyNotFoundException();
         }
 
         public IOverlayNetwork GetOverlayNetwork(Claim claim)
         {
-            return _dbMock[claim.Value];
+            if (_dbMock.ContainsKey(claim.Value))
+            {
+                return _dbMock[claim.Value];
+            }
+            else { return null; }
         }
     }
 }

@@ -10,7 +10,7 @@ namespace OverlayManagementService.Services
 {
     public interface IOverlayConnectionService
     {
-        public IOverlayNetwork CreateConnection(string membership, string ip);
-        public IEnumerable<IOverlayNetwork> GetAllNetworks(IEnumerable<Claim> claims);
+        public ClientConnection CreateConnection(string groupId, string ip);
+        public IEnumerable<ClientConnection> GetAllNetworks(IEnumerable<Claim> claims);
     }
 }

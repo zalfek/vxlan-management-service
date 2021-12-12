@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
+using OverlayConnectionClient.Repositories;
+using OverlayConnectionClient.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +48,9 @@ namespace OverlayConnectionClient
             });
             services.AddRazorPages()
                  .AddMicrosoftIdentityUI();
+            services.AddScoped<IVXLANConnectionService, VXLANConnectionService>();
+            services.AddScoped<INetworkRepository, NetworkRepository>();
+            services.AddSingleton<IRepository, JsonRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

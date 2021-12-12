@@ -13,73 +13,52 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using OverlayConnectionClient.Models;
+using Microsoft.Extensions.Logging;
+using OverlayConnectionClient.Repositories;
+using OverlayConnectionClient.Network;
 
-namespace OverlayManagementClient.Services
+namespace OverlayConnectionClient.Services
 {
-
-
-    public static class VXLANConnectionServiceExtensions
+    public class VXLANConnectionService : IVXLANConnectionService
     {
-        public static void AddVXLANManagementService(this IServiceCollection services, IConfiguration configuration)
+        private readonly ILogger<VXLANConnectionService> _logger;
+        private readonly INetworkRepository _repository;
+        private readonly IRepository _jsonRepository;
+        private readonly IDictionary<Guid, ILinuxVXLANInterface> _linuxVXLANInterfaces;
+
+        public VXLANConnectionService(ILogger<VXLANConnectionService> logger, INetworkRepository repository, IRepository jsonRepository)
         {
-            services.AddHttpClient<IVXLANConnectionService, VXLANConnectionService>();
-        }
-    }
-
-
-    public class VXLANConnectionService :IVXLANConnectionService
-    {
-        private readonly IHttpContextAccessor _contextAccessor;
-        private readonly HttpClient _httpClient;
-        private readonly string _Scope = string.Empty;
-        private readonly string _BaseAddress = string.Empty;
-        private readonly ITokenAcquisition _tokenAcquisition;
-
-        public VXLANConnectionService(ITokenAcquisition tokenAcquisition, HttpClient httpClient, IConfiguration configuration, IHttpContextAccessor contextAccessor)
-        {
-            _httpClient = httpClient;
-            _tokenAcquisition = tokenAcquisition;
-            _contextAccessor = contextAccessor;
-            _Scope = configuration["OverlayManagementService:OverlayManagementServiceScope"];
-            _BaseAddress = configuration["OverlayManagementService:OverlayManagementServiceBaseAddress"];
+            _logger = logger;
+            _repository = repository;
+            _linuxVXLANInterfaces = new Dictionary<Guid, ILinuxVXLANInterface>();
+            _jsonRepository = jsonRepository;
         }
 
-        public async Task<IEnumerable<OverlayNetwork>> GetNetworksAsync()
+        public void CreateConnection(string groupId)
         {
-            await PrepareAuthenticatedClient();
-            var response = await _httpClient.GetAsync($"{ _BaseAddress}/connection/list/networks");
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                IEnumerable<OverlayNetwork> OverlayNetworkList = JsonConvert.DeserializeObject<IEnumerable<OverlayNetwork>>(content);
-
-                return OverlayNetworkList;
-            }
-
-            throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
+            _logger.LogInformation("Searching for network with id: " + groupId);
+            OverlayNetwork overlayNetwork =  _repository.GetNetworkAsync(groupId).Result;
+            _logger.LogInformation("Network found: " + overlayNetwork.ToString());
+            _logger.LogInformation("Setting up interface");
+            ILinuxVXLANInterface linuxVXLANInterface = new LinuxVXLANInterface("vxlan" + _linuxVXLANInterfaces.Count(), overlayNetwork.VNI, "4789", overlayNetwork.RemoteIp, overlayNetwork.LocalIp);
+            _logger.LogInformation("New interface created: " + linuxVXLANInterface.ToString());
+            _jsonRepository.SaveInterface(groupId, linuxVXLANInterface);
+            _logger.LogInformation("Initiating interface deployment");
+            //linuxVXLANInterface.DeployInterface();
         }
 
-        private async Task PrepareAuthenticatedClient()
+        public void CleanUpConnection(string groupId)
         {
-            var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(new[] { _Scope });
-            Debug.WriteLine($"access token-{accessToken}");
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _logger.LogInformation("Initiating interface cleanup");
+            ILinuxVXLANInterface linuxVXLANInterface = _jsonRepository.GetVXLANInterface(groupId);
+            //linuxVXLANInterface.CleanUpInterface();
+            _jsonRepository.DeleteInterface(groupId);
         }
 
-        public async Task<OverlayNetwork> GetNetworkAsync(string id)
+        public IEnumerable<OverlayNetwork> GetAllNetworks()
         {
-            await PrepareAuthenticatedClient();
-            var response = await _httpClient.GetAsync($"{ _BaseAddress}/connection/get/network/{id}");
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                OverlayNetwork OverlayNetwork = JsonConvert.DeserializeObject<OverlayNetwork>(content);
-
-                return OverlayNetwork;
-            }
-
-            throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
+            _logger.LogInformation("Requesting for networks from repository");
+            return _repository.GetNetworksAsync().Result;
         }
     }
 }

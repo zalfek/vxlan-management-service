@@ -9,14 +9,13 @@ namespace OverlayConnectionClient.Network
 {
     public class LinuxVXLANInterface : ILinuxVXLANInterface
     {
-        public readonly string Name;
-        public readonly string VNI;
-        public readonly string DstPort;
-        public readonly string DstIP;
-        public readonly string LocalIP;
-        public readonly string ManagementIp;
+        public string Name { get; set; }
+        public string VNI { get; set; }
+        public string DstPort { get; set; }
+        public string DstIP { get; set; }
+        public string LocalIP { get; set; }
 
-        public LinuxVXLANInterface(string name, string vNI, string dstPort, string dstIP, string localIP, string managementIp)
+        public LinuxVXLANInterface(string name, string vNI, string dstPort, string dstIP, string localIP)
         {
             
             Name = name;
@@ -24,8 +23,6 @@ namespace OverlayConnectionClient.Network
             DstPort = dstPort;
             DstIP = dstIP;
             LocalIP = localIP;
-            ManagementIp = managementIp;
-
 
         }
 

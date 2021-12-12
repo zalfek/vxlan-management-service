@@ -41,11 +41,7 @@ namespace OverlayManagementService.Network
         public void AddClient(string ip)
         {
             Clients.Add(ip);
-        }
-
-        public void AddSwitch(IOpenVirtualSwitch openVirtualSwitch)
-        {
-            
+            OpenVirtualSwitch.DeployClientVXLANInterface(VNI, ip);
         }
 
         public void AddVMachine(IVirtualMachine virtualMachine)
@@ -71,14 +67,6 @@ namespace OverlayManagementService.Network
         public void RemoveClient(string ip)
         {
             Clients.Remove(ip);
-        }
-
-        public void RemoveSwitch(IOpenVirtualSwitch openVirtualSwitch)
-        {
-            VirtualMachines.ForEach(vm => { 
-                openVirtualSwitch.CleanUpOVSConnection(vm);
-                vm.CleanUpVMConnection();
-            });
         }
 
         public void RemoveVMachine(IVirtualMachine virtualMachine)

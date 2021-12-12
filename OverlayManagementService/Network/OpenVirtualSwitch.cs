@@ -41,6 +41,11 @@ namespace OverlayManagementService.Network
             Bridges[virtualMachine.VNI].DeployVXLANInterface(virtualMachine);
         }
 
+        public void DeployClientVXLANInterface(string vni, string ip)
+        {
+            Bridges[vni].DeployClientVXLANInterface(ip);
+        }
+
         public void DeployOVSConnection(string vni)
         {
             Bridges[vni].DeployBridge();

@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OverlayManagementClient.Services
+namespace OverlayConnectionClient.Services
 {
     public interface IVXLANConnectionService
     {
-        public Task<IEnumerable<OverlayNetwork>> GetNetworksAsync();
-        public Task<OverlayNetwork> GetNetworkAsync(string id);
+        public IEnumerable<OverlayNetwork> GetAllNetworks();
+        public void CreateConnection(string groupId);
     }
 }

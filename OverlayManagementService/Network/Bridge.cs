@@ -39,6 +39,21 @@ namespace OverlayManagementService.Network
             VXLANInterfaces.Add(vXLANInterface);
         }
 
+
+        public void DeployClientVXLANInterface(string ip)
+        {
+            IVXLANInterface vXLANInterface = new VXLANInterface(
+                Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14),
+                "vxlan",
+                ip,
+                VNI,
+                Name,
+                ManagementIp
+                );
+            vXLANInterface.DeployVXLANInterface();
+            VXLANInterfaces.Add(vXLANInterface);
+        }
+
         public void CleanUpBridge()
         {
             throw new System.NotImplementedException();
