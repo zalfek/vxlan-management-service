@@ -15,6 +15,7 @@ using OverlayConnectionClient.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace OverlayConnectionClient
@@ -51,6 +52,11 @@ namespace OverlayConnectionClient
             services.AddScoped<IVXLANConnectionService, VXLANConnectionService>();
             services.AddScoped<INetworkRepository, NetworkRepository>();
             services.AddSingleton<IRepository, JsonRepository>();
+            services.AddHttpClient<INetworkRepository, NetworkRepository>().ConfigurePrimaryHttpMessageHandler(() => {
+                var handler = new HttpClientHandler();
+                handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                return handler;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,7 +72,7 @@ namespace OverlayConnectionClient
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection(); // Deacticate forcing HTTPS
             app.UseStaticFiles();
 
             app.UseRouting();

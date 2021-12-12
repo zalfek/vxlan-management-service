@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
 using Newtonsoft.Json;
 using OverlayConnectionClient.Models;
@@ -15,15 +16,6 @@ using System.Threading.Tasks;
 
 namespace OverlayConnectionClient.Repositories
 {
-
-    public static class VXLANConnectionServiceExtensions
-    {
-        public static void AddNetworkRepository(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddHttpClient<INetworkRepository, NetworkRepository>();
-        }
-    }
-
     public class NetworkRepository : INetworkRepository
     {
 
@@ -32,20 +24,24 @@ namespace OverlayConnectionClient.Repositories
         private readonly string _Scope = string.Empty;
         private readonly string _BaseAddress = string.Empty;
         private readonly ITokenAcquisition _tokenAcquisition;
+        private readonly ILogger<NetworkRepository> _logger;
 
-        public NetworkRepository(ITokenAcquisition tokenAcquisition, HttpClient httpClient, IConfiguration configuration, IHttpContextAccessor contextAccessor)
+        public NetworkRepository(ITokenAcquisition tokenAcquisition, HttpClient httpClient, IConfiguration configuration, IHttpContextAccessor contextAccessor, ILogger<NetworkRepository> logger)
         {
             _httpClient = httpClient;
             _tokenAcquisition = tokenAcquisition;
             _contextAccessor = contextAccessor;
             _Scope = configuration["OverlayManagementService:OverlayManagementServiceScope"];
             _BaseAddress = configuration["OverlayManagementService:OverlayManagementServiceBaseAddress"];
+            _logger = logger;
         }
 
         public async Task<IEnumerable<OverlayNetwork>> GetNetworksAsync()
         {
             await PrepareAuthenticatedClient();
-            var response = await _httpClient.GetAsync($"{ _BaseAddress}/connection/list/networks");
+            var request = $"{ _BaseAddress}/connection/list/networks";
+            _logger.LogInformation("Sending request to API: " +request);
+            var response = await _httpClient.GetAsync(request);
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -60,7 +56,7 @@ namespace OverlayConnectionClient.Repositories
         private async Task PrepareAuthenticatedClient()
         {
             var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(new[] { _Scope });
-            Debug.WriteLine($"access token-{accessToken}");
+            _logger.LogInformation($"access token-{accessToken}");
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
@@ -68,7 +64,9 @@ namespace OverlayConnectionClient.Repositories
         public async Task<OverlayNetwork> GetNetworkAsync(string groupId)
         {
             await PrepareAuthenticatedClient();
-            var response = await _httpClient.GetAsync($"{ _BaseAddress}/connection/get/network/{groupId}");
+            var request = $"{ _BaseAddress}/connection/get/network/{groupId}";
+            _logger.LogInformation("Sending request to API: " + request);
+            var response = await _httpClient.GetAsync(request);
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();
