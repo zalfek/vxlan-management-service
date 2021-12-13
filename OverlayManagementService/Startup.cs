@@ -74,6 +74,7 @@ namespace OverlayManagementService
             services.AddSingleton<INetworkFactory, NetworkFactory>();
             services.AddSingleton<IBridgeFactory, BridgeFactory>();
             services.AddSingleton<IVirtualMachineFactory, VirtualMachineFactory>();
+            services.AddSingleton<IClientConnectionFactory, ClientConnectionFactory>();
 
         }
 

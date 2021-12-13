@@ -39,10 +39,10 @@ namespace OverlayManagementService.Controllers
 
         [Authorize(Policy = "Admin")]
         [HttpGet("get/network/{id}")]
-        public IOverlayNetwork GetNetwork(string id)
+        public IOverlayNetwork GetNetwork(string vni)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-            return _vmOverlayManagementService.GetNetwork(id);
+            return _vmOverlayManagementService.GetNetwork(vni);
         }
 
         [Authorize(Policy = "Admin")]
@@ -81,10 +81,10 @@ namespace OverlayManagementService.Controllers
 
         [Authorize(Policy = "Admin")]
         [HttpPost("suspend/network")]
-        public IActionResult SuspendNetwork(Membership membership)
+        public IActionResult SuspendNetwork(string goupId)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-            _vmOverlayManagementService.SuspendNetwork(membership);
+            _vmOverlayManagementService.SuspendNetwork(goupId);
             return null;
         }
 

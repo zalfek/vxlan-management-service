@@ -11,6 +11,7 @@ namespace OverlayManagementService.Network
         public string VNI { get; set; }
         string Name { get; }
         public void DeployVXLANInterface(IVirtualMachine virtualMachine);
+        public void DeployClientVXLANInterface(string ip);
         public void DeployBridge();
         public void CleanUpBridge();
     }

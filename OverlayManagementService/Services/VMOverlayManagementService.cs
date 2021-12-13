@@ -35,12 +35,12 @@ namespace OverlayManagementService.Services
             VirtualMachineFactory = virtualMachineFactory;
         }
 
-        public void DeleteNetwork(Membership membership)
+        public void DeleteNetwork(string membership)
         {
 
-            IOverlayNetwork overlayNetwork =_jsonRepository.GetOverlayNetwork(membership.MembershipId);
+            IOverlayNetwork overlayNetwork =_jsonRepository.GetOverlayNetwork(membership);
             overlayNetwork.CleanUpNetwork();
-            _jsonRepository.DeleteOverlayNetwork(membership.MembershipId);
+            _jsonRepository.DeleteOverlayNetwork(membership);
         }
 
         public IOverlayNetwork DeployNetwork(OVSConnection oVSConnection)
@@ -66,7 +66,7 @@ namespace OverlayManagementService.Services
             return overlayNetwork;
         }
 
-        public IOverlayNetwork SuspendNetwork(Membership membership)
+        public IOverlayNetwork SuspendNetwork(string membership)
         {
             throw new NotImplementedException();
         }
@@ -88,9 +88,9 @@ namespace OverlayManagementService.Services
             return _jsonRepository.GetAllNetworks().Values.ToArray();
         }
 
-        public IOverlayNetwork GetNetwork(string id)
+        public IOverlayNetwork GetNetwork(string vni)
         {
-            return _jsonRepository.GetOverlayNetworkByVni(id);
+            return _jsonRepository.GetOverlayNetworkByVni(vni);
         }
 
         public IEnumerable<IOpenVirtualSwitch> GetAllSwitches()

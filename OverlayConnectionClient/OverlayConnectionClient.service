@@ -1,0 +1,39 @@
+﻿[Unit]
+Description=ASP.NET Core web template
+
+[Service]
+# will set the Current Working Directory (CWD)
+WorkingDirectory=/home/vagrant/srv/OverlayConnectionClient
+# systemd will run this executable to start the service
+ExecStart=/home/vagrant/srv/OverlayConnectionClient/OverlayConnectionClient
+# to query logs using journalctl, set a logical name here  
+SyslogIdentifier=OverlayConnectionClient
+
+# Use your username to keep things simple, for production scenario's I recommend a dedicated user/group.
+# If you pick a different user, make sure dotnet and all permissions are set correctly to run the app.
+# To update permissions, use 'chown yourusername -R /srv/OverlayConnectionClient' to take ownership of the folder and files,
+#       Use 'chmod +x /srv/OverlayConnectionClient/OverlayConnectionClient' to allow execution of the executable file.
+User=vagrant
+
+# ensure the service restarts after crashing
+Restart=always
+# amount of time to wait before restarting the service              
+RestartSec=5
+
+# copied from dotnet documentation at
+# https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/linux-nginx?view=aspnetcore-3.1#code-try-7
+KillSignal=SIGINT
+Environment=ASPNETCORE_ENVIRONMENT=Development
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+
+# This environment variable is necessary when dotnet isn't loaded for the specified user.
+# To figure out this value, run 'env | grep DOTNET_ROOT' when dotnet has been loaded into your shell.
+# Environment=DOTNET_ROOT=/opt/rh/rh-dotnet31/root/usr/lib64/dotnet
+
+# When using the out of the box ASP.NET Tempates, this environment variable will allow you to override 
+# which IP & ports the Kestrel Web Server will listen to. 
+# Using the * as a wildcard will listen to any IP, localhost and other IP's the machine may have
+Environment=ASPNETCORE_URLS=http://*:5000;https://*:5001
+
+[Install]
+WantedBy=multi-user.target

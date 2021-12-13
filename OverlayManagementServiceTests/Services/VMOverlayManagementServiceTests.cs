@@ -35,11 +35,7 @@ namespace OverlayManagementService.Services.Tests
         [TestMethod()]
         public void DeleteNetworkTest()
         {
-            var membership = new Membership(
-              Guid.NewGuid().ToString(),
-              "Test",
-              Guid.NewGuid()
-              );
+            string membership = "46a2e969-c558-4892-8e45-9cc2875b8268";
 
             Mock<IOverlayNetwork> overlayNetworkMock = new Mock<IOverlayNetwork>();
             _jsonRepositoryMock.Setup(x => x.GetOverlayNetwork(It.IsAny<string>())).Returns(overlayNetworkMock.Object);
@@ -49,7 +45,6 @@ namespace OverlayManagementService.Services.Tests
             _sut.DeleteNetwork(membership);
 
             //Assert
-            _jsonRepositoryMock.VerifyAll();
             _jsonRepositoryMock.VerifyAll();
         }
 

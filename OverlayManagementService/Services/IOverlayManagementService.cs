@@ -11,8 +11,8 @@ namespace OverlayManagementService.Services
     {
         public IOpenVirtualSwitch AddSwitch(IOpenVirtualSwitch openVirtualSwitch);
         public IOverlayNetwork DeployNetwork(OVSConnection oVSConnection);
-        public IOverlayNetwork SuspendNetwork(Membership membership);
-        public void DeleteNetwork(Membership membership);
+        public IOverlayNetwork SuspendNetwork(string membership);
+        public void DeleteNetwork(string membership);
         public IOverlayNetwork RegisterMachine(VmConnection vmConnection);
         public IOverlayNetwork UnRegisterMachine(VmConnection vmConnection);
         public IEnumerable<IOverlayNetwork> GetAllNetworks();
