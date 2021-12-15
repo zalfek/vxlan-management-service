@@ -67,7 +67,7 @@ namespace OverlayManagementClient.Services
         {
             await PrepareAuthenticatedClient();
 
-            var response = await _httpClient.DeleteAsync($"{ _BaseAddress}/Management/delete/network/{groupId}");
+            var response = await _httpClient.DeleteAsync($"{ _BaseAddress}/management/delete/network/{groupId}");
 
             if (response.StatusCode == HttpStatusCode.OK)
             {

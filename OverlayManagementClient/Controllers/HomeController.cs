@@ -24,19 +24,21 @@ namespace OverlayManagementClient.Controllers
             _vXLANManagementService = vXLANManagementService;
         }
 
+        [Authorize(Policy = "Admin")]
         public IActionResult Index()
         {
             return View(_vXLANManagementService.GetNetworksAsync().Result);
         }
-
+        [Authorize(Policy = "Admin")]
         public ActionResult Create()
         {
             return PartialView("_Create");
         }
 
-
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Admin")]
         public ActionResult Create(OVSConnection oVSConnection)
         {
             _vXLANManagementService.AddNetworkAsync(oVSConnection);
@@ -50,7 +52,7 @@ namespace OverlayManagementClient.Controllers
             }
         }
 
-
+        [Authorize(Policy = "Admin")]
         public ActionResult Edit(string vni)
         {
             return PartialView("_NetworkDetails", _vXLANManagementService.GetNetworkAsync(vni).Result);
@@ -59,6 +61,7 @@ namespace OverlayManagementClient.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Admin")]
         public ActionResult Edit(OverlayNetwork overlayNetwork)
         {
             _vXLANManagementService.EditNetworkAsync(overlayNetwork);
@@ -71,11 +74,18 @@ namespace OverlayManagementClient.Controllers
                 return View();
             }
         }
-
+        [Authorize(Policy = "Admin")]
         public ActionResult Delete(string groupId)
         {
             _vXLANManagementService.DeleteNetworkAsync(groupId);
-            return Ok();
+            try
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
         }
 
         [AllowAnonymous]
