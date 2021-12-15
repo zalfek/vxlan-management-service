@@ -19,7 +19,7 @@ namespace OverlayManagementService.Services.Tests
     public class VMOverlayConnectionServiceTests
     {
         private readonly VMOverlayConnectionService _sut;
-        private readonly Mock<IRepository> _jsonRepositoryMock = new Mock<IRepository>();
+        private readonly Mock<INetworkRepository> _jsonRepositoryMock = new Mock<INetworkRepository>();
         private readonly Mock<ILogger<VMOverlayConnectionService>> _loggerMock = new Mock<ILogger<VMOverlayConnectionService>>();
         private readonly Mock<IAddress> _ipAddressMock = new Mock<IAddress>();
         private readonly Mock<IClientConnectionFactory> _clientConnectionFactoryMock = new Mock<IClientConnectionFactory>();
@@ -41,7 +41,7 @@ namespace OverlayManagementService.Services.Tests
             Mock<IOverlayNetwork> overlayNetworkMock = new Mock<IOverlayNetwork>();
             _jsonRepositoryMock.Setup(x => x.GetOverlayNetwork(It.IsAny<Claim>())).Returns(overlayNetworkMock.Object);
             _clientConnectionFactoryMock.Setup(c => c.CreateClientConnectionDto(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(clientConnection);
-            overlayNetworkMock.SetupGet(x => x.VNI).Returns("1");
+            overlayNetworkMock.SetupGet(x => x.Vni).Returns("1");
             overlayNetworkMock.SetupGet(x => x.OpenVirtualSwitch.PublicIP).Returns("255.255.255.255");
 
             _sut.GetAllNetworks(claims);
@@ -58,7 +58,7 @@ namespace OverlayManagementService.Services.Tests
             overlayNetworkMock.Setup(n => n.AddClient(It.IsAny<string>()));
             ClientConnection clientConnection = new ClientConnection("1", "adggjdasd45t54zuw46us", "255.255.255.255", "255.255.255.255");
             _clientConnectionFactoryMock.Setup(c => c.CreateClientConnectionDto(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(clientConnection);
-            overlayNetworkMock.SetupGet(x => x.VNI).Returns("1");
+            overlayNetworkMock.SetupGet(x => x.Vni).Returns("1");
             overlayNetworkMock.SetupGet(x => x.OpenVirtualSwitch.PublicIP).Returns("255.255.255.255");
 
 

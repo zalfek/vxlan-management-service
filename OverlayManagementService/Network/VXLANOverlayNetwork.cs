@@ -11,41 +11,33 @@ namespace OverlayManagementService.Network
         {
         }
 
-        public VXLANOverlayNetwork(string vNI, IOpenVirtualSwitch openVirtualSwitch, List<IVirtualMachine> virtualMachines, List<string> clients)
+        public VXLANOverlayNetwork(string groupId, string vNI, IOpenVirtualSwitch openVirtualSwitch, IAddress ipAddress)
         {
-            VNI = vNI;
-            Guid = Guid.NewGuid();
-            OpenVirtualSwitch = openVirtualSwitch;
-            VirtualMachines = virtualMachines;
-            Clients = clients;
-            IsDeployed = false;
-        }
-
-        public VXLANOverlayNetwork(string vNI, IOpenVirtualSwitch openVirtualSwitch)
-        {
-            VNI = vNI;
-            Guid = Guid.NewGuid();
+            Vni = vNI;
+            GroupId = groupId;
             OpenVirtualSwitch = openVirtualSwitch;
             VirtualMachines = new List<IVirtualMachine>();
             Clients = new List<string>();
             IsDeployed = false;
         }
 
-        public string VNI { get; set; }
-        public Guid Guid { get; set; }
+        public string Vni { get; set; }
+        public string GroupId { get; set; }
         public IOpenVirtualSwitch OpenVirtualSwitch { get; set; }
         public List<IVirtualMachine> VirtualMachines { get; set; }
         public List<string> Clients { get; set; }
         public bool IsDeployed { get; set; }
+        public IAddress ipAddress { get; set; }
 
         public void AddClient(string ip)
         {
             Clients.Add(ip);
-            OpenVirtualSwitch.DeployClientVXLANInterface(VNI, ip);
+            OpenVirtualSwitch.DeployClientVXLANInterface(Vni, ip);
         }
 
         public void AddVMachine(IVirtualMachine virtualMachine)
         {
+            virtualMachine.DeployVMConnection(ipAddress.GenerarteUniqueIPV4Address());
             OpenVirtualSwitch.DeployVXLANInterface(virtualMachine);
             VirtualMachines.Add(virtualMachine);
         }
@@ -60,7 +52,7 @@ namespace OverlayManagementService.Network
 
         public void DeployNetwork()
         {
-            OpenVirtualSwitch.DeployOVSConnection(VNI);
+            OpenVirtualSwitch.DeployOVSConnection(Vni);
             IsDeployed = true;
         }
 

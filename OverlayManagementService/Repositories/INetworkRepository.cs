@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementService.Repositories
 {
-    public interface IRepository
+    public interface INetworkRepository
     {
-        IOverlayNetwork SaveOverlayNetwork(string groupId, IOverlayNetwork overlayNetwork);
+        IOverlayNetwork SaveOverlayNetwork(IOverlayNetwork overlayNetwork);
         void DeleteOverlayNetwork(string groupId);
-        IOverlayNetwork UpdateOverlayNetwork(string groupId, IOverlayNetwork overlayNetwork);
+        IOverlayNetwork UpdateOverlayNetwork(IOverlayNetwork overlayNetwork);
         IOverlayNetwork GetOverlayNetwork(string groupId);
         IDictionary<string, IOverlayNetwork> GetAllNetworks();
         IEnumerable<IOverlayNetwork> GetAllSwitches();

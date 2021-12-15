@@ -7,7 +7,7 @@ namespace OverlayManagementService.Network
 {
     public interface ILinuxVXLANInterface
     {
-        public void DeployInterface();
+        public void DeployInterface(string vxlanIp);
         public void CleanUpInterface();
 
 

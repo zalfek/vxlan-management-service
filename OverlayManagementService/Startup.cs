@@ -41,7 +41,7 @@ namespace OverlayManagementService
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
-                    builder => builder.WithOrigins("http://localhost:3000", "https://localhost:44323/")
+                    builder => builder.WithOrigins("https://localhost:44323/")
                     .AllowAnyMethod()
                     .AllowAnyHeader());
             });
@@ -65,17 +65,19 @@ namespace OverlayManagementService
 
 
             services.AddScoped<IOverlayConnectionService, VMOverlayConnectionService>();
-            services.AddSingleton<IOverlayManagementService, VMOverlayManagementService>();
+            services.AddScoped<IOverlayManagementService, VMOverlayManagementService>();
             services.AddScoped<GraphServiceClient, GraphServiceClient>();
-            services.AddSingleton<IRepository, JsonRepository>();
+            services.AddSingleton<INetworkRepository, NetworkRepository>();
+            services.AddSingleton<ISwitchRepository, SwitchRepository>();
             services.AddScoped<IFirewall, Firewall>();
-            services.AddSingleton<IAddress, IPAddress>();
-            services.AddSingleton<IIdentifier, VNI>();
-            services.AddSingleton<INetworkFactory, NetworkFactory>();
-            services.AddSingleton<IBridgeFactory, BridgeFactory>();
-            services.AddSingleton<IVirtualMachineFactory, VirtualMachineFactory>();
-            services.AddSingleton<IClientConnectionFactory, ClientConnectionFactory>();
-
+            services.AddScoped<IAddress, IPAddress>();
+            services.AddScoped<IIdentifier, VNI>();
+            services.AddScoped<INetworkFactory, NetworkFactory>();
+            services.AddScoped<IBridgeFactory, BridgeFactory>();
+            services.AddScoped<IVirtualMachineFactory, VirtualMachineFactory>();
+            services.AddScoped<IClientConnectionFactory, ClientConnectionFactory>();
+            services.AddScoped<IIdentifierFactory<IPAddress>, IdentifierFactory<IPAddress>>();
+            services.AddScoped<IIdentifierFactory<VNI>, IdentifierFactory<VNI>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

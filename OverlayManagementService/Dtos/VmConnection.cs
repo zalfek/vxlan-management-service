@@ -11,7 +11,7 @@ namespace OverlayManagementService.Dtos
         public string ManagementIp { get; set; }
         public string CommunicationIP { get; set; }
         public string OVSIPAddress { get; set; }
-        public string Membership { get; set; }
+        public string GroupId { get; set; }
 
     }
 }

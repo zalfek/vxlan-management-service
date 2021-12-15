@@ -19,8 +19,6 @@ namespace OverlayManagementService.Controllers
     {
         private readonly IOverlayManagementService _vmOverlayManagementService;
         private readonly ILogger<ManagementController> _logger;
-
-        // The Web API will only accept tokens 1) for users, and 2) having the "access_as_user" scope for this API
         static readonly string[] scopeRequiredByApi = new string[] { "access_as_user" };
 
         public ManagementController(ILogger<ManagementController> logger, IOverlayManagementService vmOverlayManagementService)
@@ -38,11 +36,11 @@ namespace OverlayManagementService.Controllers
         }
 
         [Authorize(Policy = "Admin")]
-        [HttpGet("get/network/{id}")]
+        [HttpGet("get/network/{vni}")]
         public IOverlayNetwork GetNetwork(string vni)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-            return _vmOverlayManagementService.GetNetwork(vni);
+            return _vmOverlayManagementService.GetNetworkByVni(vni);
         }
 
         [Authorize(Policy = "Admin")]
@@ -89,13 +87,12 @@ namespace OverlayManagementService.Controllers
         }
 
         [Authorize(Policy = "Admin")]
-        [HttpDelete("delete/network/{id}")]
-        public IActionResult DeleteNetwork(int id)
+        [HttpDelete("delete/network/{groupId}")]
+        public IActionResult DeleteNetwork(string groupId)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-            //_vmOverlayManagementService.DeleteNetwork(membership);
-
-            return Ok(id);
+            _vmOverlayManagementService.DeleteNetwork(groupId);
+            return Ok();
         }
 
         [Authorize(Policy = "Admin")]
@@ -112,6 +109,14 @@ namespace OverlayManagementService.Controllers
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
             return _vmOverlayManagementService.GetAllSwitches();
+        }
+
+        [Authorize(Policy = "Admin")]
+        [HttpGet("update/network")]
+        public IOverlayNetwork UpdateNetwork(IOverlayNetwork overlayNetwork)
+        {
+            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            return _vmOverlayManagementService.UpdateNetwork(overlayNetwork);
         }
 
     }

@@ -63,11 +63,11 @@ namespace OverlayManagementClient.Services
             throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
         }
 
-        public async Task DeleteNetworkAsync(int id)
+        public async Task DeleteNetworkAsync(string groupId)
         {
             await PrepareAuthenticatedClient();
 
-            var response = await _httpClient.DeleteAsync($"{ _BaseAddress}/Management/delete/network/{id}");
+            var response = await _httpClient.DeleteAsync($"{ _BaseAddress}/Management/delete/network/{groupId}");
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -83,7 +83,7 @@ namespace OverlayManagementClient.Services
 
             var jsonRequest = JsonConvert.SerializeObject(OverlayNetwork);
             var jsoncontent = new StringContent(jsonRequest, Encoding.UTF8, "application/json-patch+json");
-            var response = await _httpClient.PatchAsync($"{ _BaseAddress}/api/OverlayNetworklist/{OverlayNetwork.Guid}", jsoncontent);
+            var response = await _httpClient.PatchAsync($"{ _BaseAddress}/management/OverlayNetworklist/{OverlayNetwork.GroupId}", jsoncontent);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -119,10 +119,10 @@ namespace OverlayManagementClient.Services
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public async Task<OverlayNetwork> GetNetworkAsync(string id)
+        public async Task<OverlayNetwork> GetNetworkAsync(string vni)
         {
             await PrepareAuthenticatedClient();
-            var response = await _httpClient.GetAsync($"{ _BaseAddress}/management/get/network/{id}");
+            var response = await _httpClient.GetAsync($"{ _BaseAddress}/management/get/network/{vni}");
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using OverlayManagementClient.Models;
@@ -25,12 +26,56 @@ namespace OverlayManagementClient.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return View(_vXLANManagementService.GetNetworksAsync().Result);
         }
 
-        public IActionResult Privacy()
+        public ActionResult Create()
         {
-            return View();
+            return PartialView("_Create");
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(OVSConnection oVSConnection)
+        {
+            _vXLANManagementService.AddNetworkAsync(oVSConnection);
+            try
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+
+        public ActionResult Edit(string vni)
+        {
+            return PartialView("_NetworkDetails", _vXLANManagementService.GetNetworkAsync(vni).Result);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(OverlayNetwork overlayNetwork)
+        {
+            _vXLANManagementService.EditNetworkAsync(overlayNetwork);
+            try
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        public ActionResult Delete(string groupId)
+        {
+            _vXLANManagementService.DeleteNetworkAsync(groupId);
+            return Ok();
         }
 
         [AllowAnonymous]

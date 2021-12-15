@@ -8,7 +8,8 @@ namespace OverlayManagementService.Network
 {
     public interface IOverlayNetwork
     {
-        string VNI { get; set; }
+        string GroupId { get; set; }
+        string Vni { get; set; }
         public IOpenVirtualSwitch OpenVirtualSwitch { get; set; }
         public void RemoveClient(string ip);
         public void AddClient(string ip);

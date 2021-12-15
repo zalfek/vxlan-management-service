@@ -8,7 +8,7 @@ namespace OverlayManagementService.Dtos
     public class OVSConnection
     {
         public string Key { get; set; }
-        public string MembershipId { get; set; }
+        public string GroupId { get; set; }
         public VmConnection vmConnection { get; set; } = null;
     }
 }

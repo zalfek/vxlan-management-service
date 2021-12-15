@@ -12,14 +12,14 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementService.Repositories
 {
-    public class JsonRepository : IRepository
+    public class NetworkRepository : INetworkRepository
     {
 
-        private readonly ILogger<IRepository> _logger;
+        private readonly ILogger<INetworkRepository> _logger;
         private static IDictionary<string, IOverlayNetwork> _dbMock;
-        public JsonRepository()
+        public NetworkRepository()
         {
-            _logger = new LoggerFactory().CreateLogger<IRepository>();
+            _logger = new LoggerFactory().CreateLogger<INetworkRepository>();
             _dbMock = new Dictionary<string, IOverlayNetwork>();
         }
 
@@ -33,22 +33,22 @@ namespace OverlayManagementService.Repositories
             return _dbMock[groupId];
         }
 
-        public IOverlayNetwork SaveOverlayNetwork(string groupId, IOverlayNetwork overlayNetwork)
+        public IOverlayNetwork SaveOverlayNetwork(IOverlayNetwork overlayNetwork)
         {
-            if (_dbMock.ContainsKey(groupId))
+            if (_dbMock.ContainsKey(overlayNetwork.GroupId))
             {
-                _dbMock[groupId] = overlayNetwork;
+                _dbMock[overlayNetwork.GroupId] = overlayNetwork;
             }
             else
             {
-                _dbMock.Add(groupId, overlayNetwork);
+                _dbMock.Add(overlayNetwork.GroupId, overlayNetwork);
             }
             return overlayNetwork;
         }
 
-        public IOverlayNetwork UpdateOverlayNetwork(string groupId, IOverlayNetwork overlayNetwork)
+        public IOverlayNetwork UpdateOverlayNetwork(IOverlayNetwork overlayNetwork)
         {
-            _dbMock[groupId] = overlayNetwork;
+            _dbMock[overlayNetwork.GroupId] = overlayNetwork;
             return overlayNetwork;
         }
 
@@ -66,7 +66,7 @@ namespace OverlayManagementService.Repositories
         {
             foreach (KeyValuePair<string, IOverlayNetwork> keyValuePair in _dbMock)
             {
-                if (keyValuePair.Value.VNI == vni) { return keyValuePair.Value; }
+                if (keyValuePair.Value.Vni == vni) { return keyValuePair.Value; }
             }
             throw new KeyNotFoundException();
         }
