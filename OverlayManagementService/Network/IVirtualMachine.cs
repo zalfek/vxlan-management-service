@@ -11,7 +11,7 @@ namespace OverlayManagementService.Network
         public string VNI { get; set; }
         public string CommunicationIP { get; set; }
 
-        public void DeployVMConnection();
+        public void DeployVMConnection(string vxlanIp);
         public void CleanUpVMConnection();
     }
 }

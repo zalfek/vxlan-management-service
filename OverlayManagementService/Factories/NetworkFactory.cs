@@ -8,9 +8,9 @@ namespace OverlayManagementService.Factories
 {
     public class NetworkFactory : INetworkFactory
     {
-        public IOverlayNetwork CreateOverlayNetwork(string vni, IOpenVirtualSwitch openVirtualSwitch)
+        public IOverlayNetwork CreateOverlayNetwork(string groupId, string vni, IOpenVirtualSwitch openVirtualSwitch, IAddress ipAddress)
         {
-            return new VXLANOverlayNetwork(vni, openVirtualSwitch);
+            return new VXLANOverlayNetwork(groupId, vni, openVirtualSwitch, ipAddress);
         }
     }
 }

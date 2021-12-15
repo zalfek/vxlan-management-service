@@ -11,45 +11,33 @@ namespace OverlayManagementService.Network
         {
         }
 
-        public VXLANOverlayNetwork(string vNI, IOpenVirtualSwitch openVirtualSwitch, List<IVirtualMachine> virtualMachines, List<Student> clients)
+        public VXLANOverlayNetwork(string groupId, string vNI, IOpenVirtualSwitch openVirtualSwitch, IAddress ipAddress)
         {
-            VNI = vNI;
-            Guid = Guid.NewGuid();
-            OpenVirtualSwitch = openVirtualSwitch;
-            VirtualMachines = virtualMachines;
-            Clients = clients;
-            IsDeployed = false;
-        }
-
-        public VXLANOverlayNetwork(string vNI, IOpenVirtualSwitch openVirtualSwitch)
-        {
-            VNI = vNI;
-            Guid = Guid.NewGuid();
+            Vni = vNI;
+            GroupId = groupId;
             OpenVirtualSwitch = openVirtualSwitch;
             VirtualMachines = new List<IVirtualMachine>();
-            Clients = new List<Student>();
+            Clients = new List<string>();
             IsDeployed = false;
         }
 
-        public string VNI { get; set; }
-        public Guid Guid { get; set; }
+        public string Vni { get; set; }
+        public string GroupId { get; set; }
         public IOpenVirtualSwitch OpenVirtualSwitch { get; set; }
         public List<IVirtualMachine> VirtualMachines { get; set; }
-        public List<Student> Clients { get; set; }
+        public List<string> Clients { get; set; }
         public bool IsDeployed { get; set; }
+        public IAddress ipAddress { get; set; }
 
-        public void AddClient(Student user)
+        public void AddClient(string ip)
         {
-            Clients.Add(user);
-        }
-
-        public void AddSwitch(IOpenVirtualSwitch openVirtualSwitch)
-        {
-            
+            Clients.Add(ip);
+            OpenVirtualSwitch.DeployClientVXLANInterface(Vni, ip);
         }
 
         public void AddVMachine(IVirtualMachine virtualMachine)
         {
+            virtualMachine.DeployVMConnection(ipAddress.GenerarteUniqueIPV4Address());
             OpenVirtualSwitch.DeployVXLANInterface(virtualMachine);
             VirtualMachines.Add(virtualMachine);
         }
@@ -64,21 +52,13 @@ namespace OverlayManagementService.Network
 
         public void DeployNetwork()
         {
-            OpenVirtualSwitch.DeployOVSConnection(VNI);
+            OpenVirtualSwitch.DeployOVSConnection(Vni);
             IsDeployed = true;
         }
 
-        public void RemoveClient(Student user)
+        public void RemoveClient(string ip)
         {
-            Clients.Remove(user);
-        }
-
-        public void RemoveSwitch(IOpenVirtualSwitch openVirtualSwitch)
-        {
-            VirtualMachines.ForEach(vm => { 
-                openVirtualSwitch.CleanUpOVSConnection(vm);
-                vm.CleanUpVMConnection();
-            });
+            Clients.Remove(ip);
         }
 
         public void RemoveVMachine(IVirtualMachine virtualMachine)

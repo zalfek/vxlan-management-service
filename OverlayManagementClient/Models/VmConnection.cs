@@ -5,6 +5,6 @@
         public string Key { get; set; }
         public string IPAddress { get; set; }
         public string OVSIPAddress { get; set; }
-        public string Membership { get; set; }
+        public string GroupId { get; set; }
     }
 }

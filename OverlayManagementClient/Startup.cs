@@ -12,6 +12,7 @@ using OverlayManagementClient.Services;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Identity.Web.UI;
+using OverlayManagementClient.Infrastructure;
 
 namespace OverlayManagementClient
 {
@@ -41,11 +42,19 @@ namespace OverlayManagementClient
             services
                 .AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApp(Configuration.GetSection("AzureAd"))
-                //.AddMicrosoftIdentityWebAppAuthentication(Configuration)
                  .EnableTokenAcquisitionToCallDownstreamApi(new string[] { Configuration["OverlayManagementService:OverlayManagementServiceScope"] })
                     .AddInMemoryTokenCaches();
 
             services.AddVXLANManagementService(Configuration);
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin",
+                policy => policy.Requirements.Add(new GroupPolicyRequirement(Configuration["Groups:Admin"])));
+                options.AddPolicy("Member",
+              policy => policy.Requirements.Add(new GroupPolicyRequirement(Configuration["Groups:Member"])));
+            });
+            services.AddSingleton<IAuthorizationHandler, GroupPolicyHandler>();
+
             services.AddControllersWithViews(options =>
             {
                 var policy = new AuthorizationPolicyBuilder()

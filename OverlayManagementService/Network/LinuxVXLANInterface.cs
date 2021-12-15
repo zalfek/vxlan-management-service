@@ -13,17 +13,15 @@ namespace OverlayManagementService.Network
         public readonly string VNI;
         public readonly string DstPort;
         public readonly string DstIP;
-        public readonly string LocalIP;
         public readonly string ManagementIp;
 
-        public LinuxVXLANInterface(string name, string vNI, string dstPort, string dstIP, string localIP, string managementIp)
+        public LinuxVXLANInterface(string name, string vNI, string dstPort, string dstIP, string managementIp)
         {
             
             Name = name;
             VNI = vNI;
             DstPort = dstPort;
             DstIP = dstIP;
-            LocalIP = localIP;
             ManagementIp = managementIp;
 
 
@@ -48,7 +46,7 @@ namespace OverlayManagementService.Network
             }
         }
 
-        public void DeployInterface()
+        public void DeployInterface(string vxlanIp)
         {
 
             ConnectionInfo sSHConnectionInfo = new ConnectionInfo(ManagementIp, "vagrant", new AuthenticationMethod[]{
@@ -63,7 +61,7 @@ namespace OverlayManagementService.Network
                     Console.WriteLine("Command>" + cmd.CommandText);
                     Console.WriteLine("Return Value = {0}", cmd.ExitStatus);
                 }
-                using (var cmd = sshclient.CreateCommand("sudo ip addr add " + LocalIP + " dev " + Name))
+                using (var cmd = sshclient.CreateCommand("sudo ip addr add " + vxlanIp + " dev " + Name))
                 {
                     cmd.Execute();
                     Console.WriteLine("Command>" + cmd.CommandText);

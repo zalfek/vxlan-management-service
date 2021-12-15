@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using OverlayManagementClient.Models;
@@ -23,14 +24,68 @@ namespace OverlayManagementClient.Controllers
             _vXLANManagementService = vXLANManagementService;
         }
 
+        [Authorize(Policy = "Admin")]
         public IActionResult Index()
         {
-            return View();
+            return View(_vXLANManagementService.GetNetworksAsync().Result);
+        }
+        [Authorize(Policy = "Admin")]
+        public ActionResult Create()
+        {
+            return PartialView("_Create");
         }
 
-        public IActionResult Privacy()
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Admin")]
+        public ActionResult Create(OVSConnection oVSConnection)
         {
-            return View();
+            _vXLANManagementService.AddNetworkAsync(oVSConnection);
+            try
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        [Authorize(Policy = "Admin")]
+        public ActionResult Edit(string vni)
+        {
+            return PartialView("_NetworkDetails", _vXLANManagementService.GetNetworkAsync(vni).Result);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Admin")]
+        public ActionResult Edit(OverlayNetwork overlayNetwork)
+        {
+            _vXLANManagementService.EditNetworkAsync(overlayNetwork);
+            try
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+        [Authorize(Policy = "Admin")]
+        public ActionResult Delete(string groupId)
+        {
+            _vXLANManagementService.DeleteNetworkAsync(groupId);
+            try
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
         }
 
         [AllowAnonymous]

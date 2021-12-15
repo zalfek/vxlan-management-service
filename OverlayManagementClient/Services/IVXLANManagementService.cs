@@ -11,12 +11,12 @@ namespace OverlayManagementClient.Services
 
 
         public Task<OverlayNetwork> AddNetworkAsync(OVSConnection oVSConnection);
-        public Task DeleteNetworkAsync(int id);
+        public Task DeleteNetworkAsync(string groupId);
         public Task<OverlayNetwork> EditNetworkAsync(OverlayNetwork OverlayNetwork);
         public Task<IEnumerable<OverlayNetwork>> GetNetworksAsync();
         public Task<OverlayNetwork> GetNetworkAsync(string id);
         public Task<IEnumerable<OpenVirtualSwitch>> GetSwitchesAsync();
         public Task<OpenVirtualSwitch> GetSwitchAsync(string key);
-        void AddSwitchAsync(OpenVirtualSwitch openVirtualSwitch);
+        public void AddSwitchAsync(OpenVirtualSwitch openVirtualSwitch);
     }
 }

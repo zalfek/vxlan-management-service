@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using OverlayManagementClient.Models;
@@ -25,25 +26,25 @@ namespace OverlayManagementClient.Controllers
 
 
 
-        // GET: SwitchController
+        [Authorize(Policy = "Admin")]
         public ActionResult Index()
         {
             return View(_vXLANManagementService.GetSwitchesAsync().Result);
         }
 
-        // GET: SwitchController/Details/5
+        [Authorize(Policy = "Admin")]
         public ActionResult Details(string key)
         {
             return PartialView("_SwitchDetails", _vXLANManagementService.GetSwitchAsync(key).Result);
         }
 
-        // GET: SwitchController/Create
+        [Authorize(Policy = "Admin")]
         public ActionResult Create()
         {
             return PartialView("_Create");
         }
 
-        // POST: SwitchController/Create
+        [Authorize(Policy = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(OpenVirtualSwitch openVirtualSwitch)
@@ -60,13 +61,13 @@ namespace OverlayManagementClient.Controllers
             }
         }
 
-        // GET: SwitchController/Edit/5
+        [Authorize(Policy = "Admin")]
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        // POST: SwitchController/Edit/5
+        [Authorize(Policy = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -81,13 +82,13 @@ namespace OverlayManagementClient.Controllers
             }
         }
 
-        // GET: SwitchController/Delete/5
+        [Authorize(Policy = "Admin")]
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: SwitchController/Delete/5
+        [Authorize(Policy = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
