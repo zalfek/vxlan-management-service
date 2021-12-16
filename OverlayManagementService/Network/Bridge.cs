@@ -15,12 +15,12 @@ namespace OverlayManagementService.Network
         {
             _logger = new LoggerFactory().CreateLogger<IBridge>();
             Name = name;
-            VNI = vni;
+            Vni = vni;
             ManagementIp = managementIp;
             VXLANInterfaces = new List<IVXLANInterface>();
         }
 
-        public string VNI { get; set; }
+        public string Vni { get; set; }
         public string Name { get; set; }
         public List<IVXLANInterface> VXLANInterfaces { get; set; }
         public string ManagementIp { get; set; }
@@ -31,7 +31,7 @@ namespace OverlayManagementService.Network
                 Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14),
                 "vxlan",
                 virtualMachine.CommunicationIP,
-                VNI,
+                Vni,
                 Name,
                 ManagementIp
                 );
@@ -46,7 +46,7 @@ namespace OverlayManagementService.Network
                 Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14),
                 "vxlan",
                 ip,
-                VNI,
+                Vni,
                 Name,
                 ManagementIp
                 );

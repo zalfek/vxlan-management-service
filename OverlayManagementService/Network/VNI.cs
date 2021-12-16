@@ -15,6 +15,7 @@ namespace OverlayManagementService.Network
 
         public VNI()
         {
+            _logger = new LoggerFactory().CreateLogger<VNI>();
             VNIs = new List<string>();
             PreviousVNI = 0;
         }
@@ -23,6 +24,7 @@ namespace OverlayManagementService.Network
         public string GenerateUniqueVNI()
         {
             PreviousVNI++;
+            _logger.LogInformation("New VNI was generated:" + PreviousVNI.ToString());
             VNIs.Add(PreviousVNI.ToString());
             return PreviousVNI.ToString();
         }

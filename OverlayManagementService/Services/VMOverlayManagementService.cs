@@ -19,9 +19,9 @@ namespace OverlayManagementService.Services
         private readonly ISwitchRepository _switchRepository;
         private readonly IIdentifier _vniResolver;
         private readonly IIdentifierFactory<IPAddress> _ipResolverFactory;
-        private readonly INetworkFactory NetworkFactory;
-        private readonly IBridgeFactory BridgeFactory;
-        private readonly IVirtualMachineFactory VirtualMachineFactory;
+        private readonly INetworkFactory _networkFactory;
+        private readonly IBridgeFactory _bridgeFactory;
+        private readonly IVirtualMachineFactory _virtualMachineFactory;
         public VMOverlayManagementService(
             ILogger<VMOverlayManagementService> logger,
             INetworkRepository networkRepository,
@@ -37,97 +37,124 @@ namespace OverlayManagementService.Services
             _networkRepository = networkRepository;
             _vniResolver = vniResolver;
             _ipResolverFactory = ipResolverFactory;
-            NetworkFactory = networkFactory;
-            BridgeFactory = bridgeFactory;
-            VirtualMachineFactory = virtualMachineFactory;
+            _networkFactory = networkFactory;
+            _bridgeFactory = bridgeFactory;
+            _virtualMachineFactory = virtualMachineFactory;
             _switchRepository = switchRepository;
         }
 
         public void DeleteNetwork(string groupId)
         {
+            _logger.LogInformation("Searching for group id " + groupId + " in network repository");
             IOverlayNetwork overlayNetwork = _networkRepository.GetOverlayNetwork(groupId);
+            _logger.LogInformation("Initiating network Clean up");
             overlayNetwork.CleanUpNetwork();
+            _logger.LogInformation("Deleting network from repository");
             _networkRepository.DeleteOverlayNetwork(groupId);
         }
 
         public IOverlayNetwork DeployNetwork(OVSConnection oVSConnection)
         {
+            _logger.LogInformation("Searching for switch with key: " + oVSConnection.Key + " in switch repository");
             IOpenVirtualSwitch openVirtualSwitch = _switchRepository.GetSwitch(oVSConnection.Key);
             string vni = _vniResolver.GenerateUniqueVNI();
+            _logger.LogInformation("New VNI generated: " + vni);
+            _logger.LogInformation("Adding new bridge to OVS");
             openVirtualSwitch.AddBridge(
-                BridgeFactory.CreateBridge(
+                _bridgeFactory.CreateBridge(
                     Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14),
                     vni,
                     openVirtualSwitch.ManagementIp)
                 );
-            IOverlayNetwork overlayNetwork = NetworkFactory.CreateOverlayNetwork(
+            _logger.LogInformation("Creating new network with id: " + oVSConnection.GroupId);
+            IOverlayNetwork overlayNetwork = _networkFactory.CreateOverlayNetwork(
                 oVSConnection.GroupId,
                 vni,
                 openVirtualSwitch,
                 _ipResolverFactory.CreateAddressResolver()
                 );
+            _logger.LogInformation("Saving new newtwork to repository");
             _networkRepository.SaveOverlayNetwork(overlayNetwork);
+            _logger.LogInformation("Initiating network deployment");
             overlayNetwork.DeployNetwork();
-            if (oVSConnection.vmConnection != null) { RegisterMachine(oVSConnection.vmConnection); }
-
+            if (oVSConnection.vmConnection != null) {
+                _logger.LogInformation("Registering new device in the network");
+                RegisterMachine(oVSConnection.vmConnection);
+            }
             return overlayNetwork;
         }
 
         public IOverlayNetwork RegisterMachine(VmConnection vmConnection)
         {
+            _logger.LogInformation("Searching for group id " + vmConnection.GroupId + " in network repository");
             IOverlayNetwork overlayNetwork = _networkRepository.GetOverlayNetwork(vmConnection.GroupId);
+            _logger.LogInformation("Searching for switch with key: " + vmConnection.Key + " in switch repository");
             IOpenVirtualSwitch openVirtualSwitch = _switchRepository.GetSwitch(vmConnection.Key);
-            IVirtualMachine virtualMachine = VirtualMachineFactory.CreateVirtualMachine(
+            IVirtualMachine virtualMachine = _virtualMachineFactory.CreateVirtualMachine(
                 Guid.NewGuid(),
                 vmConnection.ManagementIp,
                 overlayNetwork.Vni,
                 openVirtualSwitch.PrivateIP, 
                 vmConnection.CommunicationIP
                 );
+            _logger.LogInformation("Adding device with id: " + virtualMachine.Guid + " to network with group id: " + overlayNetwork.GroupId);
             overlayNetwork.AddVMachine(virtualMachine);
+            _logger.LogInformation("Saving updated newtwork to repository");
             _networkRepository.SaveOverlayNetwork(overlayNetwork);
             return overlayNetwork;
         }
 
-        public IOverlayNetwork SuspendNetwork(string membership)
+        public IOverlayNetwork UnRegisterMachine(string groupId, Guid guid)
         {
-            throw new NotImplementedException();
-        }
-
-        public IOverlayNetwork UnRegisterMachine(VmConnection vmConnectionInfo)
-        {
-            throw new NotImplementedException();
+            _logger.LogInformation("Searching for group id " + groupId + " in network repository");
+            IOverlayNetwork overlayNetwork = _networkRepository.GetOverlayNetwork(groupId);
+            _logger.LogInformation("Removing Machine "+ guid + " from network");
+            overlayNetwork.RemoveVMachine(guid);
+            _logger.LogInformation("Saving updated newtwork to repository");
+            _networkRepository.SaveOverlayNetwork(overlayNetwork);
+            return overlayNetwork;
         }
 
         public IOpenVirtualSwitch AddSwitch(IOpenVirtualSwitch openVirtualSwitch)
         {
+            _logger.LogInformation("Saving new switch to repository");
             _switchRepository.SaveSwitch(openVirtualSwitch);
             return openVirtualSwitch;
-
         }
 
         public IEnumerable<IOverlayNetwork> GetAllNetworks()
         {
+            _logger.LogInformation("Getting networks from repository");
             return _networkRepository.GetAllNetworks().Values.ToArray();
         }
 
         public IOverlayNetwork GetNetworkByVni(string vni)
         {
+            _logger.LogInformation("Searching for network id " + vni + " in network repository");
             return _networkRepository.GetOverlayNetworkByVni(vni);
         }
 
         public IEnumerable<IOpenVirtualSwitch> GetAllSwitches()
         {
+            _logger.LogInformation("Getting switches from repository");
             return _switchRepository.GetAllSwitches().Values.ToArray();
         }
 
         public IOpenVirtualSwitch GetSwitch(string key)
         {
+            _logger.LogInformation("Searching for " + key + " in Switch repository");
             return _switchRepository.GetSwitch(key);
         }
 
         public IOverlayNetwork UpdateNetwork(IOverlayNetwork overlayNetwork)
         {
+            _logger.LogInformation("Searching for original network in repository.");
+            IOverlayNetwork oldNetwork = _networkRepository.GetOverlayNetwork(overlayNetwork.GroupId);
+            _logger.LogInformation("Cleaning up old network");
+            oldNetwork.CleanUpNetwork();
+            _logger.LogInformation("Deploying updated network");
+            overlayNetwork.DeployNetwork();
+            _logger.LogInformation("Saving updated network");
             return _networkRepository.SaveOverlayNetwork(overlayNetwork);
         }
     }

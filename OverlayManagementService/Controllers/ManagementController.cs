@@ -62,10 +62,10 @@ namespace OverlayManagementService.Controllers
 
         [Authorize(Policy = "Admin")]
         [HttpPost("suspend/machine")]
-        public IOverlayNetwork SuspendMachine(VmConnection vmConnection)
+        public IOverlayNetwork SuspendMachine(string groupId, Guid guid)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-            return _vmOverlayManagementService.UnRegisterMachine(vmConnection);
+            return _vmOverlayManagementService.UnRegisterMachine(groupId, guid);
         }
 
         [Authorize(Policy = "Admin")]
@@ -75,15 +75,6 @@ namespace OverlayManagementService.Controllers
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
             return _vmOverlayManagementService.DeployNetwork(oVSConnection);
 
-        }
-
-        [Authorize(Policy = "Admin")]
-        [HttpPost("suspend/network")]
-        public IActionResult SuspendNetwork(string goupId)
-        {
-            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-            _vmOverlayManagementService.SuspendNetwork(goupId);
-            return null;
         }
 
         [Authorize(Policy = "Admin")]
