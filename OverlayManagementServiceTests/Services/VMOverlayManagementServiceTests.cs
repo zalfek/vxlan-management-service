@@ -28,6 +28,8 @@ namespace OverlayManagementService.Services.Tests
         private readonly Mock<IBridge> _bridgeMock = new();
         private readonly Mock<IVirtualMachineFactory> _virtualMachineFactoryMock = new();
         private readonly Mock<IVirtualMachine> _virtualMachineMock = new();
+        private readonly Mock<IFirewallFactory> _firewallFactoryMock = new();
+        private readonly Mock<IFirewallRepository> _firewallRepositoryMock = new();
 
         public VMOverlayManagementServiceTests()
         {
@@ -39,7 +41,9 @@ namespace OverlayManagementService.Services.Tests
                 _bridgeFactoryMock.Object, 
                 _virtualMachineFactoryMock.Object, 
                 _ipAddressFactory.Object,
-                _switchRepository.Object
+                _switchRepository.Object,
+                _firewallRepositoryMock.Object,
+                _firewallFactoryMock.Object
                 );
         }
 

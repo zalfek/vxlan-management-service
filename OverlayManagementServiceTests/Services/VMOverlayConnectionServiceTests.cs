@@ -22,11 +22,12 @@ namespace OverlayManagementService.Services.Tests
         private readonly Mock<INetworkRepository> _jsonRepositoryMock = new();
         private readonly Mock<ILogger<VMOverlayConnectionService>> _loggerMock = new();
         private readonly Mock<IClientConnectionFactory> _clientConnectionFactoryMock = new();
-        private readonly Mock<IFirewall> _firewallMock = new();
+        private readonly Mock<IFirewallFactory> _firewallFactoryMock = new();
+        private readonly Mock<IFirewallRepository> _firewallRepositoryMock = new();
 
         public VMOverlayConnectionServiceTests()
         {
-            _sut = new VMOverlayConnectionService(_jsonRepositoryMock.Object, _loggerMock.Object, _clientConnectionFactoryMock.Object, _firewallMock.Object);
+            _sut = new VMOverlayConnectionService(_jsonRepositoryMock.Object, _loggerMock.Object, _clientConnectionFactoryMock.Object, _firewallRepositoryMock.Object);
         }
 
         [TestMethod()]
@@ -56,12 +57,14 @@ namespace OverlayManagementService.Services.Tests
         public void CreateConnectionTest()
         {
             Mock<IOverlayNetwork> overlayNetworkMock = new();
+            Mock<IFirewall> _firewallMock = new();
             _jsonRepositoryMock.Setup(x => x.GetOverlayNetwork(It.IsAny<string>())).Returns(overlayNetworkMock.Object);
             overlayNetworkMock.Setup(n => n.AddClient(It.IsAny<string>()));
             ClientConnection clientConnection = new("1", "adggjdasd45t54zuw46us", "255.255.255.255", "255.255.255.255");
             _clientConnectionFactoryMock.Setup(c => c.CreateClientConnectionDto(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(clientConnection);
             overlayNetworkMock.SetupGet(x => x.Vni).Returns("1");
             overlayNetworkMock.SetupGet(x => x.OpenVirtualSwitch.PublicIP).Returns("255.255.255.255");
+            _firewallRepositoryMock.Setup(f => f.GetFirewall(It.IsAny<string>())).Returns(_firewallMock.Object);
             _firewallMock.Setup(f => f.AddException(It.IsAny<string>()));
 
 
