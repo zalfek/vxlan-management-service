@@ -23,6 +23,7 @@ namespace OverlayManagementService.Network
 
         public OpenVirtualSwitch(string key, string managementIp, string privateIP, string publicIp)
         {
+            _logger = new LoggerFactory().CreateLogger<OpenVirtualSwitch>();
             Key = key;
             PrivateIP = privateIP;
             PublicIP = publicIp;
@@ -32,22 +33,31 @@ namespace OverlayManagementService.Network
 
 
         public void AddBridge(IBridge bridge) {
-            Bridges.Add(bridge.VNI, bridge);
+            Bridges.Add(bridge.Vni, bridge);
         }
 
 
         public void DeployVXLANInterface(IVirtualMachine virtualMachine)
         {
-            Bridges[virtualMachine.VNI].DeployVXLANInterface(virtualMachine);
+            _logger.LogInformation("Initiating vxlan interface deployment on Bridge with VNI: " + virtualMachine.Vni + "with remote ip: " + virtualMachine.CommunicationIP);
+            Bridges[virtualMachine.Vni].DeployVXLANInterface(virtualMachine);
         }
 
         public void DeployClientVXLANInterface(string vni, string ip)
         {
+            _logger.LogInformation("Initiating vxlan interface deployment on Bridge with VNI: " + vni + "with client(remote) ip: " + ip);
             Bridges[vni].DeployClientVXLANInterface(ip);
+        }
+
+        public void CleanUpClientVXLANInterface(string vni, string ip)
+        {
+            _logger.LogInformation("Initiating vxlan interface clean up on Bridge with VNI: " + vni + "with client(remote) ip: " + ip);
+            Bridges[vni].CleanUpClientVXLANInterface(ip);
         }
 
         public void DeployOVSConnection(string vni)
         {
+            _logger.LogInformation("Deploying new Bridge with VNI: " + vni);
             Bridges[vni].DeployBridge();
         }
 
@@ -55,8 +65,11 @@ namespace OverlayManagementService.Network
         {
             foreach (KeyValuePair<string, IBridge> entry in Bridges)
             {
-                entry.Value.CleanUpBridge();
-                Bridges.Remove(entry.Key);
+                if (entry.Value.Vni == virtualMachine.Vni)
+                {
+                    entry.Value.CleanUpBridge();
+                    Bridges.Remove(entry.Key);
+                }
             }
         }
     }

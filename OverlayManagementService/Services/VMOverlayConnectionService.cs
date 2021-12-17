@@ -14,16 +14,15 @@ namespace OverlayManagementService.Services
 
         private readonly INetworkRepository _jsonRepository;
         private readonly ILogger<VMOverlayConnectionService> _logger;
-        private readonly IFirewall _firewall;
-        private readonly IAddress _ipAddress;
         private readonly IClientConnectionFactory _clientConnectionFactory;
+        private readonly IFirewallRepository _firewallRepository;
 
-        public VMOverlayConnectionService(INetworkRepository jsonRepository, ILogger<VMOverlayConnectionService> logger, IAddress ipAddress, IClientConnectionFactory clientConnectionFactory)
+        public VMOverlayConnectionService(INetworkRepository jsonRepository, ILogger<VMOverlayConnectionService> logger, IClientConnectionFactory clientConnectionFactory, IFirewallRepository firewallRepository)
         {
             _jsonRepository = jsonRepository;
             _logger = logger;
-            _ipAddress = ipAddress;
             _clientConnectionFactory = clientConnectionFactory;
+            _firewallRepository = firewallRepository;
         }
 
         public IEnumerable<ClientConnection> GetAllNetworks(IEnumerable<Claim> claims)
@@ -47,8 +46,11 @@ namespace OverlayManagementService.Services
             _logger.LogInformation("Searching requested network");
             IOverlayNetwork overlayNetwork = _jsonRepository.GetOverlayNetwork(groupId);
             _logger.LogInformation("Initiating connection on Open Virtual Switch");
-            overlayNetwork.AddClient(ip);
-            return _clientConnectionFactory.CreateClientConnectionDto(overlayNetwork.Vni, groupId, overlayNetwork.OpenVirtualSwitch.PublicIP, _ipAddress.GenerarteUniqueIPV4Address());
+            string clientIp = overlayNetwork.AddClient(ip);
+            IFirewall firewall = _firewallRepository.GetFirewall(overlayNetwork.OpenVirtualSwitch.Key);
+            _logger.LogInformation("Creating temporary exception for client");
+            firewall.AddException(clientIp);
+            return _clientConnectionFactory.CreateClientConnectionDto(overlayNetwork.Vni, groupId, overlayNetwork.OpenVirtualSwitch.PublicIP, clientIp);
         }
     }
 }

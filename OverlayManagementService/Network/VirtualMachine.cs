@@ -13,14 +13,14 @@ namespace OverlayManagementService.Network
         {
             Guid = guid;
             ManagementIp = managementIp;
-            VNI = vni;
+            Vni = vni;
             DestIp = destIP;
             CommunicationIP = communicationIP;
-            VXLANInterface = new LinuxVXLANInterface(Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14), VNI, "4789", DestIp, managementIp);
+            VXLANInterface = new LinuxVXLANInterface(Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14), Vni, "4789", DestIp, managementIp);
         }
 
-        private Guid Guid { get; set; }
-        public string VNI { get; set; }
+        public Guid Guid { get; set; }
+        public string Vni { get; set; }
         public string ManagementIp { get; set; }
         public string DestIp { get; set; }
         public string VxlanIp { get; set; }

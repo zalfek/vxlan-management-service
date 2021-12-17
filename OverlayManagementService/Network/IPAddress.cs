@@ -11,10 +11,10 @@ namespace OverlayManagementService.Network
         private readonly ILogger<IPAddress> _logger;
         private static List<string> IPs;
         private static List<int> LastIPV4;
-        private readonly string IPV6;
 
         public IPAddress()
         {
+            _logger = new LoggerFactory().CreateLogger<IPAddress>();
             LastIPV4 = new List<int>();
             IPs = new List<string>();
             LastIPV4.Add(192);
@@ -25,8 +25,10 @@ namespace OverlayManagementService.Network
 
         public string GenerarteUniqueIPV4Address()
         {
+            _logger.LogInformation("Generating new IP address");
             LastIPV4[3] = LastIPV4[3]++;
             IPs.Add(String.Join(".", LastIPV4.ToArray()));
+            _logger.LogInformation("New IP is " + String.Join(".", LastIPV4.ToArray()));
             return String.Join(".", LastIPV4.ToArray());
         }
     }

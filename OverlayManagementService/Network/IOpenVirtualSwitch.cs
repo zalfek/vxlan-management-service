@@ -12,6 +12,7 @@ namespace OverlayManagementService.Network
         public void AddBridge(IBridge bridge);
         public void DeployVXLANInterface(IVirtualMachine virtualMachine);
         public void DeployClientVXLANInterface(string vni, string ip);
+        public void CleanUpClientVXLANInterface(string vni, string ip);
         public IDictionary<string, IBridge> Bridges { get; set; }
         public void DeployOVSConnection(string vni);
         public void CleanUpOVSConnection(IVirtualMachine virtualMachine);

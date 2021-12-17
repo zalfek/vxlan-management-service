@@ -40,7 +40,7 @@ namespace OverlayManagementService.Controllers
         public IEnumerable<ClientConnection> GetAllNetworks()
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-            _logger.LogInformation("Processing GET request: " + HttpContext.Request.ToString());
+            _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
             _logger.LogInformation("Extracting user groups ");
             IEnumerable<Claim> groups = User.Claims.Where(claim => claim.Type == "groups");
             _logger.LogInformation("User belongs to " + groups.ToString());
@@ -54,8 +54,8 @@ namespace OverlayManagementService.Controllers
         public ClientConnection CreateConnection(string groupId)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-            var ip = _accessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
-            _logger.LogInformation("Processing GET request: " + HttpContext.Request.ToString());
+            var ip = _accessor.HttpContext?.Connection?.RemoteIpAddress?.MapToIPv4().ToString();
+            _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
             return _vmOverlayConnectionService.CreateConnection(groupId, ip);
         }
     }

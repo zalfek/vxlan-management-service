@@ -30,57 +30,53 @@ namespace OverlayManagementService.Network
         public void CleanUpInterface()
         {
 
-            ConnectionInfo sSHConnectionInfo = new ConnectionInfo(ManagementIp, "vagrant", new AuthenticationMethod[]{
+            ConnectionInfo sSHConnectionInfo = new(ManagementIp, "vagrant", new AuthenticationMethod[]{
                             new PasswordAuthenticationMethod("vagrant", "vagrant")});
 
-            using (var sshclient = new SshClient(sSHConnectionInfo))
+            using var sshclient = new SshClient(sSHConnectionInfo);
+            sshclient.Connect();
+            using (var cmd = sshclient.CreateCommand("sudo ip link del " + Name))
             {
-                sshclient.Connect();
-                using (var cmd = sshclient.CreateCommand("sudo ip link del " + Name))
-                {
-                    cmd.Execute();
-                    Console.WriteLine("Command>" + cmd.CommandText);
-                    Console.WriteLine("Return Value = {0}", cmd.ExitStatus);
-                }
-                sshclient.Disconnect();
+                cmd.Execute();
+                Console.WriteLine("Command>" + cmd.CommandText);
+                Console.WriteLine("Return Value = {0}", cmd.ExitStatus);
             }
+            sshclient.Disconnect();
         }
 
         public void DeployInterface(string vxlanIp)
         {
 
-            ConnectionInfo sSHConnectionInfo = new ConnectionInfo(ManagementIp, "vagrant", new AuthenticationMethod[]{
+            ConnectionInfo sSHConnectionInfo = new(ManagementIp, "vagrant", new AuthenticationMethod[]{
                             new PasswordAuthenticationMethod("vagrant", "vagrant")});
 
-            using (var sshclient = new SshClient(sSHConnectionInfo))
+            using var sshclient = new SshClient(sSHConnectionInfo);
+            sshclient.Connect();
+            using (var cmd = sshclient.CreateCommand("sudo ip link add " + Name + " type vxlan id " + VNI + " dstport " + DstPort + " srcport " + DstPort + " 4790"))
             {
-                sshclient.Connect();
-                using (var cmd = sshclient.CreateCommand("sudo ip link add " + Name + " type vxlan id " + VNI + " dstport " + DstPort + " srcport " + DstPort + " 4790"))
-                {
-                    cmd.Execute();
-                    Console.WriteLine("Command>" + cmd.CommandText);
-                    Console.WriteLine("Return Value = {0}", cmd.ExitStatus);
-                }
-                using (var cmd = sshclient.CreateCommand("sudo ip addr add " + vxlanIp + " dev " + Name))
-                {
-                    cmd.Execute();
-                    Console.WriteLine("Command>" + cmd.CommandText);
-                    Console.WriteLine("Return Value = {0}", cmd.ExitStatus);
-                }
-                using (var cmd = sshclient.CreateCommand("sudo ip link set " + Name + " up" ))
-                {
-                    cmd.Execute();
-                    Console.WriteLine("Command>" + cmd.CommandText);
-                    Console.WriteLine("Return Value = {0}", cmd.ExitStatus);
-                }
-                using (var cmd = sshclient.CreateCommand("bridge fdb add 00:00:00:00:00:00 dev " + Name + " dst" + DstIP))
-                {
-                    cmd.Execute();
-                    Console.WriteLine("Command>" + cmd.CommandText);
-                    Console.WriteLine("Return Value = {0}", cmd.ExitStatus);
-                }
-                sshclient.Disconnect();
+                cmd.Execute();
+                Console.WriteLine("Command>" + cmd.CommandText);
+                Console.WriteLine("Return Value = {0}", cmd.ExitStatus);
             }
+            using (var cmd = sshclient.CreateCommand("sudo ip addr add " + vxlanIp + " dev " + Name))
+            {
+                cmd.Execute();
+                Console.WriteLine("Command>" + cmd.CommandText);
+                Console.WriteLine("Return Value = {0}", cmd.ExitStatus);
+            }
+            using (var cmd = sshclient.CreateCommand("sudo ip link set " + Name + " up"))
+            {
+                cmd.Execute();
+                Console.WriteLine("Command>" + cmd.CommandText);
+                Console.WriteLine("Return Value = {0}", cmd.ExitStatus);
+            }
+            using (var cmd = sshclient.CreateCommand("bridge fdb add 00:00:00:00:00:00 dev " + Name + " dst" + DstIP))
+            {
+                cmd.Execute();
+                Console.WriteLine("Command>" + cmd.CommandText);
+                Console.WriteLine("Return Value = {0}", cmd.ExitStatus);
+            }
+            sshclient.Disconnect();
         }
     }
 }

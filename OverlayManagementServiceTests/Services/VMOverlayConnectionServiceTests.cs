@@ -19,26 +19,29 @@ namespace OverlayManagementService.Services.Tests
     public class VMOverlayConnectionServiceTests
     {
         private readonly VMOverlayConnectionService _sut;
-        private readonly Mock<INetworkRepository> _jsonRepositoryMock = new Mock<INetworkRepository>();
-        private readonly Mock<ILogger<VMOverlayConnectionService>> _loggerMock = new Mock<ILogger<VMOverlayConnectionService>>();
-        private readonly Mock<IAddress> _ipAddressMock = new Mock<IAddress>();
-        private readonly Mock<IClientConnectionFactory> _clientConnectionFactoryMock = new Mock<IClientConnectionFactory>();
+        private readonly Mock<INetworkRepository> _jsonRepositoryMock = new();
+        private readonly Mock<ILogger<VMOverlayConnectionService>> _loggerMock = new();
+        private readonly Mock<IClientConnectionFactory> _clientConnectionFactoryMock = new();
+        private readonly Mock<IFirewallFactory> _firewallFactoryMock = new();
+        private readonly Mock<IFirewallRepository> _firewallRepositoryMock = new();
 
         public VMOverlayConnectionServiceTests()
         {
-            _sut = new VMOverlayConnectionService(_jsonRepositoryMock.Object, _loggerMock.Object, _ipAddressMock.Object, _clientConnectionFactoryMock.Object);
+            _sut = new VMOverlayConnectionService(_jsonRepositoryMock.Object, _loggerMock.Object, _clientConnectionFactoryMock.Object, _firewallRepositoryMock.Object);
         }
 
         [TestMethod()]
         public void GetAllNetworksTest()
         {
-            List<Claim> claims = new List<Claim>();
-            claims.Add(new Claim("group", "adggjdasd45t54zuw46us"));
-            claims.Add(new Claim("group", "adgasdajkjdjghzuw46us"));
-            claims.Add(new Claim("group", "adgsdfgaz5645f90mmsds"));
+            List<Claim> claims = new()
+            {
+                new Claim("group", "adggjdasd45t54zuw46us"),
+                new Claim("group", "adgasdajkjdjghzuw46us"),
+                new Claim("group", "adgsdfgaz5645f90mmsds")
+            };
 
-            ClientConnection clientConnection = new ClientConnection("1", "adggjdasd45t54zuw46us", "255.255.255.255", "255.255.255.255");
-            Mock<IOverlayNetwork> overlayNetworkMock = new Mock<IOverlayNetwork>();
+            ClientConnection clientConnection = new("1", "adggjdasd45t54zuw46us", "255.255.255.255", "255.255.255.255");
+            Mock<IOverlayNetwork> overlayNetworkMock = new();
             _jsonRepositoryMock.Setup(x => x.GetOverlayNetwork(It.IsAny<Claim>())).Returns(overlayNetworkMock.Object);
             _clientConnectionFactoryMock.Setup(c => c.CreateClientConnectionDto(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(clientConnection);
             overlayNetworkMock.SetupGet(x => x.Vni).Returns("1");
@@ -53,13 +56,16 @@ namespace OverlayManagementService.Services.Tests
         [TestMethod()]
         public void CreateConnectionTest()
         {
-            Mock<IOverlayNetwork> overlayNetworkMock = new Mock<IOverlayNetwork>();
+            Mock<IOverlayNetwork> overlayNetworkMock = new();
+            Mock<IFirewall> _firewallMock = new();
             _jsonRepositoryMock.Setup(x => x.GetOverlayNetwork(It.IsAny<string>())).Returns(overlayNetworkMock.Object);
             overlayNetworkMock.Setup(n => n.AddClient(It.IsAny<string>()));
-            ClientConnection clientConnection = new ClientConnection("1", "adggjdasd45t54zuw46us", "255.255.255.255", "255.255.255.255");
+            ClientConnection clientConnection = new("1", "adggjdasd45t54zuw46us", "255.255.255.255", "255.255.255.255");
             _clientConnectionFactoryMock.Setup(c => c.CreateClientConnectionDto(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(clientConnection);
             overlayNetworkMock.SetupGet(x => x.Vni).Returns("1");
             overlayNetworkMock.SetupGet(x => x.OpenVirtualSwitch.PublicIP).Returns("255.255.255.255");
+            _firewallRepositoryMock.Setup(f => f.GetFirewall(It.IsAny<string>())).Returns(_firewallMock.Object);
+            _firewallMock.Setup(f => f.AddException(It.IsAny<string>()));
 
 
             _sut.CreateConnection(It.IsAny<string>(), It.IsAny<string>());
