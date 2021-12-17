@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementService.Network
 {
-    public class VNI : IIdentifier
+    public class VirtualNetworkIdentifier : IIdentifier
     {
-        private readonly ILogger<VNI> _logger;
+        private readonly ILogger<VirtualNetworkIdentifier> _logger;
         private static List<string> VNIs;
         private static int PreviousVNI;
 
-        public VNI()
+        public VirtualNetworkIdentifier()
         {
-            _logger = new LoggerFactory().CreateLogger<VNI>();
+            _logger = new LoggerFactory().CreateLogger<VirtualNetworkIdentifier>();
             VNIs = new List<string>();
             PreviousVNI = 0;
         }

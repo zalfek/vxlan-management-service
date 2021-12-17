@@ -72,9 +72,5 @@ namespace OverlayManagementService.Network
             VirtualMachines.Remove(virtualMachine);
         }
 
-        public void RemoveClients()
-        {
-            Clients.ForEach(client => OpenVirtualSwitch.CleanUpClientVXLANInterface(Vni, client)); 
-        }
     }
 }

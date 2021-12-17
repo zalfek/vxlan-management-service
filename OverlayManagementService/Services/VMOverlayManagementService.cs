@@ -22,6 +22,9 @@ namespace OverlayManagementService.Services
         private readonly INetworkFactory _networkFactory;
         private readonly IBridgeFactory _bridgeFactory;
         private readonly IVirtualMachineFactory _virtualMachineFactory;
+        private readonly IFirewallRepository _firewallRepository;
+        private readonly IFirewallFactory _firewallFactory;
+
         public VMOverlayManagementService(
             ILogger<VMOverlayManagementService> logger,
             INetworkRepository networkRepository,
@@ -30,7 +33,9 @@ namespace OverlayManagementService.Services
             IBridgeFactory bridgeFactory,
             IVirtualMachineFactory virtualMachineFactory,
             IIdentifierFactory<IPAddress> ipResolverFactory,
-            ISwitchRepository switchRepository
+            ISwitchRepository switchRepository,
+            IFirewallRepository firewallRepository,
+            IFirewallFactory firewallFactory
             )
         {
             _logger = logger;
@@ -41,6 +46,8 @@ namespace OverlayManagementService.Services
             _bridgeFactory = bridgeFactory;
             _virtualMachineFactory = virtualMachineFactory;
             _switchRepository = switchRepository;
+            _firewallRepository = firewallRepository;
+            _firewallFactory = firewallFactory;
         }
 
         public void DeleteNetwork(string groupId)
@@ -119,6 +126,10 @@ namespace OverlayManagementService.Services
         {
             _logger.LogInformation("Saving new switch to repository");
             _switchRepository.SaveSwitch(openVirtualSwitch);
+            _logger.LogInformation("Creating new Firewall entry");
+            IFirewall firewall = _firewallFactory.CreateFirewall(openVirtualSwitch.ManagementIp);
+            _logger.LogInformation("Saving new Firewall");
+            _firewallRepository.AddFirewall(openVirtualSwitch.Key, firewall);
             return openVirtualSwitch;
         }
 

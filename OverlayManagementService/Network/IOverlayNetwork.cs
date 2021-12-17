@@ -10,14 +10,13 @@ namespace OverlayManagementService.Network
     {
         string GroupId { get; set; }
         string Vni { get; set; }
+        public List<string> Clients { get; set; }
         public IOpenVirtualSwitch OpenVirtualSwitch { get; set; }
         public void RemoveClient(string ip);
-        public void RemoveClients();
         public string AddClient(string ip);
         public void RemoveVMachine(Guid guid);
         public void AddVMachine(IVirtualMachine virtualMachine);
         public void DeployNetwork();
         public void CleanUpNetwork();
-
     }
 }

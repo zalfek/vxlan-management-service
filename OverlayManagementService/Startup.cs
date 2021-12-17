@@ -66,19 +66,19 @@ namespace OverlayManagementService
 
             services.AddScoped<IOverlayConnectionService, VMOverlayConnectionService>();
             services.AddScoped<IOverlayManagementService, VMOverlayManagementService>();
-            services.AddScoped<GraphServiceClient, GraphServiceClient>();
             services.AddSingleton<INetworkRepository, NetworkRepository>();
             services.AddSingleton<ISwitchRepository, SwitchRepository>();
-            services.AddScoped<IFirewall, Firewall>();
             services.AddScoped<IAddress, IPAddress>();
-            services.AddScoped<IIdentifier, VNI>();
+            services.AddScoped<IIdentifier, VirtualNetworkIdentifier>();
             services.AddScoped<INetworkFactory, NetworkFactory>();
             services.AddScoped<IBridgeFactory, BridgeFactory>();
             services.AddScoped<IVirtualMachineFactory, VirtualMachineFactory>();
             services.AddScoped<IClientConnectionFactory, ClientConnectionFactory>();
             services.AddScoped<IIdentifierFactory<IPAddress>, IdentifierFactory<IPAddress>>();
-            services.AddScoped<IIdentifierFactory<VNI>, IdentifierFactory<VNI>>();
+            services.AddScoped<IIdentifierFactory<VirtualNetworkIdentifier>, IdentifierFactory<VirtualNetworkIdentifier>>();
             services.AddHostedService<ClientsRemovalService>();
+            services.AddScoped<IFirewallFactory, FirewallFactory>();
+            services.AddScoped<IFirewallRepository, FirewallRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

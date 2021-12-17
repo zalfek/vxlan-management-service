@@ -16,6 +16,7 @@ namespace OverlayManagementService.Services
         private readonly ILogger<ClientsRemovalService> _logger;
         private Timer _timer;
         private readonly INetworkRepository _networkRepository;
+        private readonly IFirewallRepository _firewallRepository;
 
         public ClientsRemovalService(ILogger<ClientsRemovalService> logger, INetworkRepository networkRepository)
         {
@@ -27,10 +28,8 @@ namespace OverlayManagementService.Services
         {
             _logger.LogInformation("Timed Hosted Service running.");
             int hourSpan = 24 - DateTime.Now.Hour;
-
             _timer = new Timer(RemoveClientConnection, null, TimeSpan.Zero,
                 TimeSpan.FromHours(hourSpan));
-
             return Task.CompletedTask;
         }
 
@@ -45,23 +44,28 @@ namespace OverlayManagementService.Services
             foreach (KeyValuePair<string, IOverlayNetwork> keyValuePair in networks)
             {
                 _logger.LogInformation("Removing clients from network with id: " + keyValuePair.Value.GroupId);
-                keyValuePair.Value.RemoveClients();
+                IFirewall firewall = _firewallRepository.GetFirewall(keyValuePair.Value.OpenVirtualSwitch.Key);
+                keyValuePair.Value.Clients.ForEach(client =>
+                {
+                    _logger.LogInformation("Removing firewall exception for " + client);
+                    firewall.RemoveException(client);
+                    _logger.LogInformation("Removing from network client with ip: " + client);
+                    keyValuePair.Value.RemoveClient(client);
+                });
             }
-           
         }
 
         public Task StopAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Timed Hosted Service is stopping.");
-
             _timer?.Change(Timeout.Infinite, 0);
-
             return Task.CompletedTask;
         }
 
         public void Dispose()
         {
             _timer?.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

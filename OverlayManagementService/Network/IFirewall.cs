@@ -11,6 +11,5 @@ namespace OverlayManagementService.Network
     {
         public void AddException(string ip);
         public void RemoveException(string ip);
-
     }
 }

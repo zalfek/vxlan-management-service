@@ -20,7 +20,7 @@ namespace OverlayManagementClient.Services
 
     public static class VXLANManagementServiceExtensions
     {
-        public static void AddVXLANManagementService(this IServiceCollection services, IConfiguration configuration)
+        public static void AddVXLANManagementService(this IServiceCollection services)
         {
             services.AddHttpClient<IVXLANManagementService, VXLANManagementService>();
         }
@@ -29,17 +29,15 @@ namespace OverlayManagementClient.Services
 
     public class VXLANManagementService :IVXLANManagementService
     {
-        private readonly IHttpContextAccessor _contextAccessor;
         private readonly HttpClient _httpClient;
         private readonly string _Scope = string.Empty;
         private readonly string _BaseAddress = string.Empty;
         private readonly ITokenAcquisition _tokenAcquisition;
 
-        public VXLANManagementService(ITokenAcquisition tokenAcquisition, HttpClient httpClient, IConfiguration configuration, IHttpContextAccessor contextAccessor)
+        public VXLANManagementService(ITokenAcquisition tokenAcquisition, HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
             _tokenAcquisition = tokenAcquisition;
-            _contextAccessor = contextAccessor;
             _Scope = configuration["OverlayManagementService:OverlayManagementServiceScope"];
             _BaseAddress = configuration["OverlayManagementService:OverlayManagementServiceBaseAddress"];
         }
@@ -153,7 +151,6 @@ namespace OverlayManagementClient.Services
         public async  Task<OpenVirtualSwitch> GetSwitchAsync(string key)
         {
             await PrepareAuthenticatedClient();
-            var request = $"{ _BaseAddress}/management/get/switch/{key}";
             var response = await _httpClient.GetAsync($"{ _BaseAddress}/management/get/switch/{key}");
             if (response.StatusCode == HttpStatusCode.OK)
             {

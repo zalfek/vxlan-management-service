@@ -45,7 +45,7 @@ namespace OverlayManagementClient
                  .EnableTokenAcquisitionToCallDownstreamApi(new string[] { Configuration["OverlayManagementService:OverlayManagementServiceScope"] })
                     .AddInMemoryTokenCaches();
 
-            services.AddVXLANManagementService(Configuration);
+            services.AddVXLANManagementService();
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("Admin",

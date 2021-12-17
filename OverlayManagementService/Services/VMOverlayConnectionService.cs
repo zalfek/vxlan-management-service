@@ -14,15 +14,15 @@ namespace OverlayManagementService.Services
 
         private readonly INetworkRepository _jsonRepository;
         private readonly ILogger<VMOverlayConnectionService> _logger;
-        private readonly IFirewall _firewall;
         private readonly IClientConnectionFactory _clientConnectionFactory;
+        private readonly IFirewallRepository _firewallRepository;
 
-        public VMOverlayConnectionService(INetworkRepository jsonRepository, ILogger<VMOverlayConnectionService> logger, IClientConnectionFactory clientConnectionFactory, IFirewall firewall)
+        public VMOverlayConnectionService(INetworkRepository jsonRepository, ILogger<VMOverlayConnectionService> logger, IClientConnectionFactory clientConnectionFactory, IFirewallRepository firewallRepository)
         {
             _jsonRepository = jsonRepository;
             _logger = logger;
             _clientConnectionFactory = clientConnectionFactory;
-            _firewall = firewall;
+            _firewallRepository = firewallRepository;
         }
 
         public IEnumerable<ClientConnection> GetAllNetworks(IEnumerable<Claim> claims)
@@ -47,8 +47,9 @@ namespace OverlayManagementService.Services
             IOverlayNetwork overlayNetwork = _jsonRepository.GetOverlayNetwork(groupId);
             _logger.LogInformation("Initiating connection on Open Virtual Switch");
             string clientIp = overlayNetwork.AddClient(ip);
+            IFirewall firewall = _firewallRepository.GetFirewall(overlayNetwork.OpenVirtualSwitch.Key);
             _logger.LogInformation("Creating temporary exception for client");
-            _firewall.AddException(clientIp);
+            firewall.AddException(clientIp);
             return _clientConnectionFactory.CreateClientConnectionDto(overlayNetwork.Vni, groupId, overlayNetwork.OpenVirtualSwitch.PublicIP, clientIp);
         }
     }
