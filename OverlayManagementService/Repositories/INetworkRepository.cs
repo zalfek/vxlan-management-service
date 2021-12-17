@@ -14,7 +14,6 @@ namespace OverlayManagementService.Repositories
         IOverlayNetwork UpdateOverlayNetwork(IOverlayNetwork overlayNetwork);
         IOverlayNetwork GetOverlayNetwork(string groupId);
         IDictionary<string, IOverlayNetwork> GetAllNetworks();
-        IEnumerable<IOverlayNetwork> GetAllSwitches();
         IOverlayNetwork GetOverlayNetworkByVni(string vni);
         IOverlayNetwork GetOverlayNetwork(Claim claim);
     }

@@ -78,6 +78,7 @@ namespace OverlayManagementService
             services.AddScoped<IClientConnectionFactory, ClientConnectionFactory>();
             services.AddScoped<IIdentifierFactory<IPAddress>, IdentifierFactory<IPAddress>>();
             services.AddScoped<IIdentifierFactory<VNI>, IdentifierFactory<VNI>>();
+            services.AddHostedService<ClientsRemovalService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

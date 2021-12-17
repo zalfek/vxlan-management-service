@@ -25,6 +25,7 @@ namespace OverlayManagementService.Repositories
 
         public void DeleteOverlayNetwork(string groupId)
         {
+            _logger.LogInformation("Removing network with id: " + groupId + " from database");
             _dbMock.Remove(groupId);
         }
 
@@ -37,10 +38,12 @@ namespace OverlayManagementService.Repositories
         {
             if (_dbMock.ContainsKey(overlayNetwork.GroupId))
             {
+                _logger.LogInformation("Network with id: " + overlayNetwork.GroupId + " already exists. Updating the state in database");
                 _dbMock[overlayNetwork.GroupId] = overlayNetwork;
             }
             else
             {
+                _logger.LogInformation("Network with id: " + overlayNetwork.GroupId + " does not exists. Creating new entry in database");
                 _dbMock.Add(overlayNetwork.GroupId, overlayNetwork);
             }
             return overlayNetwork;
@@ -48,6 +51,7 @@ namespace OverlayManagementService.Repositories
 
         public IOverlayNetwork UpdateOverlayNetwork(IOverlayNetwork overlayNetwork)
         {
+            _logger.LogInformation("Updating the state of network in database");
             _dbMock[overlayNetwork.GroupId] = overlayNetwork;
             return overlayNetwork;
         }
@@ -55,11 +59,6 @@ namespace OverlayManagementService.Repositories
         public IDictionary<string, IOverlayNetwork> GetAllNetworks()
         {
             return _dbMock;
-        }
-
-        public IEnumerable<IOverlayNetwork> GetAllSwitches()
-        {
-            throw new NotImplementedException();
         }
 
         public IOverlayNetwork GetOverlayNetworkByVni(string vni)
