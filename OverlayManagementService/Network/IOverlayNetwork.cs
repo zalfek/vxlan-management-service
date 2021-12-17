@@ -12,7 +12,7 @@ namespace OverlayManagementService.Network
         string Vni { get; set; }
         public IOpenVirtualSwitch OpenVirtualSwitch { get; set; }
         public void RemoveClient(string ip);
-        public void AddClient(string ip);
+        public string AddClient(string ip);
         public void RemoveVMachine(Guid guid);
         public void AddVMachine(IVirtualMachine virtualMachine);
         public void DeployNetwork();

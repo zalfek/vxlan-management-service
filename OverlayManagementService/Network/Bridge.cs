@@ -27,7 +27,8 @@ namespace OverlayManagementService.Network
 
         public void DeployVXLANInterface(IVirtualMachine virtualMachine)
         {
-            IVXLANInterface vXLANInterface = new VXLANInterface(
+            _logger.LogInformation("Creating new vxlan interface");
+               IVXLANInterface vXLANInterface = new VXLANInterface(
                 Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14),
                 "vxlan",
                 virtualMachine.CommunicationIP,
@@ -35,6 +36,7 @@ namespace OverlayManagementService.Network
                 Name,
                 ManagementIp
                 );
+            _logger.LogInformation("Deploying vxlan interface");
             vXLANInterface.DeployVXLANInterface();
             VXLANInterfaces.Add(vXLANInterface);
         }
@@ -42,6 +44,7 @@ namespace OverlayManagementService.Network
 
         public void DeployClientVXLANInterface(string ip)
         {
+            _logger.LogInformation("Creating new vxlan interface");
             IVXLANInterface vXLANInterface = new VXLANInterface(
                 Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14),
                 "vxlan",
@@ -50,31 +53,50 @@ namespace OverlayManagementService.Network
                 Name,
                 ManagementIp
                 );
+            _logger.LogInformation("Deploying vxlan interface");
             vXLANInterface.DeployVXLANInterface();
             VXLANInterfaces.Add(vXLANInterface);
         }
 
         public void CleanUpBridge()
         {
-            throw new System.NotImplementedException();
+            ConnectionInfo sSHConnectionInfo = new(ManagementIp, "vagrant", new AuthenticationMethod[]{
+                            new PasswordAuthenticationMethod("vagrant", "vagrant")});
+            using var sshclient = new SshClient(sSHConnectionInfo);
+            sshclient.Connect();
+            using (var cmd = sshclient.CreateCommand("sudo ovs-vsctl del-br " + Name))
+            {
+                cmd.Execute();
+                _logger.LogInformation("Command>" + cmd.CommandText);
+                _logger.LogInformation("Return Value = {0}", cmd.ExitStatus);
+            }
+
+            sshclient.Disconnect();
         }
 
         public void DeployBridge()
         {
-            ConnectionInfo sSHConnectionInfo = new ConnectionInfo(ManagementIp, "vagrant", new AuthenticationMethod[]{
+            ConnectionInfo sSHConnectionInfo = new(ManagementIp, "vagrant", new AuthenticationMethod[]{
                             new PasswordAuthenticationMethod("vagrant", "vagrant")});
-            using (var sshclient = new SshClient(sSHConnectionInfo))
+            using var sshclient = new SshClient(sSHConnectionInfo);
+            sshclient.Connect();
+            using (var cmd = sshclient.CreateCommand("sudo ovs-vsctl add-br " + Name))
             {
-                sshclient.Connect();
-                    using (var cmd = sshclient.CreateCommand("sudo ovs-vsctl add-br " + Name))
-                    {
-                        cmd.Execute();
-                        Console.WriteLine("Command>" + cmd.CommandText);
-                        Console.WriteLine("Return Value = {0}", cmd.ExitStatus);
-                    }
-              
-                sshclient.Disconnect();
+                cmd.Execute();
+                _logger.LogInformation("Command>" + cmd.CommandText);
+                _logger.LogInformation("Return Value = {0}", cmd.ExitStatus);
             }
+
+            sshclient.Disconnect();
+        }
+
+        public void CleanUpClientVXLANInterface(string ip)
+        {
+            _logger.LogInformation("Searching for vxlan interface");
+            IVXLANInterface vXLANInterface = VXLANInterfaces.Find(x => x.RemoteIp == ip);
+            _logger.LogInformation("Deploying vxlan interface");
+            vXLANInterface.CleanUpVXLANInterface();
+            VXLANInterfaces.Remove(vXLANInterface);
         }
     }
 

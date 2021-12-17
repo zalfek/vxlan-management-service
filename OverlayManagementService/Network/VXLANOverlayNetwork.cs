@@ -19,6 +19,7 @@ namespace OverlayManagementService.Network
             VirtualMachines = new List<IVirtualMachine>();
             Clients = new List<string>();
             IsDeployed = false;
+            IpAddress = ipAddress;
         }
 
         public string Vni { get; set; }
@@ -27,17 +28,18 @@ namespace OverlayManagementService.Network
         public List<IVirtualMachine> VirtualMachines { get; set; }
         public List<string> Clients { get; set; }
         public bool IsDeployed { get; set; }
-        public IAddress ipAddress { get; set; }
+        public IAddress IpAddress { get; set; }
 
-        public void AddClient(string ip)
+        public string AddClient(string ip)
         {
             Clients.Add(ip);
             OpenVirtualSwitch.DeployClientVXLANInterface(Vni, ip);
+            return IpAddress.GenerarteUniqueIPV4Address();
         }
 
         public void AddVMachine(IVirtualMachine virtualMachine)
         {
-            virtualMachine.DeployVMConnection(ipAddress.GenerarteUniqueIPV4Address());
+            virtualMachine.DeployVMConnection(IpAddress.GenerarteUniqueIPV4Address());
             OpenVirtualSwitch.DeployVXLANInterface(virtualMachine);
             VirtualMachines.Add(virtualMachine);
         }
@@ -59,6 +61,7 @@ namespace OverlayManagementService.Network
         public void RemoveClient(string ip)
         {
             Clients.Remove(ip);
+            OpenVirtualSwitch.CleanUpClientVXLANInterface(Vni, ip);
         }
 
         public void RemoveVMachine(Guid guid)

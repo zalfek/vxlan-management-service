@@ -49,6 +49,12 @@ namespace OverlayManagementService.Network
             Bridges[vni].DeployClientVXLANInterface(ip);
         }
 
+        public void CleanUpClientVXLANInterface(string vni, string ip)
+        {
+            _logger.LogInformation("Initiating vxlan interface clean up on Bridge with VNI: " + vni + "with client(remote) ip: " + ip);
+            Bridges[vni].CleanUpClientVXLANInterface(ip);
+        }
+
         public void DeployOVSConnection(string vni)
         {
             _logger.LogInformation("Deploying new Bridge with VNI: " + vni);

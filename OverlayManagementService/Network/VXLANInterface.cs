@@ -33,38 +33,40 @@ namespace OverlayManagementService.Network
 
         public void CleanUpVXLANInterface()
         {
-            ConnectionInfo sSHConnectionInfo = new ConnectionInfo(ManagementIp, "vagrant", new AuthenticationMethod[]{
+            ConnectionInfo sSHConnectionInfo = new(ManagementIp, "vagrant", new AuthenticationMethod[]{
                             new PasswordAuthenticationMethod("vagrant", "vagrant")});
 
-            using (var sshclient = new SshClient(sSHConnectionInfo))
+            using var sshclient = new SshClient(sSHConnectionInfo);
+            _logger.LogInformation("Connecting to device");
+            sshclient.Connect();
+            using (var cmd = sshclient.CreateCommand("sudo ovs-vsctl del-port " + BridgeName + " " + Name))
             {
-                sshclient.Connect();
-                using (var cmd = sshclient.CreateCommand("sudo ovs-vsctl del-port " + BridgeName + " " + Name))
-                {
-                    cmd.Execute();
-                    Console.WriteLine("Command>" + cmd.CommandText);
-                    Console.WriteLine("Return Value = {0}", cmd.ExitStatus);
-                }
-                sshclient.Disconnect();
+                _logger.LogInformation("Executing command: " + cmd.CommandText);
+                cmd.Execute();
+                _logger.LogInformation("Command>" + cmd.CommandText);
+                _logger.LogInformation("Return Value = {0}", cmd.ExitStatus);
             }
+            _logger.LogInformation("Disconnecting from device");
+            sshclient.Disconnect();
         }
 
         public void DeployVXLANInterface()
         {
-            ConnectionInfo sSHConnectionInfo = new ConnectionInfo(ManagementIp, "vagrant", new AuthenticationMethod[]{
+            ConnectionInfo sSHConnectionInfo = new(ManagementIp, "vagrant", new AuthenticationMethod[]{
                             new PasswordAuthenticationMethod("vagrant", "vagrant")});
 
-            using (var sshclient = new SshClient(sSHConnectionInfo))
+            using var sshclient = new SshClient(sSHConnectionInfo);
+            _logger.LogInformation("Connecting to device");
+            sshclient.Connect();
+            using (var cmd = sshclient.CreateCommand("sudo ovs-vsctl add-port " + BridgeName + " " + Name + " -- set interface " + Name + " type=" + Type + " options:remote_ip=" + RemoteIp + " options:key=" + Vni))
             {
-                sshclient.Connect();
-                using (var cmd = sshclient.CreateCommand("sudo ovs-vsctl add-port " + BridgeName + " " + Name + " -- set interface " + Name + " type=" + Type + " options:remote_ip=" + RemoteIp + " options:key=" + Vni))
-                {
-                    cmd.Execute();
-                    Console.WriteLine("Command>" + cmd.CommandText);
-                    Console.WriteLine("Return Value = {0}", cmd.ExitStatus);
-                }
-                sshclient.Disconnect();
+                _logger.LogInformation("Executing command: " + cmd.CommandText);
+                cmd.Execute();
+                _logger.LogInformation("Command>" + cmd.CommandText);
+                _logger.LogInformation("Return Value = {0}", cmd.ExitStatus);
             }
+            _logger.LogInformation("Disconnecting from device");
+            sshclient.Disconnect();
         }
     }
 }

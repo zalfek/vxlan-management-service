@@ -32,6 +32,7 @@ namespace OverlayManagementService.Controllers
         public IOverlayNetwork DeployMachine(VmConnection vmConnection)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
             return _vmOverlayManagementService.RegisterMachine(vmConnection);
         }
 
@@ -40,6 +41,7 @@ namespace OverlayManagementService.Controllers
         public IOverlayNetwork GetNetwork(string vni)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
             return _vmOverlayManagementService.GetNetworkByVni(vni);
         }
 
@@ -48,6 +50,7 @@ namespace OverlayManagementService.Controllers
         public IOpenVirtualSwitch GetSwitch(string key)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
             return _vmOverlayManagementService.GetSwitch(key);
         }
 
@@ -57,6 +60,7 @@ namespace OverlayManagementService.Controllers
         public IOpenVirtualSwitch RegisterSwitch(OpenVirtualSwitch openVirtualSwitch)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
             return _vmOverlayManagementService.AddSwitch(openVirtualSwitch); ;
         }
 
@@ -65,6 +69,7 @@ namespace OverlayManagementService.Controllers
         public IOverlayNetwork SuspendMachine(string groupId, Guid guid)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
             return _vmOverlayManagementService.UnRegisterMachine(groupId, guid);
         }
 
@@ -73,6 +78,7 @@ namespace OverlayManagementService.Controllers
         public IOverlayNetwork DeployNetwork(OVSConnection oVSConnection)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
             return _vmOverlayManagementService.DeployNetwork(oVSConnection);
 
         }
@@ -82,6 +88,7 @@ namespace OverlayManagementService.Controllers
         public IActionResult DeleteNetwork(string groupId)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
             _vmOverlayManagementService.DeleteNetwork(groupId);
             return Ok();
         }
@@ -91,6 +98,7 @@ namespace OverlayManagementService.Controllers
         public IEnumerable<IOverlayNetwork> GetOverlayNetworks()
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
             return _vmOverlayManagementService.GetAllNetworks();
         }
 
@@ -99,6 +107,7 @@ namespace OverlayManagementService.Controllers
         public IEnumerable<IOpenVirtualSwitch> GetSwitches()
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
             return _vmOverlayManagementService.GetAllSwitches();
         }
 
@@ -107,6 +116,7 @@ namespace OverlayManagementService.Controllers
         public IOverlayNetwork UpdateNetwork(IOverlayNetwork overlayNetwork)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
             return _vmOverlayManagementService.UpdateNetwork(overlayNetwork);
         }
 
