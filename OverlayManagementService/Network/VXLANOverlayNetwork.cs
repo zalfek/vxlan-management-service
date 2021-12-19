@@ -1,4 +1,5 @@
 using OverlayManagementService.Dtos;
+using OverlayManagementService.Models;
 using OverlayManagementService.Network;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace OverlayManagementService.Network
             GroupId = groupId;
             OpenVirtualSwitch = openVirtualSwitch;
             VirtualMachines = new List<IVirtualMachine>();
-            Clients = new List<string>();
+            Clients = new List<Student>();
             IsDeployed = false;
             IpAddress = ipAddress;
         }
@@ -26,14 +27,14 @@ namespace OverlayManagementService.Network
         public string GroupId { get; set; }
         public IOpenVirtualSwitch OpenVirtualSwitch { get; set; }
         public List<IVirtualMachine> VirtualMachines { get; set; }
-        public List<string> Clients { get; set; }
+        public List<Student> Clients { get; set; }
         public bool IsDeployed { get; set; }
         public IAddress IpAddress { get; set; }
 
-        public string AddClient(string ip)
+        public string AddClient(Student client)
         {
-            Clients.Add(ip);
-            OpenVirtualSwitch.DeployClientVXLANInterface(Vni, ip);
+            Clients.Add(client);
+            OpenVirtualSwitch.DeployClientVXLANInterface(Vni, client.IpAddress);
             return IpAddress.GenerarteUniqueIPV4Address();
         }
 
@@ -58,10 +59,10 @@ namespace OverlayManagementService.Network
             IsDeployed = true;
         }
 
-        public void RemoveClient(string ip)
+        public void RemoveClient(Student client)
         {
-            Clients.Remove(ip);
-            OpenVirtualSwitch.CleanUpClientVXLANInterface(Vni, ip);
+            Clients.Remove(client);
+            OpenVirtualSwitch.CleanUpClientVXLANInterface(Vni, client.IpAddress);
         }
 
         public void RemoveVMachine(Guid guid)

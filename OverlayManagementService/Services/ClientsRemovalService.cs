@@ -48,7 +48,7 @@ namespace OverlayManagementService.Services
                 keyValuePair.Value.Clients.ForEach(client =>
                 {
                     _logger.LogInformation("Removing firewall exception for " + client);
-                    firewall.RemoveException(client);
+                    firewall.RemoveException(client.IpAddress);
                     _logger.LogInformation("Removing from network client with ip: " + client);
                     keyValuePair.Value.RemoveClient(client);
                 });

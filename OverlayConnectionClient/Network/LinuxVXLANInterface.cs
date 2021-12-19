@@ -29,7 +29,8 @@ namespace OverlayConnectionClient.Network
         public async void CleanUpInterface()
         {
            
-            Process process = new Process {
+            Process process = new()
+            {
 
              StartInfo = new ProcessStartInfo
              {
@@ -49,7 +50,8 @@ namespace OverlayConnectionClient.Network
         public async void DeployInterface()
         {
 
-            Process process = new Process {
+            Process process = new()
+            {
 
              StartInfo = new ProcessStartInfo
              {
@@ -64,11 +66,14 @@ namespace OverlayConnectionClient.Network
             process.Start();
             await process.StandardInput.WriteLineAsync("sudo ip link add " + Name + " type vxlan id " + VNI + " dstport " + DstPort + " srcport " + DstPort + " 4790");
             Console.WriteLine(await process.StandardOutput.ReadLineAsync());
+            process.Start();
             await process.StandardInput.WriteLineAsync("sudo ip addr add " + LocalIP + " dev " + Name);
             Console.WriteLine(await process.StandardOutput.ReadLineAsync());
+            process.Start();
             await process.StandardInput.WriteLineAsync("sudo ip link set " + Name + " up");
             Console.WriteLine(await process.StandardOutput.ReadLineAsync());
-            await process.StandardInput.WriteLineAsync("bridge fdb add 00:00:00:00:00:00 dev " + Name + " dst" + DstIP);
+            process.Start();
+            await process.StandardInput.WriteLineAsync("sudo bridge fdb add 00:00:00:00:00:00 dev " + Name + " dst" + DstIP);
             Console.WriteLine(await process.StandardOutput.ReadLineAsync());
         }
     }

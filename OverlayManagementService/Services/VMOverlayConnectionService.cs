@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using OverlayManagementService.Dtos;
 using OverlayManagementService.Factories;
+using OverlayManagementService.Models;
 using OverlayManagementService.Network;
 using OverlayManagementService.Repositories;
 using System;
@@ -41,12 +42,12 @@ namespace OverlayManagementService.Services
             return networks;
         }
 
-        public ClientConnection CreateConnection(string groupId, string ip)
+        public ClientConnection CreateConnection(string groupId, Student client)
         {
             _logger.LogInformation("Searching requested network");
             IOverlayNetwork overlayNetwork = _jsonRepository.GetOverlayNetwork(groupId);
             _logger.LogInformation("Initiating connection on Open Virtual Switch");
-            string clientIp = overlayNetwork.AddClient(ip);
+            string clientIp = overlayNetwork.AddClient(client);
             IFirewall firewall = _firewallRepository.GetFirewall(overlayNetwork.OpenVirtualSwitch.Key);
             _logger.LogInformation("Creating temporary exception for client");
             firewall.AddException(clientIp);

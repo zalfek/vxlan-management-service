@@ -1,4 +1,5 @@
 ﻿using OverlayManagementService.Dtos;
+using OverlayManagementService.Models;
 using OverlayManagementService.Network;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace OverlayManagementService.Services
 {
     public interface IOverlayConnectionService
     {
-        public ClientConnection CreateConnection(string groupId, string ip);
+        public ClientConnection CreateConnection(string groupId, Student client);
         public IEnumerable<ClientConnection> GetAllNetworks(IEnumerable<Claim> claims);
     }
 }
