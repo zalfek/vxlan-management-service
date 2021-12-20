@@ -65,7 +65,7 @@ namespace OverlayManagementService.Controllers
         }
 
         [Authorize(Policy = "Admin")]
-        [HttpPost("suspend/machine")]
+        [HttpGet("suspend/machine")]
         public IOverlayNetwork SuspendMachine(string groupId, Guid guid)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
@@ -118,6 +118,17 @@ namespace OverlayManagementService.Controllers
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
             _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
             return _vmOverlayManagementService.UpdateNetwork(overlayNetwork);
+        }
+
+
+        [Authorize(Policy = "Admin")]
+        [HttpDelete("delete/switch/{key}")]
+        public IActionResult DeleteSwitch(string key)
+        {
+            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
+            _vmOverlayManagementService.RemoveSwitch(key);
+            return Ok();
         }
 
     }

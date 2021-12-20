@@ -10,5 +10,6 @@ namespace OverlayManagementService.Repositories
     {
         public void AddFirewall(string key, IFirewall firewall);
         public IFirewall GetFirewall(string key);
+        public void RemoveFirewall(string key);
     }
 }

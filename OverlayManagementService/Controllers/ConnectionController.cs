@@ -13,6 +13,7 @@ using OverlayManagementService.Services;
 using Microsoft.Identity.Web;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using OverlayManagementService.Models;
 
 namespace OverlayManagementService.Controllers
 {
@@ -54,9 +55,28 @@ namespace OverlayManagementService.Controllers
         public ClientConnection CreateConnection(string groupId)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-            var ip = _accessor.HttpContext?.Connection?.RemoteIpAddress?.MapToIPv4().ToString();
+            Student user = new()
+            { 
+            Name = User.Identity.Name,
+            IpAddress = "192.168.40.4" //_accessor.HttpContext?.Connection?.RemoteIpAddress?.MapToIPv4().ToString()
+            };
             _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
-            return _vmOverlayConnectionService.CreateConnection(groupId, ip);
+            return _vmOverlayConnectionService.CreateConnection(groupId, user);
         }
+
+        [Authorize(Policy = "Member")]
+        [HttpGet("suspend/connection/{groupId}")]
+        public void SuspendConnection(string groupId)
+        {
+            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            Student user = new()
+            {
+                Name = User.Identity.Name,
+                IpAddress = "192.168.40.4" //_accessor.HttpContext?.Connection?.RemoteIpAddress?.MapToIPv4().ToString()
+            };
+            _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
+            _vmOverlayConnectionService.SuspendConnection(groupId, user);
+        }
+
     }
 }

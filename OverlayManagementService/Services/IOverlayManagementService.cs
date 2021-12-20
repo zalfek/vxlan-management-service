@@ -19,5 +19,6 @@ namespace OverlayManagementService.Services
         public IEnumerable<IOpenVirtualSwitch> GetAllSwitches();
         public IOpenVirtualSwitch GetSwitch(string key);
         public IOverlayNetwork UpdateNetwork(IOverlayNetwork overlayNetwork);
+        public void RemoveSwitch(string key);
     }
 }

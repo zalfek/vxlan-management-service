@@ -26,5 +26,10 @@ namespace OverlayManagementService.Repositories
         {
             return _dbMock[key];
         }
+
+        public void RemoveFirewall(string key)
+        {
+            _dbMock.Remove(key);
+        }
     }
 }

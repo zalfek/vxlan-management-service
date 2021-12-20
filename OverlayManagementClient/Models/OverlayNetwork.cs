@@ -9,7 +9,7 @@ namespace OverlayManagementClient.Models
         public string GroupId { get; set; }
         public OpenVirtualSwitch OpenVirtualSwitch { get; set; }
         public List<VirtualMachine> VirtualMachines { get; set; }
-        public List<User> Clients { get; set; }
+        public List<Student> Clients { get; set; }
         public bool IsDeployed { get; set; }
     }
 }

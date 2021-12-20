@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using OverlayManagementService.Dtos;
 using OverlayManagementService.Factories;
+using OverlayManagementService.Models;
 using OverlayManagementService.Network;
 using OverlayManagementService.Repositories;
 using System;
@@ -41,16 +42,31 @@ namespace OverlayManagementService.Services
             return networks;
         }
 
-        public ClientConnection CreateConnection(string groupId, string ip)
+        public ClientConnection CreateConnection(string groupId, Student client)
         {
-            _logger.LogInformation("Searching requested network");
+            _logger.LogInformation("Searching network under group id: " + groupId);
             IOverlayNetwork overlayNetwork = _jsonRepository.GetOverlayNetwork(groupId);
             _logger.LogInformation("Initiating connection on Open Virtual Switch");
-            string clientIp = overlayNetwork.AddClient(ip);
+            string clientVxlanIp = overlayNetwork.AddClient(client);
             IFirewall firewall = _firewallRepository.GetFirewall(overlayNetwork.OpenVirtualSwitch.Key);
-            _logger.LogInformation("Creating temporary exception for client");
-            firewall.AddException(clientIp);
-            return _clientConnectionFactory.CreateClientConnectionDto(overlayNetwork.Vni, groupId, overlayNetwork.OpenVirtualSwitch.PublicIP, clientIp);
+            _logger.LogInformation("Creating temporary exception for client ip address: " + client.IpAddress);
+            firewall.AddException(client.IpAddress);
+            _jsonRepository.SaveOverlayNetwork(overlayNetwork);
+            return _clientConnectionFactory.CreateClientConnectionDto(overlayNetwork.Vni, groupId, overlayNetwork.OpenVirtualSwitch.PublicIP, clientVxlanIp);
         }
+
+        public void SuspendConnection(string groupId, Student client)
+        {
+            _logger.LogInformation("Searching network under group id: " + groupId);
+            IOverlayNetwork overlayNetwork = _jsonRepository.GetOverlayNetwork(groupId);
+            _logger.LogInformation("Removing connection on Open Virtual Switch");
+            overlayNetwork.RemoveClient(client);
+            IFirewall firewall = _firewallRepository.GetFirewall(overlayNetwork.OpenVirtualSwitch.Key);
+            _logger.LogInformation("Removing temporary exception for client ip address: " + client.IpAddress);
+            firewall.RemoveException(client.IpAddress);
+            _jsonRepository.SaveOverlayNetwork(overlayNetwork);
+        }
+
+
     }
 }

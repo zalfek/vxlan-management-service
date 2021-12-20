@@ -1,4 +1,5 @@
 ﻿using OverlayManagementService.Dtos;
+using OverlayManagementService.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,10 @@ namespace OverlayManagementService.Network
     {
         string GroupId { get; set; }
         string Vni { get; set; }
-        public List<string> Clients { get; set; }
+        public List<Student> Clients { get; set; }
         public IOpenVirtualSwitch OpenVirtualSwitch { get; set; }
-        public void RemoveClient(string ip);
-        public string AddClient(string ip);
+        public void RemoveClient(Student client);
+        public string AddClient(Student client);
         public void RemoveVMachine(Guid guid);
         public void AddVMachine(IVirtualMachine virtualMachine);
         public void DeployNetwork();

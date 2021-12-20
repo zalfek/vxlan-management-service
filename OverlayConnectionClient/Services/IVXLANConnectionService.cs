@@ -10,5 +10,6 @@ namespace OverlayConnectionClient.Services
     {
         public IEnumerable<OverlayNetwork> GetAllNetworks();
         public void CreateConnection(string groupId);
+        public void CleanUpConnection(string groupId);
     }
 }

@@ -94,10 +94,20 @@ namespace OverlayManagementService.Network
         {
             _logger.LogInformation("Searching for vxlan interface");
             IVXLANInterface vXLANInterface = VXLANInterfaces.Find(x => x.RemoteIp == ip);
-            _logger.LogInformation("Deploying vxlan interface");
+            _logger.LogInformation("Removing vxlan interface");
             vXLANInterface.CleanUpVXLANInterface();
             VXLANInterfaces.Remove(vXLANInterface);
         }
+
+        public void CleanUpTargetVXLANInterface(string ip)
+        {
+            _logger.LogInformation("Searching for vxlan interface");
+            IVXLANInterface vXLANInterface = VXLANInterfaces.Find(x => x.RemoteIp == ip);
+            _logger.LogInformation("Removing vxlan interface");
+            vXLANInterface.CleanUpVXLANInterface();
+            VXLANInterfaces.Remove(vXLANInterface);
+        }
+
     }
 
 }

@@ -40,9 +40,18 @@
                                 @network.RemoteIp
                             </td>
                             <td width="25%">
+                                @if (!network.IsConnected())
+                                {
                                 <div class="w-100 btn-group" role="group">
                                     <button type="submit" asp-controller="Home" asp-action="CreateConnection" asp-route-GroupId="@network.GroupId" class="btn btn-success mx-1">Connect</button>
                                 </div>
+                                }
+                                else
+                                {
+                                <div class="w-100 btn-group" role="group">
+                                    <button type="submit" asp-controller="Home" asp-action="Disconnect" asp-route-GroupId="@network.GroupId" class="btn btn-danger mx-1">Disconnect</button>
+                                </div>
+                                }
                             </td>
                         </tr>
                     }

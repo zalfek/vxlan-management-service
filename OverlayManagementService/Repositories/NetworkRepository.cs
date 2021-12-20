@@ -65,7 +65,9 @@ namespace OverlayManagementService.Repositories
         {
             foreach (KeyValuePair<string, IOverlayNetwork> keyValuePair in _dbMock)
             {
-                if (keyValuePair.Value.Vni == vni) { return keyValuePair.Value; }
+                if (keyValuePair.Value.Vni == vni) { 
+                    return keyValuePair.Value; 
+                }
             }
             throw new KeyNotFoundException();
         }

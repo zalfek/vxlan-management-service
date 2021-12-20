@@ -1,0 +1,92 @@
+Vagrant.configure(2) do |config|
+  config.vm.box = "generic/ubuntu2004"
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.ssh.insert_key = false
+  config.vm.provider "vmware_desktop" do |vb|
+      vb.gui = true
+  end
+  config.vm.define :client1 do |node|
+    node.vm.network :private_network, ip: "192.168.30.2"
+    node.vm.provision :shell, inline: <<-SHELL
+      sudo apt -y update
+      sudo apt install net-tools
+      sudo ip route add 192.168.40.0/24 via 192.168.30.4 
+    SHELL
+  end
+
+
+    config.vm.define :client2 do |node|
+    node.vm.network :private_network, ip: "192.168.30.3"
+    node.vm.provision :file, source: "../../../srv/", destination: "srv"
+    node.vm.provision :file, source: "../../OverlayConnectionClient/OverlayConnectionClient.service", destination: "OverlayConnectionClient.service"
+    node.vm.provision :shell, inline: <<-SHELL
+      sudo apt -y update
+      sudo apt install net-tools
+      sudo ip route add 192.168.40.0/24 via 192.168.30.4
+      sudo wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+      sudo dpkg -i packages-microsoft-prod.deb
+      sudo rm packages-microsoft-prod.deb
+      sudo apt-get install -y apt-transport-https
+      sudo apt-get -y update
+      sudo apt-get install -y dotnet-sdk-5.0
+      sudo cp OverlayConnectionClient.service /etc/systemd/system/OverlayConnectionClient.service
+      sudo chown vagrant /home/vagrant/srv/OverlayConnectionClient
+      sudo chmod 777 /home/vagrant/srv/OverlayConnectionClient/OverlayConnectionClient
+      sudo systemctl daemon-reload
+      sudo systemctl start OverlayConnectionClient
+      sudo systemctl enable OverlayConnectionClient
+      dotnet dev-certs https
+    SHELL
+  end
+
+  config.vm.define :natRouter do |node|
+    node.vm.network :private_network, ip: "192.168.30.4"
+    node.vm.network :private_network, ip: "192.168.40.4"
+    node.vm.provision :shell, inline: <<-SHELL
+      sudo apt -y update
+      sudo apt install net-tools
+      sudo apt install iftop
+      sudo apt-get install -y iptables
+      sudo iptables -t nat -A POSTROUTING -s 192.168.30.0/24 -j MASQUERADE
+      sysctl net.ipv4.ip_forward=1
+    SHELL
+  end
+
+
+  config.vm.define :ovs do |node|
+    node.vm.network :private_network, ip: "192.168.40.5"
+    node.vm.network :private_network, ip: "192.168.60.5"
+    node.vm.provision :file, source: "vxlan_hp.py", destination: "vxlan_hp.py"
+    node.vm.provision :file, source: "vxlan_hp.c", destination: "vxlan_hp.c"
+    node.vm.provision :shell, inline: <<-SHELL
+      sudo apt -y update
+      sudo apt install net-tools
+      sudo apt install iftop
+      sudo apt-get -y install bpfcc-tools linux-headers-$(uname -r)
+      sudo apt -y install python3-pip
+      pip3 install pyroute2
+      sudo apt -y install openvswitch-switch
+      sudo sysctl net.ipv4.ip_forward=1
+    SHELL
+  end
+
+
+  config.vm.define :targetVM1 do |node|
+    node.vm.network :private_network, ip: "192.168.60.7"
+    node.vm.provision :shell, inline: <<-SHELL
+      sudo apt -y update
+      sudo apt install net-tools
+      sudo apt install iftop
+    SHELL
+  end
+
+  config.vm.define :targetVM2 do |node|
+    node.vm.network :private_network, ip: "192.168.60.8"
+    node.vm.provision :shell, inline: <<-SHELL
+      sudo apt -y update
+      sudo apt install net-tools
+      sudo apt install iftop
+    SHELL
+  end
+
+end

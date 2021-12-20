@@ -15,5 +15,6 @@ namespace OverlayManagementService.Network
         public void CleanUpClientVXLANInterface(string ip);
         public void DeployBridge();
         public void CleanUpBridge();
+        public void CleanUpTargetVXLANInterface(string ip);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Renci.SshNet;
+﻿using Microsoft.Extensions.Logging;
+using Renci.SshNet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace OverlayManagementService.Network
 {
     public class LinuxVXLANInterface : ILinuxVXLANInterface
     {
+        private readonly ILogger<LinuxVXLANInterface> _logger;
         public readonly string Name;
         public readonly string VNI;
         public readonly string DstPort;
@@ -17,7 +19,7 @@ namespace OverlayManagementService.Network
 
         public LinuxVXLANInterface(string name, string vNI, string dstPort, string dstIP, string managementIp)
         {
-            
+            _logger = new LoggerFactory().CreateLogger<LinuxVXLANInterface>();
             Name = name;
             VNI = vNI;
             DstPort = dstPort;
@@ -38,8 +40,8 @@ namespace OverlayManagementService.Network
             using (var cmd = sshclient.CreateCommand("sudo ip link del " + Name))
             {
                 cmd.Execute();
-                Console.WriteLine("Command>" + cmd.CommandText);
-                Console.WriteLine("Return Value = {0}", cmd.ExitStatus);
+                _logger.LogInformation("Command>" + cmd.CommandText);
+                _logger.LogInformation("Return Value = {0}", cmd.ExitStatus);
             }
             sshclient.Disconnect();
         }
@@ -55,27 +57,27 @@ namespace OverlayManagementService.Network
             using (var cmd = sshclient.CreateCommand("sudo ip link add " + Name + " type vxlan id " + VNI + " dstport " + DstPort + " srcport " + DstPort + " 4790"))
             {
                 cmd.Execute();
-                Console.WriteLine("Command>" + cmd.CommandText);
-                Console.WriteLine("Return Value = {0}", cmd.ExitStatus);
+                _logger.LogInformation("Command>" + cmd.CommandText);
+                _logger.LogInformation("Return Value = {0}", cmd.ExitStatus);
             }
-            using (var cmd = sshclient.CreateCommand("sudo ip addr add " + vxlanIp + " dev " + Name))
+            using (var cmd = sshclient.CreateCommand("sudo ip addr add " + vxlanIp + "/24 dev " + Name))
             {
                 cmd.Execute();
-                Console.WriteLine("Command>" + cmd.CommandText);
-                Console.WriteLine("Return Value = {0}", cmd.ExitStatus);
+                _logger.LogInformation("Command>" + cmd.CommandText);
+                _logger.LogInformation("Return Value = {0}", cmd.ExitStatus);
             }
             using (var cmd = sshclient.CreateCommand("sudo ip link set " + Name + " up"))
             {
                 cmd.Execute();
-                Console.WriteLine("Command>" + cmd.CommandText);
-                Console.WriteLine("Return Value = {0}", cmd.ExitStatus);
+                _logger.LogInformation("Command>" + cmd.CommandText);
+                _logger.LogInformation("Return Value = {0}", cmd.ExitStatus);
             }
-            using (var cmd = sshclient.CreateCommand("bridge fdb add 00:00:00:00:00:00 dev " + Name + " dst" + DstIP))
-            {
-                cmd.Execute();
-                Console.WriteLine("Command>" + cmd.CommandText);
-                Console.WriteLine("Return Value = {0}", cmd.ExitStatus);
-            }
+            //using (var cmd = sshclient.CreateCommand("bridge fdb add 00:00:00:00:00:00 dev " + Name + " dst " + DstIP))
+            //{
+            //    cmd.Execute();
+            //    _logger.LogInformation("Command>" + cmd.CommandText);
+            //    _logger.LogInformation("Return Value = {0}", cmd.ExitStatus);
+            //}
             sshclient.Disconnect();
         }
     }

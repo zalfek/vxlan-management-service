@@ -12,6 +12,7 @@ using OverlayManagementService.Network;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using OverlayManagementService.Factories;
+using OverlayManagementService.Models;
 
 namespace OverlayManagementService.Services.Tests
 {
@@ -56,10 +57,16 @@ namespace OverlayManagementService.Services.Tests
         [TestMethod()]
         public void CreateConnectionTest()
         {
+            Student student = new()
+            {
+                Name = "Name",
+                IpAddress = "255.255.255.255"
+            };
+
             Mock<IOverlayNetwork> overlayNetworkMock = new();
             Mock<IFirewall> _firewallMock = new();
             _jsonRepositoryMock.Setup(x => x.GetOverlayNetwork(It.IsAny<string>())).Returns(overlayNetworkMock.Object);
-            overlayNetworkMock.Setup(n => n.AddClient(It.IsAny<string>()));
+            overlayNetworkMock.Setup(n => n.AddClient(It.IsAny<Student>()));
             ClientConnection clientConnection = new("1", "adggjdasd45t54zuw46us", "255.255.255.255", "255.255.255.255");
             _clientConnectionFactoryMock.Setup(c => c.CreateClientConnectionDto(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(clientConnection);
             overlayNetworkMock.SetupGet(x => x.Vni).Returns("1");
@@ -68,7 +75,7 @@ namespace OverlayManagementService.Services.Tests
             _firewallMock.Setup(f => f.AddException(It.IsAny<string>()));
 
 
-            _sut.CreateConnection(It.IsAny<string>(), It.IsAny<string>());
+            _sut.CreateConnection(It.IsAny<string>(), student);
 
             _jsonRepositoryMock.VerifyAll();
             overlayNetworkMock.VerifyAll();

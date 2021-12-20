@@ -83,16 +83,9 @@ namespace OverlayManagementClient.Controllers
         }
 
         [Authorize(Policy = "Admin")]
-        public ActionResult Delete(int id)
+        public ActionResult Delete(string key)
         {
-            return View();
-        }
-
-        [Authorize(Policy = "Admin")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
+            _vXLANManagementService.DeleteSwitchAsync(key);
             try
             {
                 return RedirectToAction(nameof(Index));
