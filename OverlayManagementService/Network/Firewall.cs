@@ -10,11 +10,11 @@ namespace OverlayManagementService.Network
 {
     public class Firewall : IFirewall
     {
-        private readonly ILogger<Firewall> _logger;
+        private readonly ILogger<IFirewall> _logger;
         private readonly string _managementIp;
         public Firewall(string managementIp)
         {
-            _logger = _logger = new LoggerFactory().CreateLogger<Firewall>();
+            _logger = _logger = new LoggerFactory().CreateLogger<IFirewall>();
             _managementIp = managementIp;
         }
 

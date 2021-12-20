@@ -88,6 +88,43 @@ namespace OverlayManagementClient.Controllers
             }
         }
 
+        [Authorize(Policy = "Admin")]
+        public ActionResult CreateTargetDevice()
+        {
+            return PartialView("_CreateTarget");
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Admin")]
+        public ActionResult CreateTargetDevice(VmConnection vmConnection)
+        {
+            _vXLANManagementService.AddMachineAsync(vmConnection);
+            try
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        [Authorize(Policy = "Admin")]
+        public ActionResult DeleteTargetDevice(Guid guid, string groupId)
+        {
+            _vXLANManagementService.RemoveMachineAsync(groupId, guid);
+            try
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
         [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

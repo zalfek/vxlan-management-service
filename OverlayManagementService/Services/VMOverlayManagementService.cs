@@ -69,7 +69,7 @@ namespace OverlayManagementService.Services
             _logger.LogInformation("Adding new bridge to OVS");
             openVirtualSwitch.AddBridge(
                 _bridgeFactory.CreateBridge(
-                    Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14),
+                    openVirtualSwitch.Key + "-vni-" + vni,
                     vni,
                     openVirtualSwitch.ManagementIp)
                 );
@@ -95,13 +95,12 @@ namespace OverlayManagementService.Services
         {
             _logger.LogInformation("Searching for group id " + vmConnection.GroupId + " in network repository");
             IOverlayNetwork overlayNetwork = _networkRepository.GetOverlayNetwork(vmConnection.GroupId);
-            _logger.LogInformation("Searching for switch with key: " + vmConnection.Key + " in switch repository");
-            IOpenVirtualSwitch openVirtualSwitch = _switchRepository.GetSwitch(vmConnection.Key);
             IVirtualMachine virtualMachine = _virtualMachineFactory.CreateVirtualMachine(
                 Guid.NewGuid(),
+                overlayNetwork.OpenVirtualSwitch.Key,
                 vmConnection.ManagementIp,
                 overlayNetwork.Vni,
-                openVirtualSwitch.PrivateIP, 
+                overlayNetwork.OpenVirtualSwitch.PrivateIP, 
                 vmConnection.CommunicationIP
                 );
             _logger.LogInformation("Adding device with id: " + virtualMachine.Guid + " to network with group id: " + overlayNetwork.GroupId);
@@ -131,6 +130,14 @@ namespace OverlayManagementService.Services
             _logger.LogInformation("Saving new Firewall");
             _firewallRepository.AddFirewall(openVirtualSwitch.Key, firewall);
             return openVirtualSwitch;
+        }
+
+        public void RemoveSwitch(string key)
+        {
+            _logger.LogInformation("Removing switch from repository");
+            _switchRepository.DeleteSwitch(key);
+            _logger.LogInformation("Removing Firewalll from repository");
+            _firewallRepository.RemoveFirewall(key);
         }
 
         public IEnumerable<IOverlayNetwork> GetAllNetworks()

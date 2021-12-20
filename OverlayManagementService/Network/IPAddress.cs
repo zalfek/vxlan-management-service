@@ -19,14 +19,14 @@ namespace OverlayManagementService.Network
             IPs = new List<string>();
             LastIPV4.Add(192);
             LastIPV4.Add(168);
-            LastIPV4.Add(0);
-            LastIPV4.Add(1);
+            LastIPV4.Add(5);
+            LastIPV4.Add(2);
     }
 
         public string GenerarteUniqueIPV4Address()
         {
             _logger.LogInformation("Generating new IP address");
-            LastIPV4[3] = LastIPV4[3]++;
+            LastIPV4[3] = ++LastIPV4[3];
             IPs.Add(String.Join(".", LastIPV4.ToArray()));
             _logger.LogInformation("New IP is " + String.Join(".", LastIPV4.ToArray()));
             return String.Join(".", LastIPV4.ToArray());

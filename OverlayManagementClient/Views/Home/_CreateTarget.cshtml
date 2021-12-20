@@ -1,0 +1,48 @@
+﻿@model OverlayManagementClient.Models.VmConnection
+
+
+<div class="modal-content">
+    <div class="modal-header">
+        <h3 class="modal-title">Add Target Device to Network</h3>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-danger mx-1" data-bs-dismiss="modal" aria-hidden="true">X</button>
+        </div>
+    </div>
+    <div class="modal-body">
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="CreateTargetDevice">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="ManagementIp" class="control-label">Target Device management IP address</label>
+                        <input asp-for="ManagementIp" class="form-control" />
+                        <span asp-validation-for="ManagementIp" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CommunicationIP" class="control-label">Target Device communication IP address</label>
+                        <input asp-for="CommunicationIP" class="form-control" />
+                        <span asp-validation-for="CommunicationIP" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="OVSIPAddress" class="control-label">Virtual Switch Private IP</label>
+                        <input asp-for="OVSIPAddress" class="form-control" />
+                        <span asp-validation-for="OVSIPAddress" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="GroupId" class="control-label">Group Id</label>
+                        <input asp-for="GroupId" class="form-control" />
+                        <span asp-validation-for="GroupId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="CreateTargetDevice" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -57,6 +57,12 @@ namespace OverlayManagementService.Services.Tests
         [TestMethod()]
         public void CreateConnectionTest()
         {
+            Student student = new()
+            {
+                Name = "Name",
+                IpAddress = "255.255.255.255"
+            };
+
             Mock<IOverlayNetwork> overlayNetworkMock = new();
             Mock<IFirewall> _firewallMock = new();
             _jsonRepositoryMock.Setup(x => x.GetOverlayNetwork(It.IsAny<string>())).Returns(overlayNetworkMock.Object);
@@ -69,7 +75,7 @@ namespace OverlayManagementService.Services.Tests
             _firewallMock.Setup(f => f.AddException(It.IsAny<string>()));
 
 
-            _sut.CreateConnection(It.IsAny<string>(), It.IsAny<Student>());
+            _sut.CreateConnection(It.IsAny<string>(), student);
 
             _jsonRepositoryMock.VerifyAll();
             overlayNetworkMock.VerifyAll();

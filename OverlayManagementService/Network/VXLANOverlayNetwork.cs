@@ -68,7 +68,7 @@ namespace OverlayManagementService.Network
         public void RemoveVMachine(Guid guid)
         {
             IVirtualMachine virtualMachine = VirtualMachines.Find(x => x.Guid == guid);
-            OpenVirtualSwitch.CleanUpOVSConnection(virtualMachine);
+            OpenVirtualSwitch.RemoveVMConnection(virtualMachine);
             virtualMachine.CleanUpVMConnection();
             VirtualMachines.Remove(virtualMachine);
         }

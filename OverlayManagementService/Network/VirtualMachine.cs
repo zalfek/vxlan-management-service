@@ -9,14 +9,15 @@ namespace OverlayManagementService.Network
     public class VirtualMachine : IVirtualMachine
     {
 
-        public VirtualMachine(Guid guid, string managementIp, string vni, string destIP, string communicationIP)
+        public VirtualMachine(Guid guid, string switchKey, string managementIp, string vni, string destIP, string communicationIP)
         {
+            SwitchKey = switchKey;
             Guid = guid;
             ManagementIp = managementIp;
             Vni = vni;
             DestIp = destIP;
             CommunicationIP = communicationIP;
-            VXLANInterface = new LinuxVXLANInterface(Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14), Vni, "4789", DestIp, managementIp);
+            VXLANInterface = new LinuxVXLANInterface(SwitchKey + "-vxlan" + Vni, Vni, "4789", DestIp, managementIp);
         }
 
         public Guid Guid { get; set; }
@@ -26,6 +27,7 @@ namespace OverlayManagementService.Network
         public string VxlanIp { get; set; }
         public ILinuxVXLANInterface VXLANInterface;
         public string CommunicationIP { get; set; }
+        private readonly string SwitchKey;
 
         public void CleanUpVMConnection()
         {
@@ -34,6 +36,7 @@ namespace OverlayManagementService.Network
 
         public void DeployVMConnection(string vxlanIp)
         {
+            VxlanIp = vxlanIp;
             VXLANInterface.DeployInterface(vxlanIp);
         }
     }

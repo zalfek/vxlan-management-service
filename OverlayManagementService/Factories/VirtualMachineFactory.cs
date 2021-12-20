@@ -8,9 +8,9 @@ namespace OverlayManagementService.Factories
 {
     public class VirtualMachineFactory : IVirtualMachineFactory
     {
-        public IVirtualMachine CreateVirtualMachine(Guid guid, string managementIp, string vni, string destIP, string communicationIP)
+        public IVirtualMachine CreateVirtualMachine(Guid guid, string switchKey, string managementIp, string vni, string destIP, string communicationIP)
         {
-            return new VirtualMachine(guid, managementIp, vni, destIP, communicationIP);
+            return new VirtualMachine(guid, switchKey, managementIp, vni, destIP, communicationIP);
         }
     }
 }

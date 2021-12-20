@@ -19,5 +19,6 @@ namespace OverlayManagementService.Network
         public string PrivateIP { get; set; }
         public string PublicIP { get; set; }
         public string ManagementIp { get; set; }
+        public void RemoveVMConnection(IVirtualMachine virtualMachine);
     }
 }

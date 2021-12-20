@@ -75,20 +75,20 @@ namespace OverlayManagementClient.Services
             throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
         }
 
-        public async Task<OverlayNetwork> EditNetworkAsync(OverlayNetwork OverlayNetwork)
+        public async Task<OverlayNetwork> EditNetworkAsync(OverlayNetwork overlayNetwork)
         {
             await PrepareAuthenticatedClient();
 
-            var jsonRequest = JsonConvert.SerializeObject(OverlayNetwork);
+            var jsonRequest = JsonConvert.SerializeObject(overlayNetwork);
             var jsoncontent = new StringContent(jsonRequest, Encoding.UTF8, "application/json-patch+json");
-            var response = await _httpClient.PatchAsync($"{ _BaseAddress}/management/OverlayNetworklist/{OverlayNetwork.GroupId}", jsoncontent);
+            var response = await _httpClient.PatchAsync($"{ _BaseAddress}/management/OverlayNetworklist/{overlayNetwork.GroupId}", jsoncontent);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                OverlayNetwork = JsonConvert.DeserializeObject<OverlayNetwork>(content);
+                overlayNetwork = JsonConvert.DeserializeObject<OverlayNetwork>(content);
 
-                return OverlayNetwork;
+                return overlayNetwork;
             }
 
             throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
@@ -101,9 +101,9 @@ namespace OverlayManagementClient.Services
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                IEnumerable<OverlayNetwork> OverlayNetworklist = JsonConvert.DeserializeObject<IEnumerable<OverlayNetwork>>(content);
+                IEnumerable<OverlayNetwork> overlayNetworklist = JsonConvert.DeserializeObject<IEnumerable<OverlayNetwork>>(content);
 
-                return OverlayNetworklist;
+                return overlayNetworklist;
             }
 
             throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
@@ -124,9 +124,9 @@ namespace OverlayManagementClient.Services
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                OverlayNetwork OverlayNetwork = JsonConvert.DeserializeObject<OverlayNetwork>(content);
+                OverlayNetwork overlayNetwork = JsonConvert.DeserializeObject<OverlayNetwork>(content);
 
-                return OverlayNetwork;
+                return overlayNetwork;
             }
 
             throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
@@ -175,8 +175,48 @@ namespace OverlayManagementClient.Services
             {
                 throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
             }
-
-           
         }
+
+        public async void AddMachineAsync(VmConnection vmConnection)
+        {
+            await PrepareAuthenticatedClient();
+
+            var jsonRequest = JsonConvert.SerializeObject(vmConnection);
+            var jsoncontent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+            var response = await this._httpClient.PostAsync($"{ _BaseAddress}/management/deploy/machine", jsoncontent);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
+            }
+        }
+
+        public async Task DeleteSwitchAsync(string key)
+        {
+            await PrepareAuthenticatedClient();
+
+            var response = await _httpClient.DeleteAsync($"{ _BaseAddress}/management/delete/switch/{key}");
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return;
+            }
+
+            throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
+        }
+
+
+        public async void RemoveMachineAsync(string groupid, Guid guid)
+        {
+            await PrepareAuthenticatedClient();
+
+            var response = await this._httpClient.GetAsync($"{ _BaseAddress}/management/suspend/machine?groupid={groupid}&guid={guid}");
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
+            }
+        }
+
     }
 }

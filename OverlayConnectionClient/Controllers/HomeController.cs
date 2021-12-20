@@ -32,7 +32,27 @@ namespace OverlayConnectionClient.Controllers
         public IActionResult CreateConnection(string groupId)
         {
             _vXLANConnectionService.CreateConnection(groupId);
-            return Ok();
+            try
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        public IActionResult Disconnect(string groupId)
+        {
+            _vXLANConnectionService.CleanUpConnection(groupId);
+            try
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
         }
 
         public IActionResult Privacy()

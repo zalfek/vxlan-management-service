@@ -40,7 +40,7 @@ namespace OverlayConnectionClient.Services
             OverlayNetwork overlayNetwork =  _repository.GetNetworkAsync(groupId).Result;
             _logger.LogInformation("Network found: " + overlayNetwork.ToString());
             _logger.LogInformation("Setting up interface");
-            ILinuxVXLANInterface linuxVXLANInterface = new LinuxVXLANInterface("vxlan" + _linuxVXLANInterfaces.Count, overlayNetwork.VNI, "4789", overlayNetwork.RemoteIp, overlayNetwork.LocalIp);
+            ILinuxVXLANInterface linuxVXLANInterface = new LinuxVXLANInterface("vxlan" + overlayNetwork.VNI, overlayNetwork.VNI, "4789", overlayNetwork.RemoteIp, overlayNetwork.LocalIp);
             _logger.LogInformation("New interface created: " + linuxVXLANInterface.ToString());
             _jsonRepository.SaveInterface(groupId, linuxVXLANInterface);
             _logger.LogInformation("Initiating interface deployment");
@@ -53,6 +53,7 @@ namespace OverlayConnectionClient.Services
             ILinuxVXLANInterface linuxVXLANInterface = _jsonRepository.GetVXLANInterface(groupId);
             linuxVXLANInterface.CleanUpInterface();
             _jsonRepository.DeleteInterface(groupId);
+            _repository.RemoveClientAsync(groupId);
         }
 
         public IEnumerable<OverlayNetwork> GetAllNetworks()

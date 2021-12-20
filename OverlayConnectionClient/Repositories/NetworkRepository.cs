@@ -45,6 +45,7 @@ namespace OverlayConnectionClient.Repositories
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();
+                _logger.LogInformation("Response from API: " + content);
                 IEnumerable<OverlayNetwork> OverlayNetworkList = JsonConvert.DeserializeObject<IEnumerable<OverlayNetwork>>(content);
 
                 return OverlayNetworkList;
@@ -70,6 +71,7 @@ namespace OverlayConnectionClient.Repositories
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();
+                _logger.LogInformation("Response from API: " + content);
                 OverlayNetwork OverlayNetwork = JsonConvert.DeserializeObject<OverlayNetwork>(content);
 
                 return OverlayNetwork;
@@ -77,6 +79,23 @@ namespace OverlayConnectionClient.Repositories
 
             throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
         }
+
+
+        public async void RemoveClientAsync(string groupId)
+        {
+            await PrepareAuthenticatedClient();
+            var request = $"{ _BaseAddress}/connection/suspend/connection/{groupId}";
+            _logger.LogInformation("Sending request to API: " + request);
+            var response = await _httpClient.GetAsync(request);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                _logger.LogInformation("Response from API: " + content);
+            }
+
+            throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
+        }
+
 
     }
 }

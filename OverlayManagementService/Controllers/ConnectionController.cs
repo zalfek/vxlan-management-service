@@ -58,10 +58,25 @@ namespace OverlayManagementService.Controllers
             Student user = new()
             { 
             Name = User.Identity.Name,
-            IpAddress = _accessor.HttpContext?.Connection?.RemoteIpAddress?.MapToIPv4().ToString()
+            IpAddress = "192.168.40.4" //_accessor.HttpContext?.Connection?.RemoteIpAddress?.MapToIPv4().ToString()
             };
             _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
             return _vmOverlayConnectionService.CreateConnection(groupId, user);
         }
+
+        [Authorize(Policy = "Member")]
+        [HttpGet("suspend/connection/{groupId}")]
+        public void SuspendConnection(string groupId)
+        {
+            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            Student user = new()
+            {
+                Name = User.Identity.Name,
+                IpAddress = "192.168.40.4" //_accessor.HttpContext?.Connection?.RemoteIpAddress?.MapToIPv4().ToString()
+            };
+            _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
+            _vmOverlayConnectionService.SuspendConnection(groupId, user);
+        }
+
     }
 }

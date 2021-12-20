@@ -92,7 +92,6 @@ namespace OverlayManagementService.Services.Tests
         {
             VmConnection vmConnection = new()
             {
-                Key = "thu",
                 ManagementIp = "255.255.255.255",
                 CommunicationIP = "255.255.255.255",
                 OVSIPAddress = "255.255.255.255",
@@ -102,7 +101,7 @@ namespace OverlayManagementService.Services.Tests
 
             _ipAddressMock.Setup(v => v.GenerarteUniqueIPV4Address()).Returns("255.255.255.255");
             _networkRepository.Setup(x => x.GetOverlayNetwork(It.IsAny<string>())).Returns(_overlayNetworkMock.Object);
-            _virtualMachineFactoryMock.Setup(v => v.CreateVirtualMachine(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(_virtualMachineMock.Object);
+            _virtualMachineFactoryMock.Setup(v => v.CreateVirtualMachine(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(_virtualMachineMock.Object);
             _overlayNetworkMock.Setup(sw => sw.AddVMachine(It.IsAny<IVirtualMachine>()));
             _networkRepository.Setup(r => r.SaveOverlayNetwork(It.IsAny<IOverlayNetwork>()));
             _switchRepository.Setup(s => s.GetSwitch(It.IsAny<string>())).Returns(_openVirtualSwitchMock.Object);

@@ -63,6 +63,9 @@ namespace OverlayManagementService.Network
 
         public void CleanUpOVSConnection(IVirtualMachine virtualMachine)
         {
+            Bridges[virtualMachine.Vni].CleanUpTargetVXLANInterface(virtualMachine.CommunicationIP);
+
+
             foreach (KeyValuePair<string, IBridge> entry in Bridges)
             {
                 if (entry.Value.Vni == virtualMachine.Vni)
@@ -71,6 +74,11 @@ namespace OverlayManagementService.Network
                     Bridges.Remove(entry.Key);
                 }
             }
+        }
+
+        public void RemoveVMConnection(IVirtualMachine virtualMachine)
+        {
+            Bridges[virtualMachine.Vni].CleanUpTargetVXLANInterface(virtualMachine.CommunicationIP);
         }
     }
 }
