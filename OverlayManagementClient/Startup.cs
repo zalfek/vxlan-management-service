@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Identity.Web.UI;
 using OverlayManagementClient.Infrastructure;
+using OverlayManagementClient.Repositories;
 
 namespace OverlayManagementClient
 {
@@ -45,7 +46,11 @@ namespace OverlayManagementClient
                  .EnableTokenAcquisitionToCallDownstreamApi(new string[] { Configuration["OverlayManagementService:OverlayManagementServiceScope"] })
                     .AddInMemoryTokenCaches();
 
-            services.AddVXLANManagementService();
+            services.AddScoped<IVXLANManagementService, VXLANManagementService>();
+            services.AddNetworkRepository();
+            services.AddMachineRepository();
+            services.AddSwitchRepository();
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("Admin",
