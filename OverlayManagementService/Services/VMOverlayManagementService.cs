@@ -152,6 +152,10 @@ namespace OverlayManagementService.Services
 
         public void RemoveSwitch(string key)
         {
+            foreach (var network in _networkRepository.GetAllNetworks().Values.ToArray())
+            {
+                if(network.OpenVirtualSwitch.Key == key) { network.CleanUpNetwork(); }
+            } 
             _logger.LogInformation("Removing switch from repository");
             _switchRepository.DeleteSwitch(key);
             _logger.LogInformation("Removing Firewalll from repository");
