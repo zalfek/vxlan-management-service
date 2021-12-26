@@ -16,13 +16,15 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <label asp-for="ManagementIp" class="control-label">Target Device management IP or hostname</label>
-                        <input asp-for="ManagementIp" class="form-control" />
+                        <input id="managementIp" asp-for="ManagementIp" class="form-control" />
                         <span asp-validation-for="ManagementIp" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="CommunicationIP" class="control-label">Target Device communication IP or hostname</label>
-                        <input asp-for="CommunicationIP" class="form-control" />
+                        <input id="communicationIp" asp-for="CommunicationIP" class="form-control" />
                         <span asp-validation-for="CommunicationIP" class="text-danger"></span>
+                        <input type="checkbox" id="checkboxCommunication" checked>
+                        <label for="checkboxPublic">Same as management address</label>
                     </div>
                     <div class="form-group">
                         <label asp-for="GroupId" class="control-label">Group Id</label>

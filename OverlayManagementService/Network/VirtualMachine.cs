@@ -11,14 +11,14 @@ namespace OverlayManagementService.Network
 
         public VirtualMachine(Guid guid, string username, string key, string managementIp, string vni, string destIP, string communicationIP)
         {
-            _key = key;
-            _username = username;
+            Key = key;
+            Username = username;
             Guid = guid;
             ManagementIp = managementIp;
             Vni = vni;
             DestIp = destIP;
             CommunicationIP = communicationIP;
-            VXLANInterface = new LinuxVXLANInterface(_username ,_key,  _key + "-vxlan" + Vni, Vni, "4789", DestIp, managementIp);
+            VXLANInterface = new LinuxVXLANInterface(Username ,Key,  Key + "-vxlan" + Vni, Vni, "4789", DestIp, managementIp);
         }
 
         public Guid Guid { get; set; }
@@ -28,8 +28,8 @@ namespace OverlayManagementService.Network
         public string VxlanIp { get; set; }
         public ILinuxVXLANInterface VXLANInterface;
         public string CommunicationIP { get; set; }
-        private readonly string _key;
-        private readonly string _username;
+        public string Key { get; set; }
+        public string Username { get; set; }
 
         public void CleanUpVMConnection()
         {

@@ -14,235 +14,87 @@ using System.Net.Http.Headers;
 using System.Text;
 using OverlayManagementClient.Models;
 using System.IO;
+using OverlayManagementClient.Repositories;
 
 namespace OverlayManagementClient.Services
 {
 
 
-    public static class VXLANManagementServiceExtensions
-    {
-        public static void AddVXLANManagementService(this IServiceCollection services)
-        {
-            services.AddHttpClient<IVXLANManagementService, VXLANManagementService>();
-        }
-    }
+    //public static class VXLANManagementServiceExtensions
+    //{
+    //    public static void AddVXLANManagementService(this IServiceCollection services)
+    //    {
+    //        services.AddHttpClient<IVXLANManagementService, VXLANManagementService>();
+    //    }
+    //}
 
 
     public class VXLANManagementService :IVXLANManagementService
     {
-        private readonly HttpClient _httpClient;
-        private readonly string _Scope = string.Empty;
-        private readonly string _BaseAddress = string.Empty;
-        private readonly ITokenAcquisition _tokenAcquisition;
+        private readonly INetworkRepository _networkRepository;
+        private readonly ISwitchRepository _switchRepository;
+        private readonly IMachineRepository _machineRepository;
 
-        public VXLANManagementService(ITokenAcquisition tokenAcquisition, HttpClient httpClient, IConfiguration configuration)
+        public VXLANManagementService(INetworkRepository networkRepository, ISwitchRepository switchRepository, IMachineRepository machineRepository)
         {
-            _httpClient = httpClient;
-            _tokenAcquisition = tokenAcquisition;
-            _Scope = configuration["OverlayManagementService:OverlayManagementServiceScope"];
-            _BaseAddress = configuration["OverlayManagementService:OverlayManagementServiceBaseAddress"];
+            _networkRepository = networkRepository;
+            _switchRepository = switchRepository;
+            _machineRepository = machineRepository;
         }
 
-        public async Task<OverlayNetwork> AddNetworkAsync(OVSConnection oVSConnection)
+        public void AddMachine(VmConnection vmConnection)
         {
-            await PrepareAuthenticatedClient();
-
-            var jsonRequest = JsonConvert.SerializeObject(oVSConnection);
-            var jsoncontent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            var response = await this._httpClient.PostAsync($"{ _BaseAddress}/management/deploy/network", jsoncontent);
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                OverlayNetwork overlayNetwork = JsonConvert.DeserializeObject<OverlayNetwork>(content);
-
-                return overlayNetwork;
-            }
-
-            throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
+            _machineRepository.AddMachineAsync(vmConnection);
         }
 
-        public async Task DeleteNetworkAsync(string groupId)
+        public OverlayNetwork AddNetwork(OVSConnection oVSConnection)
         {
-            await PrepareAuthenticatedClient();
-
-            var response = await _httpClient.DeleteAsync($"{ _BaseAddress}/management/delete/network/{groupId}");
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                return;
-            }
-
-            throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
+            return _networkRepository.AddNetworkAsync(oVSConnection).Result;
         }
 
-        public async Task<OverlayNetwork> EditNetworkAsync(OverlayNetwork overlayNetwork)
+        public void AddSwitch(OvsRegistration ovsRegistration)
         {
-            await PrepareAuthenticatedClient();
-
-            var jsonRequest = JsonConvert.SerializeObject(overlayNetwork);
-            var jsoncontent = new StringContent(jsonRequest, Encoding.UTF8, "application/json-patch+json");
-            var response = await _httpClient.PatchAsync($"{ _BaseAddress}/management/OverlayNetworklist/{overlayNetwork.GroupId}", jsoncontent);
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                overlayNetwork = JsonConvert.DeserializeObject<OverlayNetwork>(content);
-
-                return overlayNetwork;
-            }
-
-            throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
+            _switchRepository.AddSwitchAsync(ovsRegistration);
         }
 
-        public async Task<IEnumerable<OverlayNetwork>> GetNetworksAsync()
+        public void DeleteNetwork(string groupId)
         {
-            await PrepareAuthenticatedClient();
-            var response = await _httpClient.GetAsync($"{ _BaseAddress}/management/list/networks");
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                IEnumerable<OverlayNetwork> overlayNetworklist = JsonConvert.DeserializeObject<IEnumerable<OverlayNetwork>>(content);
-
-                return overlayNetworklist;
-            }
-
-            throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
+            _networkRepository.DeleteNetworkAsync(groupId);
         }
 
-        private async Task PrepareAuthenticatedClient()
+        public void DeleteSwitch(string key)
         {
-            var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(new[] { _Scope });
-            Debug.WriteLine($"access token-{accessToken}");
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _switchRepository.DeleteSwitchAsync(key);
         }
 
-        public async Task<OverlayNetwork> GetNetworkAsync(string vni)
+        public OverlayNetwork EditNetwork(OverlayNetwork overlayNetwork)
         {
-            await PrepareAuthenticatedClient();
-            var response = await _httpClient.GetAsync($"{ _BaseAddress}/management/get/network/{vni}");
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                OverlayNetwork overlayNetwork = JsonConvert.DeserializeObject<OverlayNetwork>(content);
-
-                return overlayNetwork;
-            }
-
-            throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
+            return _networkRepository.EditNetworkAsync(overlayNetwork).Result;
         }
 
-
-        public async Task<IEnumerable<OpenVirtualSwitch>> GetSwitchesAsync()
+        public OverlayNetwork GetNetwork(string id)
         {
-            await PrepareAuthenticatedClient();
-            var response = await _httpClient.GetAsync($"{ _BaseAddress}/management/list/switches");
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                IEnumerable<OpenVirtualSwitch> openVirtualSwitches = JsonConvert.DeserializeObject<IEnumerable<OpenVirtualSwitch>>(content);
-
-                return openVirtualSwitches;
-            }
-
-            throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
+            return _networkRepository.GetNetworkAsync(id).Result;
         }
 
-        public async  Task<OpenVirtualSwitch> GetSwitchAsync(string key)
+        public IEnumerable<OverlayNetwork> GetNetworks()
         {
-            await PrepareAuthenticatedClient();
-            var response = await _httpClient.GetAsync($"{ _BaseAddress}/management/get/switch/{key}");
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                OpenVirtualSwitch openVirtualSwitch = JsonConvert.DeserializeObject<OpenVirtualSwitch>(content);
-
-                return openVirtualSwitch;
-            }
-
-            throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
+            return _networkRepository.GetNetworksAsync().Result;
         }
 
-        public async void AddSwitchAsync(OvsRegistration ovsRegistration)
+        public OpenVirtualSwitch GetSwitch(string key)
         {
-
-
-            await PrepareAuthenticatedClient();
-
-            byte[] data;
-            using (var br = new BinaryReader(ovsRegistration.KeyFile.OpenReadStream()))
-            {
-                data = br.ReadBytes((int)ovsRegistration.KeyFile.OpenReadStream().Length);
-            }
-            ByteArrayContent bytes = new(data);
-            MultipartFormDataContent multiContent = new();
-            multiContent.Add(bytes, "KeyFile", ovsRegistration.KeyFile.FileName);
-            multiContent.Add(new StringContent(ovsRegistration.Key.ToString()), "Key");
-            multiContent.Add(new StringContent(ovsRegistration.ManagementIp), "ManagementIp");
-            multiContent.Add(new StringContent(ovsRegistration.PrivateIP), "PrivateIP");
-            multiContent.Add(new StringContent(ovsRegistration.PublicIP), "PublicIP");
-
-            var response = await this._httpClient.PostAsync($"{ _BaseAddress}/management/register/switch", multiContent);
-
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
-            }
+            return _switchRepository.GetSwitchAsync(key).Result;
         }
 
-        public async void AddMachineAsync(VmConnection vmConnection)
+        public IEnumerable<OpenVirtualSwitch> GetSwitches()
         {
-            await PrepareAuthenticatedClient();
-
-            byte[] data;
-            using (var br = new BinaryReader(vmConnection.KeyFile.OpenReadStream()))
-            {
-                data = br.ReadBytes((int)vmConnection.KeyFile.OpenReadStream().Length);
-            }
-            ByteArrayContent bytes = new(data);
-            MultipartFormDataContent multiContent = new()
-            {
-                { bytes, "KeyFile", vmConnection.KeyFile.FileName },
-                { new StringContent(vmConnection.ManagementIp), "ManagementIp" },
-                { new StringContent(vmConnection.GroupId), "GroupId" },
-                { new StringContent(vmConnection.CommunicationIP), "CommunicationIP" }
-            };
-
-            var response = await this._httpClient.PostAsync($"{ _BaseAddress}/management/deploy/machine", multiContent);
-
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
-            }
+            return _switchRepository.GetSwitchesAsync().Result;
         }
 
-        public async Task DeleteSwitchAsync(string key)
+        public void RemoveMachine(string groupid, Guid guid)
         {
-            await PrepareAuthenticatedClient();
-
-            var response = await _httpClient.DeleteAsync($"{ _BaseAddress}/management/delete/switch/{key}");
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                return;
-            }
-
-            throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
+            _machineRepository.RemoveMachineAsync(groupid, guid);
         }
-
-
-        public async void RemoveMachineAsync(string groupid, Guid guid)
-        {
-            await PrepareAuthenticatedClient();
-
-            var response = await this._httpClient.GetAsync($"{ _BaseAddress}/management/suspend/machine?groupid={groupid}&guid={guid}");
-
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
-            }
-        }
-
     }
 }

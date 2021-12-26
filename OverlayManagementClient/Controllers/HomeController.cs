@@ -27,7 +27,7 @@ namespace OverlayManagementClient.Controllers
         [Authorize(Policy = "Admin")]
         public IActionResult Index()
         {
-            return View(_vXLANManagementService.GetNetworksAsync().Result);
+            return View(_vXLANManagementService.GetNetworks());
         }
         [Authorize(Policy = "Admin")]
         public ActionResult Create()
@@ -41,7 +41,7 @@ namespace OverlayManagementClient.Controllers
         [Authorize(Policy = "Admin")]
         public ActionResult Create(OVSConnection oVSConnection)
         {
-            _vXLANManagementService.AddNetworkAsync(oVSConnection);
+            _vXLANManagementService.AddNetwork(oVSConnection);
             try
             {
                 return RedirectToAction(nameof(Index));
@@ -53,18 +53,18 @@ namespace OverlayManagementClient.Controllers
         }
 
         [Authorize(Policy = "Admin")]
-        public ActionResult Edit(string vni)
+        public ActionResult NetworkDetails(string vni)
         {
-            return PartialView("_NetworkDetails", _vXLANManagementService.GetNetworkAsync(vni).Result);
+            return PartialView("_NetworkDetails", _vXLANManagementService.GetNetwork(vni));
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "Admin")]
-        public ActionResult Edit(OverlayNetwork overlayNetwork)
+        public ActionResult Edit(OverlayNetwork overlayNetwork) //TODO
         {
-            _vXLANManagementService.EditNetworkAsync(overlayNetwork);
+            _vXLANManagementService.EditNetwork(overlayNetwork);
             try
             {
                 return RedirectToAction(nameof(Index));
@@ -77,7 +77,7 @@ namespace OverlayManagementClient.Controllers
         [Authorize(Policy = "Admin")]
         public ActionResult Delete(string groupId)
         {
-            _vXLANManagementService.DeleteNetworkAsync(groupId);
+            _vXLANManagementService.DeleteNetwork(groupId);
             try
             {
                 return RedirectToAction(nameof(Index));
@@ -100,7 +100,7 @@ namespace OverlayManagementClient.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreateTargetDevice(VmConnection vmConnection)
         {
-            _vXLANManagementService.AddMachineAsync(vmConnection);
+            _vXLANManagementService.AddMachine(vmConnection);
             try
             {
                 return RedirectToAction(nameof(Index));
@@ -114,7 +114,7 @@ namespace OverlayManagementClient.Controllers
         [Authorize(Policy = "Admin")]
         public ActionResult DeleteTargetDevice(Guid guid, string groupId)
         {
-            _vXLANManagementService.RemoveMachineAsync(groupId, guid);
+            _vXLANManagementService.RemoveMachine(groupId, guid);
             try
             {
                 return RedirectToAction(nameof(Index));

@@ -29,13 +29,13 @@ namespace OverlayManagementClient.Controllers
         [Authorize(Policy = "Admin")]
         public ActionResult Index()
         {
-            return View(_vXLANManagementService.GetSwitchesAsync().Result);
+            return View(_vXLANManagementService.GetSwitches());
         }
 
         [Authorize(Policy = "Admin")]
         public ActionResult Details(string key)
         {
-            return PartialView("_SwitchDetails", _vXLANManagementService.GetSwitchAsync(key).Result);
+            return PartialView("_SwitchDetails", _vXLANManagementService.GetSwitch(key));
         }
 
         [Authorize(Policy = "Admin")]
@@ -50,7 +50,7 @@ namespace OverlayManagementClient.Controllers
         public ActionResult Create(OvsRegistration ovsRegistration)
         {
 
-            _vXLANManagementService.AddSwitchAsync(ovsRegistration);
+            _vXLANManagementService.AddSwitch(ovsRegistration);
             try
             {
                 return RedirectToAction(nameof(Index));
@@ -70,7 +70,7 @@ namespace OverlayManagementClient.Controllers
         [Authorize(Policy = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, IFormCollection collection) //TODO
         {
             try
             {
@@ -85,7 +85,7 @@ namespace OverlayManagementClient.Controllers
         [Authorize(Policy = "Admin")]
         public ActionResult Delete(string key)
         {
-            _vXLANManagementService.DeleteSwitchAsync(key);
+            _vXLANManagementService.DeleteSwitch(key);
             try
             {
                 return RedirectToAction(nameof(Index));

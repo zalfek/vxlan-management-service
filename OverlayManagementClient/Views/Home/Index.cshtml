@@ -39,11 +39,19 @@
                             {
                                 <p>Technische Hochschule Ulm</p>
                             }
+                            else if (network.OpenVirtualSwitch.Key == "hnu")
+                            {
+                                <p>Hochschule Neu Ulm</p>
+                            }
+                            else if (network.OpenVirtualSwitch.Key == "tum")
+                            {
+                                <p>Technische Universität München</p>
+                            }
                         </td>
                         <td width="25%">
                             <div class="w-100 btn-group" role="group">
                                 <button id="addTarget" class="btn btn-info mx-1">Add Target</button>
-                                <button id="edit" class="btn btn-info mx-1">Edit</button>
+                                <button id="networkDetails" class="btn btn-info mx-1">Details</button>
                                 <button id="delete" class="btn btn-danger mx-1">Delete</button>
                             </div>
                         </td>
@@ -77,10 +85,10 @@
 @section Scripts{
 
     <script>
-        $("#networks").on("click", "#edit", function () {
+        $("#networks").on("click", "#networkDetails", function () {
             var vni = $(this).closest("tr").find("td").eq(0).html().trim();
              $.ajax({
-                url: "@Url.Action("Edit", "Home")",
+                url: "@Url.Action("NetworkDetails", "Home")",
                  data: { vni: vni },
                  success: function (data) {
                      $("#networkDetailsModal .modal-dialog").addClass("modal-xl").html(data);
@@ -129,6 +137,19 @@
             });
         });
     </script>
+
+    <script>
+        $(document).on("change", "#checkboxCommunication,#managementIp", function () {
+            if (!$("#checkboxCommunication").is(":checked")) {  //if checkbox not checked
+                $("#communicationIp").val("");
+                $("#communicationIp").prop('readonly', false);
+            } else {
+                $("#communicationIp").val($("#managementIp").val());
+                $("#communicationIp").prop('readonly', true);
+            };
+        });
+    </script>
+
 }
 
 

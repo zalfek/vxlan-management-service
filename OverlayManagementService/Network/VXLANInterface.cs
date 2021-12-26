@@ -18,8 +18,8 @@ namespace OverlayManagementService.Network
         public string Vni { get; set; }
         public string ManagementIp { get; set; }
         private readonly ILogger<IVXLANInterface> _logger;
-        private string Username { get; set; }
-        private string Key { get; set; }
+        public string Username { get; set; }
+        public string Key { get; set; }
 
         public VXLANInterface(string username, string key, string name, string type, string remoteIp, string vni, string bridgeName, string managementIp)
         {

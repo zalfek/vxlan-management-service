@@ -118,4 +118,30 @@
         });
     </script>
 
+
+    <script>
+        $(document).on("change", "#checkboxPrivate,#managementIp", function () {
+            if (!$("#checkboxPrivate").is(":checked")) {  //if checkbox not checked
+                $("#privateIp").val("");
+                $("#privateIp").prop('readonly', false);
+            } else {
+                $("#privateIp").val($("#managementIp").val());
+                $("#privateIp").prop('readonly', true);
+            };
+        });
+    </script>
+
+    <script>
+        $(document).on("change", "#checkboxPublic,#managementIp,#privateIp,#checkboxPrivate", function () {
+            if (!$("#checkboxPublic").is(":checked")) {  //if checkbox not checked
+                $("#publicIp").val("");
+                $("#publicIp").prop('readonly', false);
+            } else {
+                $("#publicIp").val($("#privateIp").val());
+                $("#publicIp").prop('readonly', true);
+            };
+        });
+    </script>
+
+
 }
