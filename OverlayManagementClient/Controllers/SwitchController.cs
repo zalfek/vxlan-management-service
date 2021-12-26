@@ -70,7 +70,7 @@ namespace OverlayManagementClient.Controllers
         [Authorize(Policy = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, IFormCollection collection) //TODO
         {
             try
             {

@@ -53,7 +53,7 @@ namespace OverlayManagementClient.Controllers
         }
 
         [Authorize(Policy = "Admin")]
-        public ActionResult Edit(string vni)
+        public ActionResult NetworkDetails(string vni)
         {
             return PartialView("_NetworkDetails", _vXLANManagementService.GetNetworkAsync(vni).Result);
         }
@@ -62,7 +62,7 @@ namespace OverlayManagementClient.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "Admin")]
-        public ActionResult Edit(OverlayNetwork overlayNetwork)
+        public ActionResult Edit(OverlayNetwork overlayNetwork) //TODO
         {
             _vXLANManagementService.EditNetworkAsync(overlayNetwork);
             try

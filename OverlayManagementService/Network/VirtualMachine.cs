@@ -28,8 +28,8 @@ namespace OverlayManagementService.Network
         public string VxlanIp { get; set; }
         public ILinuxVXLANInterface VXLANInterface;
         public string CommunicationIP { get; set; }
-        private readonly string _key;
-        private readonly string _username;
+        public string _key { get; set; }
+        public string _username { get; set; }
 
         public void CleanUpVMConnection()
         {
