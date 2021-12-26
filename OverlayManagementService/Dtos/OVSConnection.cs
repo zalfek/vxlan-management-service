@@ -9,6 +9,6 @@ namespace OverlayManagementService.Dtos
     {
         public string Key { get; set; }
         public string GroupId { get; set; }
-        public VmConnection vmConnection { get; set; } = null;
+        public VmConnection VmConnection { get; set; } = null;
     }
 }

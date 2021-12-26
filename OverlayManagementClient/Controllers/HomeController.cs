@@ -95,9 +95,9 @@ namespace OverlayManagementClient.Controllers
         }
 
 
+        [Authorize(Policy = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "Admin")]
         public ActionResult CreateTargetDevice(VmConnection vmConnection)
         {
             _vXLANManagementService.AddMachineAsync(vmConnection);

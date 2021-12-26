@@ -9,13 +9,13 @@ namespace OverlayManagementService.Network
 {
     public class VirtualNetworkIdentifier : IIdentifier
     {
-        private readonly ILogger<VirtualNetworkIdentifier> _logger;
+        private readonly ILogger<IIdentifier> _logger;
         private static List<string> VNIs;
         private static int PreviousVNI;
 
         public VirtualNetworkIdentifier()
         {
-            _logger = new LoggerFactory().CreateLogger<VirtualNetworkIdentifier>();
+            _logger = LoggerFactory.Create(logging => logging.AddConsole()).CreateLogger<IIdentifier>();
             VNIs = new List<string>();
             PreviousVNI = 0;
         }

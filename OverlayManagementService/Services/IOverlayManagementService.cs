@@ -9,7 +9,7 @@ namespace OverlayManagementService.Services
 {
     public interface IOverlayManagementService
     {
-        public IOpenVirtualSwitch AddSwitch(IOpenVirtualSwitch openVirtualSwitch);
+        public IOpenVirtualSwitch AddSwitch(OvsRegistration ovsRegistration);
         public IOverlayNetwork DeployNetwork(OVSConnection oVSConnection);
         public void DeleteNetwork(string groupId);
         public IOverlayNetwork RegisterMachine(VmConnection vmConnection);

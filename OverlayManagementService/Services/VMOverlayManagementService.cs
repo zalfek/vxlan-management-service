@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 using OverlayManagementService.Dtos;
 using OverlayManagementService.Factories;
 using OverlayManagementService.Network;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace OverlayManagementService.Services
 {
@@ -24,6 +26,11 @@ namespace OverlayManagementService.Services
         private readonly IVirtualMachineFactory _virtualMachineFactory;
         private readonly IFirewallRepository _firewallRepository;
         private readonly IFirewallFactory _firewallFactory;
+        private readonly IOpenVirtualSwitchFactory _openVirtualSwitchFactory;
+        private readonly IKeyKeeper _keyKeeper;
+        private readonly IConfiguration _configuration;
+
+
 
         public VMOverlayManagementService(
             ILogger<VMOverlayManagementService> logger,
@@ -35,7 +42,10 @@ namespace OverlayManagementService.Services
             IIdentifierFactory<IPAddress> ipResolverFactory,
             ISwitchRepository switchRepository,
             IFirewallRepository firewallRepository,
-            IFirewallFactory firewallFactory
+            IFirewallFactory firewallFactory,
+            IOpenVirtualSwitchFactory openVirtualSwitchFactory,
+            IKeyKeeper keyKeeper,
+            IConfiguration configuration
             )
         {
             _logger = logger;
@@ -48,6 +58,9 @@ namespace OverlayManagementService.Services
             _switchRepository = switchRepository;
             _firewallRepository = firewallRepository;
             _firewallFactory = firewallFactory;
+            _openVirtualSwitchFactory = openVirtualSwitchFactory;
+            _keyKeeper = keyKeeper;
+            _configuration = configuration;
         }
 
         public void DeleteNetwork(string groupId)
@@ -69,6 +82,8 @@ namespace OverlayManagementService.Services
             _logger.LogInformation("Adding new bridge to OVS");
             openVirtualSwitch.AddBridge(
                 _bridgeFactory.CreateBridge(
+                    _configuration["LinuxUsernames:SwitchUsername"],
+                    openVirtualSwitch.Key,
                     openVirtualSwitch.Key + "-vni-" + vni,
                     vni,
                     openVirtualSwitch.ManagementIp)
@@ -84,9 +99,9 @@ namespace OverlayManagementService.Services
             _networkRepository.SaveOverlayNetwork(overlayNetwork);
             _logger.LogInformation("Initiating network deployment");
             overlayNetwork.DeployNetwork();
-            if (oVSConnection.vmConnection != null) {
+            if (oVSConnection.VmConnection != null) {
                 _logger.LogInformation("Registering new device in the network");
-                RegisterMachine(oVSConnection.vmConnection);
+                RegisterMachine(oVSConnection.VmConnection);
             }
             return overlayNetwork;
         }
@@ -97,10 +112,11 @@ namespace OverlayManagementService.Services
             IOverlayNetwork overlayNetwork = _networkRepository.GetOverlayNetwork(vmConnection.GroupId);
             IVirtualMachine virtualMachine = _virtualMachineFactory.CreateVirtualMachine(
                 Guid.NewGuid(),
+                _configuration["LinuxUsernames:TargetUsername"],
                 overlayNetwork.OpenVirtualSwitch.Key,
                 vmConnection.ManagementIp,
                 overlayNetwork.Vni,
-                overlayNetwork.OpenVirtualSwitch.PrivateIP, 
+                overlayNetwork.OpenVirtualSwitch.PrivateIP,
                 vmConnection.CommunicationIP
                 );
             _logger.LogInformation("Adding device with id: " + virtualMachine.Guid + " to network with group id: " + overlayNetwork.GroupId);
@@ -121,8 +137,10 @@ namespace OverlayManagementService.Services
             return overlayNetwork;
         }
 
-        public IOpenVirtualSwitch AddSwitch(IOpenVirtualSwitch openVirtualSwitch)
+        public IOpenVirtualSwitch AddSwitch(OvsRegistration ovsRegistration)
         {
+            _keyKeeper.PutKey(ovsRegistration.Key, ovsRegistration.KeyFile);
+            IOpenVirtualSwitch openVirtualSwitch = _openVirtualSwitchFactory.CreateSwitch(ovsRegistration);
             _logger.LogInformation("Saving new switch to repository");
             _switchRepository.SaveSwitch(openVirtualSwitch);
             _logger.LogInformation("Creating new Firewall entry");

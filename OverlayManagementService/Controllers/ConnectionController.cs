@@ -57,10 +57,10 @@ namespace OverlayManagementService.Controllers
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
             Student user = new()
             { 
-            Name = User.Identity.Name,
+            Name = HttpContext.User.GetDisplayName(),
             IpAddress = "192.168.40.4" //_accessor.HttpContext?.Connection?.RemoteIpAddress?.MapToIPv4().ToString()
             };
-            _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
+            _logger.LogInformation("Processing GET request: " + HttpContext.Request.Path);
             return _vmOverlayConnectionService.CreateConnection(groupId, user);
         }
 
@@ -71,10 +71,10 @@ namespace OverlayManagementService.Controllers
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
             Student user = new()
             {
-                Name = User.Identity.Name,
+                Name = HttpContext.User.GetDisplayName(),
                 IpAddress = "192.168.40.4" //_accessor.HttpContext?.Connection?.RemoteIpAddress?.MapToIPv4().ToString()
             };
-            _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
+            _logger.LogInformation("Processing GET request: " + HttpContext.Request.Path);
             _vmOverlayConnectionService.SuspendConnection(groupId, user);
         }
 

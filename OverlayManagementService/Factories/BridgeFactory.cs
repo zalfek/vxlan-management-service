@@ -8,9 +8,9 @@ namespace OverlayManagementService.Factories
 {
     public class BridgeFactory : IBridgeFactory
     {
-        public IBridge CreateBridge(string name, string vni, string managementIp)
+        public IBridge CreateBridge(string username, string key, string name, string vni, string managementIp)
         {
-            return new Bridge(name, vni, managementIp);
+            return new Bridge(username, key, name, vni, managementIp);
         }
     }
 }

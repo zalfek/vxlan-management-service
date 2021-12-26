@@ -20,16 +20,16 @@
             <thead>
                 <tr>
                     <th>
-                        @Html.DisplayNameFor(model => model.PrivateIP)
+                        Switch Prefix
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.PublicIP)
+                        Private IP address
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Key)
+                        Public IP address
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.ManagementIp)
+                        Management Ip address
                     </th>
                     <th></th>
                 </tr>
@@ -83,7 +83,7 @@
                 url: "@Url.Action("Details", "Switch")",
                 data: { key: key },
                  success: function (data) {
-                     $("#showmodal .modal-dialog").addClass("modal-xl").html(data);
+                     $("#showmodal .modal-dialog").html(data);
                     $("#showmodal").modal("show");
                 }
             });
@@ -111,7 +111,7 @@
                  url: "@Url.Action("Create", "Switch")",
                  data: {},
                  success: function (data) {
-                     $("#showmodal .modal-dialog").addClass("modal-xl").html(data);
+                     $("#showmodal .modal-dialog").html(data);
                     $("#showmodal").modal("show");
                 }
             });

@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using OverlayManagementService.Dtos;
 using OverlayManagementService.Models;
 using OverlayManagementService.Network;
@@ -49,8 +50,9 @@ namespace OverlayManagementService.Network
         {
             VirtualMachines.ForEach(vm => { 
                 vm.CleanUpVMConnection();
-                OpenVirtualSwitch.CleanUpOVSConnection(vm);
+                OpenVirtualSwitch.RemoveVMConnection(vm);
             });
+            OpenVirtualSwitch.CleanUpOVSConnection(Vni);
         }
 
         public void DeployNetwork()
@@ -61,7 +63,12 @@ namespace OverlayManagementService.Network
 
         public void RemoveClient(Student client)
         {
-            Clients.Remove(client);
+            for (int i = Clients.Count - 1; i > -1; --i)
+            {
+                if (Clients[i].IpAddress == client.IpAddress) { 
+                    Clients.RemoveAt(i);
+                }
+            }
             OpenVirtualSwitch.CleanUpClientVXLANInterface(Vni, client.IpAddress);
         }
 

@@ -56,8 +56,17 @@
     {
         <p>No items created yet</p>
     }
+    <div id="createNetworkModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
 
-    <div id="showmodal" class="modal fade" tabindex="-1" role="dialog">
+        </div>
+    </div>
+    <div id="networkDetailsModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+
+        </div>
+    </div>
+    <div id="addTargetModal" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
 
         </div>
@@ -74,8 +83,8 @@
                 url: "@Url.Action("Edit", "Home")",
                  data: { vni: vni },
                  success: function (data) {
-                     $("#showmodal .modal-dialog").addClass("modal-xl").html(data);
-                    $("#showmodal").modal("show");
+                     $("#networkDetailsModal .modal-dialog").addClass("modal-xl").html(data);
+                     $("#networkDetailsModal").modal("show");
                 }
             });
         });
@@ -87,8 +96,8 @@
                  url: "@Url.Action("Create", "Home")",
                  data: {},
                  success: function (data) {
-                     $("#showmodal .modal-dialog").addClass("modal-xl").html(data);
-                    $("#showmodal").modal("show");
+                     $("#createNetworkModal .modal-dialog").html(data);
+                     $("#createNetworkModal").modal("show");
                 }
             });
         });
@@ -114,8 +123,8 @@
                  url: "@Url.Action("CreateTargetDevice", "Home")",
                  data: { groupId: groupId},
                  success: function (data) {
-                     $("#showmodal .modal-dialog").addClass("modal-xl").html(data);
-                     $("#showmodal").modal("show");
+                     $("#addTargetModal .modal-dialog").html(data);
+                     $("#addTargetModal").modal("show");
                 }
             });
         });

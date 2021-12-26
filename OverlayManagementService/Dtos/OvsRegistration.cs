@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementService.Dtos
 {
-    public class VmConnection
+    public class OvsRegistration
     {
+        public string PrivateIP { get; set; }
+        public string PublicIP { get; set; }
+        public string Key { get; set; }
         public string ManagementIp { get; set; }
-        public string CommunicationIP { get; set; }
-        public string GroupId { get; set; }
         public IFormFile KeyFile { get; set; }
 
     }

@@ -17,7 +17,7 @@ namespace OverlayManagementClient.Services
         public Task<OverlayNetwork> GetNetworkAsync(string id);
         public Task<IEnumerable<OpenVirtualSwitch>> GetSwitchesAsync();
         public Task<OpenVirtualSwitch> GetSwitchAsync(string key);
-        public void AddSwitchAsync(OpenVirtualSwitch openVirtualSwitch);
+        public void AddSwitchAsync(OvsRegistration ovsRegistration);
         public void AddMachineAsync(VmConnection vmConnection);
         public void RemoveMachineAsync(string groupid, Guid guid);
         public Task DeleteSwitchAsync(string key);

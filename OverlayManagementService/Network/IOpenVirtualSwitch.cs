@@ -15,7 +15,7 @@ namespace OverlayManagementService.Network
         public void CleanUpClientVXLANInterface(string vni, string ip);
         public IDictionary<string, IBridge> Bridges { get; set; }
         public void DeployOVSConnection(string vni);
-        public void CleanUpOVSConnection(IVirtualMachine virtualMachine);
+        public void CleanUpOVSConnection(string vni);
         public string PrivateIP { get; set; }
         public string PublicIP { get; set; }
         public string ManagementIp { get; set; }

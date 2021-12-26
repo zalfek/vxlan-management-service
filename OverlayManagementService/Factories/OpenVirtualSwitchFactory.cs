@@ -1,4 +1,5 @@
-﻿using OverlayManagementService.Network;
+﻿using OverlayManagementService.Dtos;
+using OverlayManagementService.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,12 +8,13 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementService.Factories
 {
-    public class VirtualMachineFactory : IVirtualMachineFactory
+    public class OpenVirtualSwitchFactory : IOpenVirtualSwitchFactory
     {
-        public IVirtualMachine CreateVirtualMachine(Guid guid, string username, string key, string managementAddress, string vni, string destAddress, string communicationAddress)
+        public IOpenVirtualSwitch CreateSwitch(OvsRegistration ovsRegistration)
         {
 
-            if (System.Net.IPAddress.TryParse(managementAddress, out System.Net.IPAddress managementIp))
+
+            if (System.Net.IPAddress.TryParse(ovsRegistration.ManagementIp, out System.Net.IPAddress managementIp))
             {
                 switch (managementIp.AddressFamily)
                 {
@@ -25,12 +27,12 @@ namespace OverlayManagementService.Factories
             }
             else
             {
-                managementIp = Dns.GetHostEntry(managementAddress).AddressList[0];
+                managementIp = Dns.GetHostEntry(ovsRegistration.ManagementIp).AddressList[0];
             }
 
-            if (System.Net.IPAddress.TryParse(destAddress, out System.Net.IPAddress destIP))
+            if (System.Net.IPAddress.TryParse(ovsRegistration.ManagementIp, out System.Net.IPAddress privateIP))
             {
-                switch (destIP.AddressFamily)
+                switch (privateIP.AddressFamily)
                 {
                     case System.Net.Sockets.AddressFamily.InterNetwork:
                         // we have IPv4
@@ -41,12 +43,12 @@ namespace OverlayManagementService.Factories
             }
             else
             {
-                destIP = Dns.GetHostEntry(destAddress).AddressList[0];
+                privateIP = Dns.GetHostEntry(ovsRegistration.PrivateIP).AddressList[0];
             }
 
-            if (System.Net.IPAddress.TryParse(communicationAddress, out System.Net.IPAddress communicationIp))
+            if (System.Net.IPAddress.TryParse(ovsRegistration.ManagementIp, out System.Net.IPAddress publicIP))
             {
-                switch (communicationIp.AddressFamily)
+                switch (publicIP.AddressFamily)
                 {
                     case System.Net.Sockets.AddressFamily.InterNetwork:
                         // we have IPv4
@@ -57,17 +59,14 @@ namespace OverlayManagementService.Factories
             }
             else
             {
-                communicationIp = Dns.GetHostEntry(communicationAddress).AddressList[0];
+                publicIP = Dns.GetHostEntry(ovsRegistration.PublicIP).AddressList[0];
             }
 
-            return new VirtualMachine(
-                guid,
-                username,
-                key,
+            return new OpenVirtualSwitch(
+                ovsRegistration.Key,
                 managementIp.ToString(),
-                vni,
-                destIP.ToString(),
-                communicationIp.ToString()
+                privateIP.ToString(),
+                publicIP.ToString()
                 );
         }
     }

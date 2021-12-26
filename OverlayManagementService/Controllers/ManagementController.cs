@@ -29,7 +29,7 @@ namespace OverlayManagementService.Controllers
 
         [Authorize(Policy = "Admin")]
         [HttpPost("deploy/machine")]
-        public IOverlayNetwork DeployMachine(VmConnection vmConnection)
+        public IOverlayNetwork DeployMachine([FromForm] VmConnection vmConnection)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
             _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
@@ -57,11 +57,11 @@ namespace OverlayManagementService.Controllers
 
         [Authorize(Policy = "Admin")]
         [HttpPost("register/switch")]
-        public IOpenVirtualSwitch RegisterSwitch(OpenVirtualSwitch openVirtualSwitch)
+        public IOpenVirtualSwitch RegisterSwitch([FromForm] OvsRegistration ovsRegistration)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
             _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
-            return _vmOverlayManagementService.AddSwitch(openVirtualSwitch); ;
+            return _vmOverlayManagementService.AddSwitch(ovsRegistration); ;
         }
 
         [Authorize(Policy = "Admin")]
