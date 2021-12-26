@@ -14,12 +14,12 @@
                 <form asp-action="Create" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                        <label asp-for="PrivateIP" class="control-label">Virtual Switch private IP(Towards target devices)</label>
+                        <label asp-for="PrivateIP" class="control-label">Virtual Switch private IP or hostname(Towards target devices)</label>
                         <input asp-for="PrivateIP" class="form-control" />
                         <span asp-validation-for="PrivateIP" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="PublicIP" class="control-label">Virtual Switch public IP(Towards target clients)</label>
+                        <label asp-for="PublicIP" class="control-label">Virtual Switch public IP or hostname(Towards target clients)</label>
                         <input asp-for="PublicIP" class="form-control" />
                         <span asp-validation-for="PublicIP" class="text-danger"></span>
                     </div>
@@ -29,7 +29,7 @@
                         <span asp-validation-for="Key" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="ManagementIp" class="control-label">Open Virtual Switch management IP address</label>
+                        <label asp-for="ManagementIp" class="control-label">Open Virtual Switch management IP or hostname</label>
                         <input asp-for="ManagementIp" class="form-control" />
                         <span asp-validation-for="ManagementIp" class="text-danger"></span>
                     </div>

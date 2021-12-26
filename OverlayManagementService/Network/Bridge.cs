@@ -21,8 +21,8 @@ namespace OverlayManagementService.Network
             Vni = vni;
             ManagementIp = managementIp;
             VXLANInterfaces = new List<IVXLANInterface>();
-            _username = username;
-            _key = key;
+            Username = username;
+            Key = key;
             _vxlanInterfaceFactory = new VxlanInterfaceFactory();
         }
 
@@ -30,15 +30,15 @@ namespace OverlayManagementService.Network
         public string Name { get; set; }
         public List<IVXLANInterface> VXLANInterfaces { get; set; }
         public string ManagementIp { get; set; }
-        private readonly string _username;
-        private readonly string _key;
+        public string Username { get; set; }
+        public string Key { get; set; }
 
         public void DeployVXLANInterface(IVirtualMachine virtualMachine)
         {
             _logger.LogInformation("Creating new vxlan interface");
                IVXLANInterface vXLANInterface = _vxlanInterfaceFactory.CreateInterface(
-                _username,
-                _key,
+                Username,
+                Key,
                 Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14),
                 "vxlan",
                 virtualMachine.CommunicationIP,
@@ -56,8 +56,8 @@ namespace OverlayManagementService.Network
         {
             _logger.LogInformation("Creating new vxlan interface");
             IVXLANInterface vXLANInterface = _vxlanInterfaceFactory.CreateInterface(
-                _username,
-                _key,
+                Username,
+                Key,
                 Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14),
                 "vxlan",
                 ip,
@@ -72,9 +72,9 @@ namespace OverlayManagementService.Network
 
         public void CleanUpBridge()
         {
-            ConnectionInfo sSHConnectionInfo = new(ManagementIp, _username, new AuthenticationMethod[]{
-             new PrivateKeyAuthenticationMethod(_username, new PrivateKeyFile[]{
-                    new PrivateKeyFile(KeyKeeper.getInstance().GetKeyLocation(_key))
+            ConnectionInfo sSHConnectionInfo = new(ManagementIp, Username, new AuthenticationMethod[]{
+             new PrivateKeyAuthenticationMethod(Username, new PrivateKeyFile[]{
+                    new PrivateKeyFile(KeyKeeper.GetInstance().GetKeyLocation(Key))
                 }),
             });
             using var sshclient = new SshClient(sSHConnectionInfo);
@@ -91,9 +91,9 @@ namespace OverlayManagementService.Network
 
         public void DeployBridge()
         {
-            ConnectionInfo sSHConnectionInfo = new(ManagementIp, _username, new AuthenticationMethod[]{
-             new PrivateKeyAuthenticationMethod(_username, new PrivateKeyFile[]{
-                    new PrivateKeyFile(KeyKeeper.getInstance().GetKeyLocation(_key))
+            ConnectionInfo sSHConnectionInfo = new(ManagementIp, Username, new AuthenticationMethod[]{
+             new PrivateKeyAuthenticationMethod(Username, new PrivateKeyFile[]{
+                    new PrivateKeyFile(KeyKeeper.GetInstance().GetKeyLocation(Key))
                 }),
             });
             using var sshclient = new SshClient(sSHConnectionInfo);

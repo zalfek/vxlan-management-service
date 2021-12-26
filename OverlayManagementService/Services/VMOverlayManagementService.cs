@@ -99,9 +99,9 @@ namespace OverlayManagementService.Services
             _networkRepository.SaveOverlayNetwork(overlayNetwork);
             _logger.LogInformation("Initiating network deployment");
             overlayNetwork.DeployNetwork();
-            if (oVSConnection.vmConnection != null) {
+            if (oVSConnection.VmConnection != null) {
                 _logger.LogInformation("Registering new device in the network");
-                RegisterMachine(oVSConnection.vmConnection);
+                RegisterMachine(oVSConnection.VmConnection);
             }
             return overlayNetwork;
         }

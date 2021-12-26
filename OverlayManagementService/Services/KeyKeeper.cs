@@ -20,7 +20,7 @@ namespace OverlayManagementService.Services
             _instance = this;
         }
 
-        public static KeyKeeper getInstance()
+        public static KeyKeeper GetInstance()
         {
             return _instance;
         }

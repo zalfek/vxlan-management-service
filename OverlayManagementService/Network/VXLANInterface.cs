@@ -18,8 +18,8 @@ namespace OverlayManagementService.Network
         public string Vni { get; set; }
         public string ManagementIp { get; set; }
         private readonly ILogger<IVXLANInterface> _logger;
-        private readonly string _username;
-        private readonly string _key;
+        private string Username { get; set; }
+        private string Key { get; set; }
 
         public VXLANInterface(string username, string key, string name, string type, string remoteIp, string vni, string bridgeName, string managementIp)
         {
@@ -30,17 +30,17 @@ namespace OverlayManagementService.Network
             RemoteIp = remoteIp;
             Vni = vni;
             BridgeName = bridgeName;
-            _username = username;
-            _key = key;
+            Username = username;
+            Key = key;
         }
 
 
 
         public void CleanUpVXLANInterface()
         {
-            ConnectionInfo sSHConnectionInfo = new(ManagementIp, _username, new AuthenticationMethod[]{
-             new PrivateKeyAuthenticationMethod(_username, new PrivateKeyFile[]{
-                    new PrivateKeyFile(KeyKeeper.getInstance().GetKeyLocation(_key))
+            ConnectionInfo sSHConnectionInfo = new(ManagementIp, Username, new AuthenticationMethod[]{
+             new PrivateKeyAuthenticationMethod(Username, new PrivateKeyFile[]{
+                    new PrivateKeyFile(KeyKeeper.GetInstance().GetKeyLocation(Key))
                 }),
             });
 
@@ -60,9 +60,9 @@ namespace OverlayManagementService.Network
 
         public void DeployVXLANInterface()
         {
-            ConnectionInfo sSHConnectionInfo = new(ManagementIp, _username, new AuthenticationMethod[]{
-             new PrivateKeyAuthenticationMethod(_username, new PrivateKeyFile[]{
-                    new PrivateKeyFile(KeyKeeper.getInstance().GetKeyLocation(_key))
+            ConnectionInfo sSHConnectionInfo = new(ManagementIp, Username, new AuthenticationMethod[]{
+             new PrivateKeyAuthenticationMethod(Username, new PrivateKeyFile[]{
+                    new PrivateKeyFile(KeyKeeper.GetInstance().GetKeyLocation(Key))
                 }),
             });
 

@@ -12,11 +12,61 @@ namespace OverlayManagementService.Factories
     {
         public IOpenVirtualSwitch CreateSwitch(OvsRegistration ovsRegistration)
         {
+
+
+            if (System.Net.IPAddress.TryParse(ovsRegistration.ManagementIp, out System.Net.IPAddress managementIp))
+            {
+                switch (managementIp.AddressFamily)
+                {
+                    case System.Net.Sockets.AddressFamily.InterNetwork:
+                        // we have IPv4
+                        break;
+                    default:
+                        throw new Exception("Unsupported address");
+                }
+            }
+            else
+            {
+                managementIp = Dns.GetHostEntry(ovsRegistration.ManagementIp).AddressList[0];
+            }
+
+            if (System.Net.IPAddress.TryParse(ovsRegistration.ManagementIp, out System.Net.IPAddress privateIP))
+            {
+                switch (privateIP.AddressFamily)
+                {
+                    case System.Net.Sockets.AddressFamily.InterNetwork:
+                        // we have IPv4
+                        break;
+                    default:
+                        throw new Exception("Unsupported address");
+                }
+            }
+            else
+            {
+                privateIP = Dns.GetHostEntry(ovsRegistration.PrivateIP).AddressList[0];
+            }
+
+            if (System.Net.IPAddress.TryParse(ovsRegistration.ManagementIp, out System.Net.IPAddress publicIP))
+            {
+                switch (publicIP.AddressFamily)
+                {
+                    case System.Net.Sockets.AddressFamily.InterNetwork:
+                        // we have IPv4
+                        break;
+                    default:
+                        throw new Exception("Unsupported address");
+                }
+            }
+            else
+            {
+                publicIP = Dns.GetHostEntry(ovsRegistration.PublicIP).AddressList[0];
+            }
+
             return new OpenVirtualSwitch(
                 ovsRegistration.Key,
-                Dns.GetHostEntry(ovsRegistration.ManagementIp).AddressList.GetValue(0).ToString(),
-                Dns.GetHostEntry(ovsRegistration.PrivateIP).AddressList.GetValue(0).ToString(),
-                Dns.GetHostEntry(ovsRegistration.PublicIP).AddressList.GetValue(0).ToString()
+                managementIp.ToString(),
+                privateIP.ToString(),
+                publicIP.ToString()
                 );
         }
     }

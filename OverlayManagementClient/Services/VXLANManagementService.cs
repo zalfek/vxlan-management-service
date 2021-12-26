@@ -175,8 +175,8 @@ namespace OverlayManagementClient.Services
             {
                 data = br.ReadBytes((int)ovsRegistration.KeyFile.OpenReadStream().Length);
             }
-            ByteArrayContent bytes = new ByteArrayContent(data);
-            MultipartFormDataContent multiContent = new MultipartFormDataContent();
+            ByteArrayContent bytes = new(data);
+            MultipartFormDataContent multiContent = new();
             multiContent.Add(bytes, "KeyFile", ovsRegistration.KeyFile.FileName);
             multiContent.Add(new StringContent(ovsRegistration.Key.ToString()), "Key");
             multiContent.Add(new StringContent(ovsRegistration.ManagementIp), "ManagementIp");
@@ -200,12 +200,14 @@ namespace OverlayManagementClient.Services
             {
                 data = br.ReadBytes((int)vmConnection.KeyFile.OpenReadStream().Length);
             }
-            ByteArrayContent bytes = new ByteArrayContent(data);
-            MultipartFormDataContent multiContent = new MultipartFormDataContent();
-            multiContent.Add(bytes, "KeyFile", vmConnection.KeyFile.FileName);
-            multiContent.Add(new StringContent(vmConnection.ManagementIp), "ManagementIp");
-            multiContent.Add(new StringContent(vmConnection.GroupId), "GroupId");
-            multiContent.Add(new StringContent(vmConnection.CommunicationIP), "CommunicationIP");
+            ByteArrayContent bytes = new(data);
+            MultipartFormDataContent multiContent = new()
+            {
+                { bytes, "KeyFile", vmConnection.KeyFile.FileName },
+                { new StringContent(vmConnection.ManagementIp), "ManagementIp" },
+                { new StringContent(vmConnection.GroupId), "GroupId" },
+                { new StringContent(vmConnection.CommunicationIP), "CommunicationIP" }
+            };
 
             var response = await this._httpClient.PostAsync($"{ _BaseAddress}/management/deploy/machine", multiContent);
 

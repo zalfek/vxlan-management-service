@@ -17,8 +17,8 @@ namespace OverlayManagementService.Network
         public readonly string DstPort;
         public readonly string DstIP;
         public readonly string ManagementIp;
-        private readonly string _username;
-        private readonly string _key;
+        public string Username;
+        public string Key;
 
         public LinuxVXLANInterface(string username, string key, string name, string vNI, string dstPort, string dstIP, string managementIp)
         {
@@ -28,16 +28,16 @@ namespace OverlayManagementService.Network
             DstPort = dstPort;
             DstIP = dstIP;
             ManagementIp = managementIp;
-            _username = username;
-            _key = key;
+            Username = username;
+            Key = key;
         }
 
         public void CleanUpInterface()
         {
 
-            ConnectionInfo sSHConnectionInfo = new(ManagementIp, _username, new AuthenticationMethod[]{
-             new PrivateKeyAuthenticationMethod(_username, new PrivateKeyFile[]{
-                    new PrivateKeyFile(KeyKeeper.getInstance().GetKeyLocation(_key))
+            ConnectionInfo sSHConnectionInfo = new(ManagementIp, Username, new AuthenticationMethod[]{
+             new PrivateKeyAuthenticationMethod(Username, new PrivateKeyFile[]{
+                    new PrivateKeyFile(KeyKeeper.GetInstance().GetKeyLocation(Key))
                 }),
             });
 
@@ -55,9 +55,9 @@ namespace OverlayManagementService.Network
         public void DeployInterface(string vxlanIp)
         {
 
-            ConnectionInfo sSHConnectionInfo = new(ManagementIp, _username, new AuthenticationMethod[]{
-             new PrivateKeyAuthenticationMethod(_username, new PrivateKeyFile[]{
-                    new PrivateKeyFile(KeyKeeper.getInstance().GetKeyLocation(_key))
+            ConnectionInfo sSHConnectionInfo = new(ManagementIp, Username, new AuthenticationMethod[]{
+             new PrivateKeyAuthenticationMethod(Username, new PrivateKeyFile[]{
+                    new PrivateKeyFile(KeyKeeper.GetInstance().GetKeyLocation(Key))
                 }),
             });
 

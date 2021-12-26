@@ -12,15 +12,15 @@
         <hr />
         <div class="row">
             <div class="col-md">
-                <form asp-action="CreateTargetDevice">
+                <form asp-action="CreateTargetDevice" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                        <label asp-for="ManagementIp" class="control-label">Target Device management IP address</label>
+                        <label asp-for="ManagementIp" class="control-label">Target Device management IP or hostname</label>
                         <input asp-for="ManagementIp" class="form-control" />
                         <span asp-validation-for="ManagementIp" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="CommunicationIP" class="control-label">Target Device communication IP address</label>
+                        <label asp-for="CommunicationIP" class="control-label">Target Device communication IP or hostname</label>
                         <input asp-for="CommunicationIP" class="form-control" />
                         <span asp-validation-for="CommunicationIP" class="text-danger"></span>
                     </div>
@@ -30,7 +30,7 @@
                         <span asp-validation-for="GroupId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="KeyFile" class="control-label">KeyFile for switch management</label>
+                        <label asp-for="KeyFile" class="control-label">Key File for target management</label>
                         <input asp-for="KeyFile" class="form-control">
                         <span asp-validation-for="KeyFile" class="text-danger"></span>
                     </div>

@@ -9,7 +9,7 @@ namespace OverlayManagementService.Network
     public class VirtualMachine : IVirtualMachine
     {
 
-        public VirtualMachine(Guid guid, string username,  string key, string managementIp, string vni, string destIP, string communicationIP)
+        public VirtualMachine(Guid guid, string username, string key, string managementIp, string vni, string destIP, string communicationIP)
         {
             _key = key;
             _username = username;
