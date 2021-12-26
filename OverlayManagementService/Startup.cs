@@ -79,6 +79,9 @@ namespace OverlayManagementService
             services.AddHostedService<ClientsRemovalService>();
             services.AddScoped<IFirewallFactory, FirewallFactory>();
             services.AddSingleton<IFirewallRepository, FirewallRepository>();
+            services.AddSingleton<IKeyKeeper, KeyKeeper>();
+            services.AddScoped<IOpenVirtualSwitchFactory, OpenVirtualSwitchFactory>();
+            services.AddScoped<IVxlanInterfaceFactory, VxlanInterfaceFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

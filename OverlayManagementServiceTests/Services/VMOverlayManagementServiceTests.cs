@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using OverlayManagementService.Dtos;
@@ -30,21 +31,27 @@ namespace OverlayManagementService.Services.Tests
         private readonly Mock<IVirtualMachine> _virtualMachineMock = new();
         private readonly Mock<IFirewallFactory> _firewallFactoryMock = new();
         private readonly Mock<IFirewallRepository> _firewallRepositoryMock = new();
+        private readonly Mock<IKeyKeeper> _KeyKeeperMock = new();
+        private readonly Mock<IOpenVirtualSwitchFactory> _openVirtualSwitchFactoryMock = new();
+        private readonly Mock<IConfiguration> _configurationMock = new();
 
         public VMOverlayManagementServiceTests()
         {
             _sut = new VMOverlayManagementService(
                 _loggerMock.Object,
-                _networkRepository.Object, 
-                _vniMock.Object, 
-                _networkFactoryMock.Object, 
-                _bridgeFactoryMock.Object, 
-                _virtualMachineFactoryMock.Object, 
+                _networkRepository.Object,
+                _vniMock.Object,
+                _networkFactoryMock.Object,
+                _bridgeFactoryMock.Object,
+                _virtualMachineFactoryMock.Object,
                 _ipAddressFactory.Object,
                 _switchRepository.Object,
                 _firewallRepositoryMock.Object,
-                _firewallFactoryMock.Object
-                );
+                _firewallFactoryMock.Object,
+                _openVirtualSwitchFactoryMock.Object,
+                _KeyKeeperMock.Object,
+                _configurationMock.Object
+                ) ;
         }
 
         [TestMethod()]
@@ -74,7 +81,7 @@ namespace OverlayManagementService.Services.Tests
 
             _vniMock.Setup(v => v.GenerateUniqueVNI()).Returns(It.IsAny<string>());
             _networkFactoryMock.Setup(n => n.CreateOverlayNetwork(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IOpenVirtualSwitch>(), It.IsAny<IAddress>())).Returns(_overlayNetworkMock.Object);
-            _bridgeFactoryMock.Setup(n => n.CreateBridge(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(_bridgeMock.Object);
+            _bridgeFactoryMock.Setup(n => n.CreateBridge(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(_bridgeMock.Object);
             _networkRepository.Setup(x => x.SaveOverlayNetwork(It.IsAny<IOverlayNetwork>())).Returns(_overlayNetworkMock.Object);
             _switchRepository.Setup(s => s.GetSwitch(It.IsAny<string>())).Returns(_openVirtualSwitchMock.Object);
             _overlayNetworkMock.Setup(x => x.DeployNetwork());
@@ -94,14 +101,13 @@ namespace OverlayManagementService.Services.Tests
             {
                 ManagementIp = "255.255.255.255",
                 CommunicationIP = "255.255.255.255",
-                OVSIPAddress = "255.255.255.255",
                 GroupId = "46a2e969-c558-4892-8e45-9cc2875b8268"
 
             };
 
             _ipAddressMock.Setup(v => v.GenerarteUniqueIPV4Address()).Returns(It.IsAny<string>());
             _networkRepository.Setup(x => x.GetOverlayNetwork(It.IsAny<string>())).Returns(_overlayNetworkMock.Object);
-            _virtualMachineFactoryMock.Setup(v => v.CreateVirtualMachine(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(_virtualMachineMock.Object);
+            _virtualMachineFactoryMock.Setup(v => v.CreateVirtualMachine(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(_virtualMachineMock.Object);
             _overlayNetworkMock.Setup(sw => sw.AddVMachine(It.IsAny<IVirtualMachine>()));
             _overlayNetworkMock.SetupGet(x => x.Vni).Returns(It.IsAny<string>());
             _overlayNetworkMock.SetupGet(x => x.OpenVirtualSwitch).Returns(_openVirtualSwitchMock.Object);

@@ -11,10 +11,10 @@ namespace OverlayManagementService.Network
     public class Firewall : IFirewall
     {
         private readonly ILogger<IFirewall> _logger;
-        private readonly string _managementIp;
+        public string _managementIp;
         public Firewall(string managementIp)
         {
-            _logger = _logger = new LoggerFactory().CreateLogger<IFirewall>();
+            _logger = _logger = LoggerFactory.Create(logging => logging.AddConsole()).CreateLogger<IFirewall>();
             _managementIp = managementIp;
         }
 
@@ -24,13 +24,20 @@ namespace OverlayManagementService.Network
                             new PasswordAuthenticationMethod("vagrant", "vagrant")});
             using var sshclient = new SshClient(sSHConnectionInfo);
             sshclient.Connect();
-            using (var cmd = sshclient.CreateCommand("iptables -A INPUT -s " + ip + " -j ACCEPT"))
+            using (var cmd = sshclient.CreateCommand("sudo iptables -A INPUT -s " + ip + " -j ACCEPT"))
             {
                 cmd.Execute();
                 _logger.LogInformation("Command>" + cmd.CommandText);
                 _logger.LogInformation("Return Value = {0}", cmd.ExitStatus);
             }
-            using (var cmd = sshclient.CreateCommand("iptables -A OUTPUT -d " + ip + " -j ACCEPT"))
+            using (var cmd = sshclient.CreateCommand("sudo iptables -A OUTPUT -d " + ip + " -j ACCEPT"))
+            {
+                cmd.Execute();
+                _logger.LogInformation("Command>" + cmd.CommandText);
+                _logger.LogInformation("Return Value = {0}", cmd.ExitStatus);
+            }
+
+            using (var cmd = sshclient.CreateCommand("sudo iptables -A FORWARD -d " + ip + " -j ACCEPT"))
             {
                 cmd.Execute();
                 _logger.LogInformation("Command>" + cmd.CommandText);
@@ -46,13 +53,20 @@ namespace OverlayManagementService.Network
                             new PasswordAuthenticationMethod("vagrant", "vagrant")});
             using var sshclient = new SshClient(sSHConnectionInfo);
             sshclient.Connect();
-            using (var cmd = sshclient.CreateCommand("iptables -D INPUT -s " + ip + " -j ACCEPT"))
+            using (var cmd = sshclient.CreateCommand("sudo iptables -D INPUT -s " + ip + " -j ACCEPT"))
             {
                 cmd.Execute();
                 _logger.LogInformation("Command>" + cmd.CommandText);
                 _logger.LogInformation("Return Value = {0}", cmd.ExitStatus);
             }
-            using (var cmd = sshclient.CreateCommand("iptables -D OUTPUT -d " + ip + " -j ACCEPT"))
+            using (var cmd = sshclient.CreateCommand("sudo iptables -D OUTPUT -d " + ip + " -j ACCEPT"))
+            {
+                cmd.Execute();
+                _logger.LogInformation("Command>" + cmd.CommandText);
+                _logger.LogInformation("Return Value = {0}", cmd.ExitStatus);
+            }
+
+            using (var cmd = sshclient.CreateCommand("sudo iptables -D FORWARD -d " + ip + " -j ACCEPT"))
             {
                 cmd.Execute();
                 _logger.LogInformation("Command>" + cmd.CommandText);

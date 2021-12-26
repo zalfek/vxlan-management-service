@@ -17,16 +17,21 @@ namespace OverlayManagementService.Repositories
 
         private readonly ILogger<INetworkRepository> _logger;
         private static IDictionary<string, IOverlayNetwork> _dbMock;
+        private readonly string _backupPath;
+        private readonly JsonSerializerSettings _jsonSerializerSettings;
         public NetworkRepository()
         {
             _logger = new LoggerFactory().CreateLogger<INetworkRepository>();
-            _dbMock = new Dictionary<string, IOverlayNetwork>();
+            _backupPath = Path.Combine(AppContext.BaseDirectory, "Resources", "NetworkData.json");
+            _jsonSerializerSettings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+            _dbMock = (IDictionary<string, IOverlayNetwork>)JsonConvert.DeserializeObject<Dictionary<string, IOverlayNetwork>>(File.ReadAllText(_backupPath), _jsonSerializerSettings);
         }
 
         public void DeleteOverlayNetwork(string groupId)
         {
             _logger.LogInformation("Removing network with id: " + groupId + " from database");
             _dbMock.Remove(groupId);
+            File.WriteAllText(_backupPath, JsonConvert.SerializeObject(_dbMock, _jsonSerializerSettings));
         }
 
         public IOverlayNetwork GetOverlayNetwork(string groupId)
@@ -46,6 +51,7 @@ namespace OverlayManagementService.Repositories
                 _logger.LogInformation("Network with id: " + overlayNetwork.GroupId + " does not exists. Creating new entry in database");
                 _dbMock.Add(overlayNetwork.GroupId, overlayNetwork);
             }
+            File.WriteAllText(_backupPath, JsonConvert.SerializeObject(_dbMock, _jsonSerializerSettings));
             return overlayNetwork;
         }
 
@@ -53,6 +59,7 @@ namespace OverlayManagementService.Repositories
         {
             _logger.LogInformation("Updating the state of network in database");
             _dbMock[overlayNetwork.GroupId] = overlayNetwork;
+            File.WriteAllText(_backupPath, JsonConvert.SerializeObject(_dbMock, _jsonSerializerSettings));
             return overlayNetwork;
         }
 

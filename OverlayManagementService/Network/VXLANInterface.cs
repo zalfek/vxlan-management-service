@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OverlayManagementService.Services;
 using Renci.SshNet;
 using System;
 using System.Collections.Generic;
@@ -17,24 +18,31 @@ namespace OverlayManagementService.Network
         public string Vni { get; set; }
         public string ManagementIp { get; set; }
         private readonly ILogger<IVXLANInterface> _logger;
+        private readonly string _username;
+        private readonly string _key;
 
-        public VXLANInterface(string name, string type, string remoteIp, string vni, string bridgeName, string managementIp)
+        public VXLANInterface(string username, string key, string name, string type, string remoteIp, string vni, string bridgeName, string managementIp)
         {
             ManagementIp = managementIp;
-            _logger = new LoggerFactory().CreateLogger<IVXLANInterface>();
+            _logger = LoggerFactory.Create(logging => logging.AddConsole()).CreateLogger<IVXLANInterface>();
             Name = name;
             Type = type;
             RemoteIp = remoteIp;
             Vni = vni;
             BridgeName = bridgeName;
+            _username = username;
+            _key = key;
         }
 
 
 
         public void CleanUpVXLANInterface()
         {
-            ConnectionInfo sSHConnectionInfo = new(ManagementIp, "vagrant", new AuthenticationMethod[]{
-                            new PasswordAuthenticationMethod("vagrant", "vagrant")});
+            ConnectionInfo sSHConnectionInfo = new(ManagementIp, _username, new AuthenticationMethod[]{
+             new PrivateKeyAuthenticationMethod(_username, new PrivateKeyFile[]{
+                    new PrivateKeyFile(KeyKeeper.getInstance().GetKeyLocation(_key))
+                }),
+            });
 
             using var sshclient = new SshClient(sSHConnectionInfo);
             _logger.LogInformation("Connecting to device");
@@ -52,8 +60,11 @@ namespace OverlayManagementService.Network
 
         public void DeployVXLANInterface()
         {
-            ConnectionInfo sSHConnectionInfo = new(ManagementIp, "vagrant", new AuthenticationMethod[]{
-                            new PasswordAuthenticationMethod("vagrant", "vagrant")});
+            ConnectionInfo sSHConnectionInfo = new(ManagementIp, _username, new AuthenticationMethod[]{
+             new PrivateKeyAuthenticationMethod(_username, new PrivateKeyFile[]{
+                    new PrivateKeyFile(KeyKeeper.getInstance().GetKeyLocation(_key))
+                }),
+            });
 
             using var sshclient = new SshClient(sSHConnectionInfo);
             _logger.LogInformation("Connecting to device");

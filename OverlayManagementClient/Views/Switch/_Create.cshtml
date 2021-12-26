@@ -1,4 +1,4 @@
-﻿@model OverlayManagementClient.Models.OpenVirtualSwitch
+﻿@model OverlayManagementClient.Models.OvsRegistration
 
 <div class="modal-content">
     <div class="modal-header">
@@ -10,8 +10,8 @@
     <div class="modal-body">
         <hr />
         <div class="row">
-            <div class="col-md-4">
-                <form asp-action="Create">
+            <div class="col-md">
+                <form asp-action="Create" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <label asp-for="PrivateIP" class="control-label">Virtual Switch private IP(Towards target devices)</label>
@@ -34,6 +34,11 @@
                         <span asp-validation-for="ManagementIp" class="text-danger"></span>
                     </div>
                     <div class="form-group">
+                        <label asp-for="KeyFile" class="control-label">KeyFile for switch management</label>
+                        <input asp-for="KeyFile" class="form-control">
+                        <span asp-validation-for="KeyFile" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
                         <input type="submit" value="Create" class="btn btn-primary" />
                     </div>
                 </form>
@@ -43,4 +48,14 @@
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+            $('.custom-file-input').on("change", function () {
+                var fileName = $(this).val().split("\\").pop();
+                $(this).next('.custom-file-label').html(fileName);
+            });
+        }
+        );
+    </script>
 }

@@ -47,10 +47,10 @@ namespace OverlayManagementClient.Controllers
         [Authorize(Policy = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(OpenVirtualSwitch openVirtualSwitch)
+        public ActionResult Create(OvsRegistration ovsRegistration)
         {
 
-            _vXLANManagementService.AddSwitchAsync(openVirtualSwitch);
+            _vXLANManagementService.AddSwitchAsync(ovsRegistration);
             try
             {
                 return RedirectToAction(nameof(Index));

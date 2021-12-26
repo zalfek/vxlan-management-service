@@ -8,6 +8,6 @@ namespace OverlayManagementService.Factories
 {
     public interface IVirtualMachineFactory
     {
-        public IVirtualMachine CreateVirtualMachine(Guid guid, string switchKey, string managementIp, string vni, string destIP, string communicationIP);
+        public IVirtualMachine CreateVirtualMachine(Guid guid, string username, string switchKey, string managementIp, string vni, string destIP, string communicationIP);
     }
 }

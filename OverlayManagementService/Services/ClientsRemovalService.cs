@@ -18,10 +18,11 @@ namespace OverlayManagementService.Services
         private readonly INetworkRepository _networkRepository;
         private readonly IFirewallRepository _firewallRepository;
 
-        public ClientsRemovalService(ILogger<ClientsRemovalService> logger, INetworkRepository networkRepository)
+        public ClientsRemovalService(ILogger<ClientsRemovalService> logger, INetworkRepository networkRepository, IFirewallRepository firewallRepository)
         {
             _logger = logger;
             _networkRepository = networkRepository;
+            _firewallRepository = firewallRepository;
         }
 
         public Task StartAsync(CancellationToken stoppingToken)
@@ -45,13 +46,13 @@ namespace OverlayManagementService.Services
             {
                 _logger.LogInformation("Removing clients from network with id: " + keyValuePair.Value.GroupId);
                 IFirewall firewall = _firewallRepository.GetFirewall(keyValuePair.Value.OpenVirtualSwitch.Key);
-                keyValuePair.Value.Clients.ForEach(client =>
+                for (int i = keyValuePair.Value.Clients.Count - 1; i > -1; --i)
                 {
-                    _logger.LogInformation("Removing firewall exception for " + client);
-                    firewall.RemoveException(client.IpAddress);
-                    _logger.LogInformation("Removing from network client with ip: " + client);
-                    keyValuePair.Value.RemoveClient(client);
-                });
+                    _logger.LogInformation("Removing firewall exception for " + keyValuePair.Value.Clients[i]);
+                    firewall.RemoveException(keyValuePair.Value.Clients[i].IpAddress);
+                    _logger.LogInformation("Removing from network client with ip: " + keyValuePair.Value.Clients[i]);
+                    keyValuePair.Value.RemoveClient(keyValuePair.Value.Clients[i]);
+                }
             }
         }
 

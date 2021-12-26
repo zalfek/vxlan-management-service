@@ -13,6 +13,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using OverlayManagementClient.Models;
+using System.IO;
 
 namespace OverlayManagementClient.Services
 {
@@ -163,13 +164,26 @@ namespace OverlayManagementClient.Services
             throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
         }
 
-        public async void AddSwitchAsync(OpenVirtualSwitch openVirtualSwitch)
+        public async void AddSwitchAsync(OvsRegistration ovsRegistration)
         {
+
+
             await PrepareAuthenticatedClient();
 
-            var jsonRequest = JsonConvert.SerializeObject(openVirtualSwitch);
-            var jsoncontent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            var response = await this._httpClient.PostAsync($"{ _BaseAddress}/management/register/switch", jsoncontent);
+            byte[] data;
+            using (var br = new BinaryReader(ovsRegistration.KeyFile.OpenReadStream()))
+            {
+                data = br.ReadBytes((int)ovsRegistration.KeyFile.OpenReadStream().Length);
+            }
+            ByteArrayContent bytes = new ByteArrayContent(data);
+            MultipartFormDataContent multiContent = new MultipartFormDataContent();
+            multiContent.Add(bytes, "KeyFile", ovsRegistration.KeyFile.FileName);
+            multiContent.Add(new StringContent(ovsRegistration.Key.ToString()), "Key");
+            multiContent.Add(new StringContent(ovsRegistration.ManagementIp), "ManagementIp");
+            multiContent.Add(new StringContent(ovsRegistration.PrivateIP), "PrivateIP");
+            multiContent.Add(new StringContent(ovsRegistration.PublicIP), "PublicIP");
+
+            var response = await this._httpClient.PostAsync($"{ _BaseAddress}/management/register/switch", multiContent);
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
@@ -181,9 +195,19 @@ namespace OverlayManagementClient.Services
         {
             await PrepareAuthenticatedClient();
 
-            var jsonRequest = JsonConvert.SerializeObject(vmConnection);
-            var jsoncontent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            var response = await this._httpClient.PostAsync($"{ _BaseAddress}/management/deploy/machine", jsoncontent);
+            byte[] data;
+            using (var br = new BinaryReader(vmConnection.KeyFile.OpenReadStream()))
+            {
+                data = br.ReadBytes((int)vmConnection.KeyFile.OpenReadStream().Length);
+            }
+            ByteArrayContent bytes = new ByteArrayContent(data);
+            MultipartFormDataContent multiContent = new MultipartFormDataContent();
+            multiContent.Add(bytes, "KeyFile", vmConnection.KeyFile.FileName);
+            multiContent.Add(new StringContent(vmConnection.ManagementIp), "ManagementIp");
+            multiContent.Add(new StringContent(vmConnection.GroupId), "GroupId");
+            multiContent.Add(new StringContent(vmConnection.CommunicationIP), "CommunicationIP");
+
+            var response = await this._httpClient.PostAsync($"{ _BaseAddress}/management/deploy/machine", multiContent);
 
             if (response.StatusCode != HttpStatusCode.OK)
             {

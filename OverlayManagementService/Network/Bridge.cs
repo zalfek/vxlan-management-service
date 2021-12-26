@@ -1,5 +1,7 @@
 ﻿
 using Microsoft.Extensions.Logging;
+using OverlayManagementService.Factories;
+using OverlayManagementService.Services;
 using Renci.SshNet;
 using System;
 using System.Collections.Generic;
@@ -10,25 +12,33 @@ namespace OverlayManagementService.Network
     public class Bridge: IBridge
     {
         private readonly ILogger<IBridge> _logger;
+        private readonly IVxlanInterfaceFactory _vxlanInterfaceFactory;
 
-        public Bridge(string name, string vni, string managementIp)
+        public Bridge(string username, string key, string name, string vni, string managementIp)
         {
-            _logger = new LoggerFactory().CreateLogger<IBridge>();
+            _logger = LoggerFactory.Create(logging => logging.AddConsole()).CreateLogger<IBridge>();
             Name = name;
             Vni = vni;
             ManagementIp = managementIp;
             VXLANInterfaces = new List<IVXLANInterface>();
+            _username = username;
+            _key = key;
+            _vxlanInterfaceFactory = new VxlanInterfaceFactory();
         }
 
         public string Vni { get; set; }
         public string Name { get; set; }
         public List<IVXLANInterface> VXLANInterfaces { get; set; }
         public string ManagementIp { get; set; }
+        private readonly string _username;
+        private readonly string _key;
 
         public void DeployVXLANInterface(IVirtualMachine virtualMachine)
         {
             _logger.LogInformation("Creating new vxlan interface");
-               IVXLANInterface vXLANInterface = new VXLANInterface(
+               IVXLANInterface vXLANInterface = _vxlanInterfaceFactory.CreateInterface(
+                _username,
+                _key,
                 Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14),
                 "vxlan",
                 virtualMachine.CommunicationIP,
@@ -45,7 +55,9 @@ namespace OverlayManagementService.Network
         public void DeployClientVXLANInterface(string ip)
         {
             _logger.LogInformation("Creating new vxlan interface");
-            IVXLANInterface vXLANInterface = new VXLANInterface(
+            IVXLANInterface vXLANInterface = _vxlanInterfaceFactory.CreateInterface(
+                _username,
+                _key,
                 Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14),
                 "vxlan",
                 ip,
@@ -60,8 +72,11 @@ namespace OverlayManagementService.Network
 
         public void CleanUpBridge()
         {
-            ConnectionInfo sSHConnectionInfo = new(ManagementIp, "vagrant", new AuthenticationMethod[]{
-                            new PasswordAuthenticationMethod("vagrant", "vagrant")});
+            ConnectionInfo sSHConnectionInfo = new(ManagementIp, _username, new AuthenticationMethod[]{
+             new PrivateKeyAuthenticationMethod(_username, new PrivateKeyFile[]{
+                    new PrivateKeyFile(KeyKeeper.getInstance().GetKeyLocation(_key))
+                }),
+            });
             using var sshclient = new SshClient(sSHConnectionInfo);
             sshclient.Connect();
             using (var cmd = sshclient.CreateCommand("sudo ovs-vsctl del-br " + Name))
@@ -76,8 +91,11 @@ namespace OverlayManagementService.Network
 
         public void DeployBridge()
         {
-            ConnectionInfo sSHConnectionInfo = new(ManagementIp, "vagrant", new AuthenticationMethod[]{
-                            new PasswordAuthenticationMethod("vagrant", "vagrant")});
+            ConnectionInfo sSHConnectionInfo = new(ManagementIp, _username, new AuthenticationMethod[]{
+             new PrivateKeyAuthenticationMethod(_username, new PrivateKeyFile[]{
+                    new PrivateKeyFile(KeyKeeper.getInstance().GetKeyLocation(_key))
+                }),
+            });
             using var sshclient = new SshClient(sSHConnectionInfo);
             sshclient.Connect();
             using (var cmd = sshclient.CreateCommand("sudo ovs-vsctl add-br " + Name))

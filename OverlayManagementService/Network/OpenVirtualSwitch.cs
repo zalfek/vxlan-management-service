@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using OverlayManagementService.Network;
 using Renci.SshNet;
 using System;
@@ -12,7 +13,7 @@ namespace OverlayManagementService.Network
     public class OpenVirtualSwitch : IOpenVirtualSwitch
     {
 
-        private readonly ILogger<OpenVirtualSwitch> _logger;
+        private readonly ILogger<IOpenVirtualSwitch> _logger;
 
         public IDictionary<string, IBridge> Bridges { get; set; }
         public string PrivateIP { get; set; }
@@ -20,16 +21,15 @@ namespace OverlayManagementService.Network
         public string Key { get; set; }
         public string ManagementIp { get; set; }
 
-
         public OpenVirtualSwitch(string key, string managementIp, string privateIP, string publicIp)
         {
-            _logger = new LoggerFactory().CreateLogger<OpenVirtualSwitch>();
+            _logger = LoggerFactory.Create(logging => logging.AddConsole()).CreateLogger<IOpenVirtualSwitch>();
             Key = key;
             PrivateIP = privateIP;
             PublicIP = publicIp;
             Bridges = new Dictionary<string, IBridge>();
             ManagementIp = managementIp;
-        }
+    }
 
 
         public void AddBridge(IBridge bridge) {
@@ -61,14 +61,11 @@ namespace OverlayManagementService.Network
             Bridges[vni].DeployBridge();
         }
 
-        public void CleanUpOVSConnection(IVirtualMachine virtualMachine)
+        public void CleanUpOVSConnection(string vni)
         {
-            Bridges[virtualMachine.Vni].CleanUpTargetVXLANInterface(virtualMachine.CommunicationIP);
-
-
             foreach (KeyValuePair<string, IBridge> entry in Bridges)
             {
-                if (entry.Value.Vni == virtualMachine.Vni)
+                if (entry.Value.Vni == vni)
                 {
                     entry.Value.CleanUpBridge();
                     Bridges.Remove(entry.Key);
