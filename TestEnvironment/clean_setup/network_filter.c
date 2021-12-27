@@ -10,9 +10,7 @@ BPF_HASH(host2nat, u64, struct peer4_t); // mac -> nat
 int handle_ingress(struct __sk_buff *skb){
 	u8 *cursor = 0;
 	struct ethernet_t *eth = cursor_advance(cursor, sizeof(*eth));
-//	if((eth->dst & (1ULL << 40)) || eth->type != 0x800){
-//		return 1;
-//	}
+
 	struct ip_t *ip = cursor_advance(cursor, sizeof(*ip));
 	if(ip->nextp != 17){
 		return 1;
@@ -21,9 +19,6 @@ int handle_ingress(struct __sk_buff *skb){
 	if(udp->dport != 4789){
 		return 1;
 	}
-//	if(udp->sport == 4789){
-//		return 1;
-//	}
 
 	// handle NAT
 	struct vxlan_t *vxlan = cursor_advance(cursor, sizeof(*vxlan));
@@ -45,9 +40,7 @@ int handle_ingress(struct __sk_buff *skb){
 int handle_egress(struct __sk_buff *skb){
 	u8 *cursor = 0;
 	struct ethernet_t *eth = cursor_advance(cursor, sizeof(*eth));
-//	if((eth->dst & (1ULL << 40)) || eth->type != 0x800){
-//		return 1;
-//	}
+
 	struct ip_t *ip = cursor_advance(cursor, sizeof(*ip));
 	if(ip->nextp != 17){
 		return 1;

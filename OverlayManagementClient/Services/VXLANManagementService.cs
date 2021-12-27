@@ -18,18 +18,7 @@ using OverlayManagementClient.Repositories;
 
 namespace OverlayManagementClient.Services
 {
-
-
-    //public static class VXLANManagementServiceExtensions
-    //{
-    //    public static void AddVXLANManagementService(this IServiceCollection services)
-    //    {
-    //        services.AddHttpClient<IVXLANManagementService, VXLANManagementService>();
-    //    }
-    //}
-
-
-    public class VXLANManagementService :IVXLANManagementService
+    public class VXLANManagementService : IVXLANManagementService
     {
         private readonly INetworkRepository _networkRepository;
         private readonly ISwitchRepository _switchRepository;
