@@ -90,14 +90,17 @@ VXLAN management service for Technische Hochschule Ulm
 
    1. Install Ip tables and set a rule to DROP all connections except the ones from `vxlan-managament-webapi`.
    2. Install the following tools(example commands for ubuntu2004):
-      - sudo apt -y update
-      - sudo apt install net-tools
-      - sudo apt install iftop
-      - sudo apt-get -y install bpfcc-tools linux-headers-$(uname -r)
-      - sudo apt -y install python3-pip
-      - pip3 install pyroute2
-      - sudo apt -y install openvswitch-switch
+      - `sudo apt -y update`
+      - `sudo apt install net-tools`
+      - `sudo apt install iftop`
+      - `sudo apt-get -y install bpfcc-tools linux-headers-$(uname -r)`
+      - `sudo apt -y install python3-pip`
+      - `pip3 install pyroute2`
+      - `sudo apt -y install openvswitch-switch`
    3. Copy `network_filter.c` and `setup_filter.py` to host machine and execute python script which will compile and append the filter functions to kernel.
+   4. Create ssh key(public and private) for switch access.
+   5. Go to Overlay Management Client and provide the required info(management, private, public ip and key) and upload  ssh key to open acccess to Overlay Management service.
+   6. Certificate should be valid to access the device under root user(or any other user provided in the Management service config).
 
 
 ### Notes
@@ -108,3 +111,36 @@ VXLAN management service for Technische Hochschule Ulm
       - Public ip denotes the entry point for the client machines..
       When registering Switch or target device in the network, one can also provide hostnames instead of Management Ip, Private ip or Public ip.
       Also 2 or even all 3 ip addresses can be the same meaning that 1 network interface will be used wor everything(management, target devices and clients). 
+
+
+### Set up of Overlay Connection client(linux service)
+
+   1. install the dotnet framework:
+      - `sudo wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb`
+      - `sudo dpkg -i packages-microsoft-prod.deb`
+      - `sudo rm packages-microsoft-prod.deb`
+      - `sudo apt-get install -y apt-transport-https`
+      - `sudo apt-get -y update`
+      - `sudo apt-get install -y dotnet-sdk-5.0`
+   2. Copy the `OverlayConnectionClient.service` file to `/etc/systemd/system/OverlayConnectionClient.service`
+   3. Change the ownership and permissions:
+      - `sudo chown vagrant <path to build artifacts>/OverlayConnectionClient`
+      - `sudo chmod 777 /home/vagrant/srv/OverlayConnectionClient/OverlayConnectionClient`
+   4. Reload daemon, configure the service to load at startup and install dev certificates:
+      - `sudo systemctl daemon-reload`
+      - `sudo systemctl start OverlayConnectionClient`
+      - `sudo systemctl enable OverlayConnectionClient`
+      - `dotnet dev-certs https`
+
+### Notes
+
+   1. When the linux box connected to the host machine it is accessable via `https://<ip of a linux box>`
+   2. It is recommended to have the same ip on all linux boxes.
+
+
+### Deployment of new devices to the network(non client)
+   
+   1. Target device is in the same network as Overlay management service or is accessable from that network.
+   2. Create ssh key(public and private) for switch access.
+   3. Certificate should be valid to access the device under root user(or any other user provided in the Management service config).
+   4. Go to Overlay Management Client and provide the required info(management, private, public ip and key) and upload ssh key to open access to Overlay Management service
