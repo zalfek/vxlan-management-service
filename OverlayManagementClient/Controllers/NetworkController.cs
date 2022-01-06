@@ -13,12 +13,12 @@ using System.Threading.Tasks;
 namespace OverlayManagementClient.Controllers
 {
     [Authorize]
-    public class HomeController : Controller
+    public class NetworkController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<NetworkController> _logger;
         private readonly IVXLANManagementService _vXLANManagementService;
 
-        public HomeController(ILogger<HomeController> logger, IVXLANManagementService vXLANManagementService)
+        public NetworkController(ILogger<NetworkController> logger, IVXLANManagementService vXLANManagementService)
         {
             _logger = logger;
             _vXLANManagementService = vXLANManagementService;

@@ -19,9 +19,9 @@ namespace OverlayManagementService.Services.Tests
     [TestClass()]
     public class VMOverlayConnectionServiceTests
     {
-        private readonly VMOverlayConnectionService _sut;
+        private readonly OverlayNetworkConnectionService _sut;
         private readonly Mock<INetworkRepository> _networkRepositoryMock = new();
-        private readonly Mock<ILogger<VMOverlayConnectionService>> _loggerMock = new();
+        private readonly Mock<ILogger<OverlayNetworkConnectionService>> _loggerMock = new();
         private readonly Mock<IClientConnectionFactory> _clientConnectionFactoryMock = new();
         private readonly Mock<IFirewallFactory> _firewallFactoryMock = new();
         private readonly Mock<IFirewallRepository> _firewallRepositoryMock = new();
@@ -30,7 +30,7 @@ namespace OverlayManagementService.Services.Tests
         private readonly Mock<IFirewall> _firewallMock = new();
         public VMOverlayConnectionServiceTests()
         {
-            _sut = new VMOverlayConnectionService(_networkRepositoryMock.Object, _loggerMock.Object, _clientConnectionFactoryMock.Object, _firewallRepositoryMock.Object);
+            _sut = new OverlayNetworkConnectionService(_networkRepositoryMock.Object, _loggerMock.Object, _clientConnectionFactoryMock.Object, _firewallRepositoryMock.Object);
         }
 
         [TestMethod()]

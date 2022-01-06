@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementService.Services
 {
-    public interface IOverlayConnectionService
+    public interface IOverlayNetworkConnectionService
     {
         public ClientConnection CreateConnection(string groupId, Student client);
         public IEnumerable<ClientConnection> GetAllNetworks(IEnumerable<Claim> claims);

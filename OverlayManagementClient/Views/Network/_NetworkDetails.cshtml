@@ -6,7 +6,7 @@
         <h3 class="modal-title">Network Details</h3>
         <div class="btn-group" role="group">
             <form method="post">
-                <button asp-controller="Home" asp-action="Delete" asp-route-groupId="@Model.GroupId" class="btn btn-danger mx-1">Delete network</button>
+                <button asp-controller="Network" asp-action="Delete" asp-route-groupId="@Model.GroupId" class="btn btn-danger mx-1">Delete network</button>
             </form>
             <button type="button" class="btn btn-danger mx-1" data-bs-dismiss="modal" aria-hidden="true">X</button>
         </div>
@@ -174,7 +174,7 @@
                     </div>
                     <br>
                     <div class="w-100 btn-group" role="group">
-                        <button asp-controller="Home" asp-action="DeleteTargetDevice" asp-route-guid="@targetMachine.Guid" asp-route-groupId="@Model.GroupId" class="btn btn-danger mx-1">Delete</button>
+                        <button asp-controller="Network" asp-action="DeleteTargetDevice" asp-route-guid="@targetMachine.Guid" asp-route-groupId="@Model.GroupId" class="btn btn-danger mx-1">Delete</button>
                     </div>
                 </div>
             </form>

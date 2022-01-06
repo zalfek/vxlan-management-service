@@ -18,7 +18,7 @@ namespace OverlayManagementService.Network
             Vni = vni;
             DestIp = destIP;
             CommunicationIP = communicationIP;
-            VXLANInterface = new LinuxVXLANInterface(Username ,Key,  Key + "-vxlan" + Vni, Vni, "4789", DestIp, managementIp);
+            VXLANInterface = new LinuxVXLANInterface(Username , guid.ToString(),  Key + "-vxlan" + Vni, Vni, "4789", DestIp, managementIp);
         }
 
         public Guid Guid { get; set; }

@@ -48,7 +48,7 @@ namespace OverlayManagementClient.Repositories
         public async Task<IEnumerable<OpenVirtualSwitch>> GetSwitchesAsync()
         {
             await PrepareAuthenticatedClient();
-            var response = await _httpClient.GetAsync($"{ _BaseAddress}/management/list/switches");
+            var response = await _httpClient.GetAsync($"{ _BaseAddress}/switch/list");
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -63,7 +63,7 @@ namespace OverlayManagementClient.Repositories
         public async Task<OpenVirtualSwitch> GetSwitchAsync(string key)
         {
             await PrepareAuthenticatedClient();
-            var response = await _httpClient.GetAsync($"{ _BaseAddress}/management/get/switch/{key}");
+            var response = await _httpClient.GetAsync($"{ _BaseAddress}/switch/get/{key}");
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -94,7 +94,7 @@ namespace OverlayManagementClient.Repositories
             multiContent.Add(new StringContent(ovsRegistration.PrivateIP), "PrivateIP");
             multiContent.Add(new StringContent(ovsRegistration.PublicIP), "PublicIP");
 
-            var response = await this._httpClient.PostAsync($"{ _BaseAddress}/management/register/switch", multiContent);
+            var response = await this._httpClient.PostAsync($"{ _BaseAddress}/switch/register", multiContent);
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
@@ -107,7 +107,7 @@ namespace OverlayManagementClient.Repositories
         {
             await PrepareAuthenticatedClient();
 
-            var response = await _httpClient.DeleteAsync($"{ _BaseAddress}/management/delete/switch/{key}");
+            var response = await _httpClient.DeleteAsync($"{ _BaseAddress}/switch/delete/{key}");
 
             if (response.StatusCode == HttpStatusCode.OK)
             {

@@ -88,7 +88,7 @@
         $("#networks").on("click", "#networkDetails", function () {
             var vni = $(this).closest("tr").find("td").eq(0).html().trim();
              $.ajax({
-                url: "@Url.Action("NetworkDetails", "Home")",
+                url: "@Url.Action("NetworkDetails", "Network")",
                  data: { vni: vni },
                  success: function (data) {
                      $("#networkDetailsModal .modal-dialog").addClass("modal-xl").html(data);
@@ -101,7 +101,7 @@
     <script>
          $("#header").on("click", "#createNetwork", function () {
              $.ajax({
-                 url: "@Url.Action("Create", "Home")",
+                 url: "@Url.Action("Create", "Network")",
                  data: {},
                  success: function (data) {
                      $("#createNetworkModal .modal-dialog").html(data);
@@ -115,7 +115,7 @@
         $("#networks").on("click", "#delete", function () {
             var groupId = $(this).closest("tr").find("td").eq(1).html().trim();
              $.ajax({
-                 url: "@Url.Action("Delete", "Home")",
+                 url: "@Url.Action("Delete", "Network")",
                  data: { groupId: groupId},
                  success: function (data) {
                      location.reload();
@@ -128,7 +128,7 @@
         $("#networks").on("click", "#addTarget", function () {
             var groupId = $(this).closest("tr").find("td").eq(1).html().trim();
              $.ajax({
-                 url: "@Url.Action("CreateTargetDevice", "Home")",
+                 url: "@Url.Action("CreateTargetDevice", "Network")",
                  data: { groupId: groupId},
                  success: function (data) {
                      $("#addTargetModal .modal-dialog").html(data);

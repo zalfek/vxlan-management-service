@@ -81,6 +81,12 @@ namespace OverlayManagementService.Network
                 _logger.LogInformation("Command>" + cmd.CommandText);
                 _logger.LogInformation("Return Value = {0}", cmd.ExitStatus);
             }
+            using (var cmd = sshclient.CreateCommand("sudo bridge add 00:00:00:00:00:00 dev " + Name + " dst " + DstIP))
+            {
+                cmd.Execute();
+                _logger.LogInformation("Command>" + cmd.CommandText);
+                _logger.LogInformation("Return Value = {0}", cmd.ExitStatus);
+            }
             sshclient.Disconnect();
         }
     }

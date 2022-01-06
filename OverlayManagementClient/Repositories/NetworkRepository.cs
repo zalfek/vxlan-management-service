@@ -46,7 +46,7 @@ namespace OverlayManagementClient.Repositories
 
             var jsonRequest = JsonConvert.SerializeObject(oVSConnection);
             var jsoncontent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            var response = await this._httpClient.PostAsync($"{ _BaseAddress}/management/deploy/network", jsoncontent);
+            var response = await this._httpClient.PostAsync($"{ _BaseAddress}/network/deploy", jsoncontent);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -63,7 +63,7 @@ namespace OverlayManagementClient.Repositories
         {
             await PrepareAuthenticatedClient();
 
-            var response = await _httpClient.DeleteAsync($"{ _BaseAddress}/management/delete/network/{groupId}");
+            var response = await _httpClient.DeleteAsync($"{ _BaseAddress}/network/delete/{groupId}");
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -79,7 +79,7 @@ namespace OverlayManagementClient.Repositories
 
             var jsonRequest = JsonConvert.SerializeObject(overlayNetwork);
             var jsoncontent = new StringContent(jsonRequest, Encoding.UTF8, "application/json-patch+json");
-            var response = await _httpClient.PatchAsync($"{ _BaseAddress}/management/OverlayNetworklist/{overlayNetwork.GroupId}", jsoncontent);
+            var response = await _httpClient.PatchAsync($"{ _BaseAddress}/network/update/{overlayNetwork.GroupId}", jsoncontent);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -95,7 +95,7 @@ namespace OverlayManagementClient.Repositories
         public async Task<IEnumerable<OverlayNetwork>> GetNetworksAsync()
         {
             await PrepareAuthenticatedClient();
-            var response = await _httpClient.GetAsync($"{ _BaseAddress}/management/list/networks");
+            var response = await _httpClient.GetAsync($"{ _BaseAddress}/network/list");
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -118,7 +118,7 @@ namespace OverlayManagementClient.Repositories
         public async Task<OverlayNetwork> GetNetworkAsync(string vni)
         {
             await PrepareAuthenticatedClient();
-            var response = await _httpClient.GetAsync($"{ _BaseAddress}/management/get/network/{vni}");
+            var response = await _httpClient.GetAsync($"{ _BaseAddress}/network/get/{vni}");
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();

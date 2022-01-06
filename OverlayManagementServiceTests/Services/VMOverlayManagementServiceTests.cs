@@ -16,11 +16,11 @@ namespace OverlayManagementService.Services.Tests
     public class VMOverlayManagementServiceTests
     {
 
-        private readonly VMOverlayManagementService _sut;
+        private readonly OverlayNetworkManagementService _sut;
         private readonly Mock<INetworkRepository> _networkRepositorMock = new();
         private readonly Mock<ISwitchRepository> _switchRepositoryMock = new();
         private readonly Mock<IIdentifierFactory<IPAddress>> _ipAddressFactory = new();
-        private readonly Mock<ILogger<VMOverlayManagementService>> _loggerMock = new();
+        private readonly Mock<ILogger<OverlayNetworkManagementService>> _loggerMock = new();
         private readonly Mock<IIdentifier> _vniMock = new();
         private readonly Mock<IAddress> _ipAddressMock = new();
         private readonly Mock<INetworkFactory> _networkFactoryMock = new();
@@ -39,7 +39,7 @@ namespace OverlayManagementService.Services.Tests
 
         public VMOverlayManagementServiceTests()
         {
-            _sut = new VMOverlayManagementService(
+            _sut = new OverlayNetworkManagementService(
                 _loggerMock.Object,
                 _networkRepositorMock.Object,
                 _vniMock.Object,

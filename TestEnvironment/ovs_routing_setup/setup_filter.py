@@ -2,7 +2,7 @@ import bcc
 import time
 from pyroute2 import IPRoute, NetNS, IPDB, NSPopen
 
-b = bcc.BPF(src_file="vxlan_hp.c", debug=0)
+b = bcc.BPF(src_file="network_filter.c", debug=0)
 fin = b.load_func("handle_ingress", bcc.BPF.SCHED_CLS)
 fout = b.load_func("handle_egress", bcc.BPF.SCHED_CLS)
 
