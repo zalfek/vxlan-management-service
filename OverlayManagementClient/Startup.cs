@@ -96,7 +96,7 @@ namespace OverlayManagementClient
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Network}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
         }

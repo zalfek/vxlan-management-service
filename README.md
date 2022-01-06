@@ -130,7 +130,7 @@ VXLAN management service for Technische Hochschule Ulm
       - `sudo systemctl daemon-reload`
       - `sudo systemctl start OverlayConnectionClient`
       - `sudo systemctl enable OverlayConnectionClient`
-      - `dotnet dev-certs https`
+      - `dotnet dev-certs https`  Only for development purposes. In case of deployment should be used valid certificates.
 
 ### Notes
 

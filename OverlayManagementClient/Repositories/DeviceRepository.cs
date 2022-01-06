@@ -14,23 +14,23 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementClient.Repositories
 {
-    public static class MachineRepositoryExtensions
+    public static class DeviceRepositoryExtensions
     {
         public static void AddMachineRepository(this IServiceCollection services)
         {
-            services.AddHttpClient<IMachineRepository, MachineRepository>();
+            services.AddHttpClient<IMachineRepository, DeviceRepository>();
         }
     }
 
 
-    public class MachineRepository : IMachineRepository
+    public class DeviceRepository : IMachineRepository
     {
         private readonly HttpClient _httpClient;
         private readonly string _Scope = string.Empty;
         private readonly string _BaseAddress = string.Empty;
         private readonly ITokenAcquisition _tokenAcquisition;
 
-        public MachineRepository(ITokenAcquisition tokenAcquisition, HttpClient httpClient, IConfiguration configuration)
+        public DeviceRepository(ITokenAcquisition tokenAcquisition, HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
             _tokenAcquisition = tokenAcquisition;
@@ -64,7 +64,7 @@ namespace OverlayManagementClient.Repositories
                 { new StringContent(vmConnection.CommunicationIP), "CommunicationIP" }
             };
 
-            var response = await this._httpClient.PostAsync($"{ _BaseAddress}/management/deploy/machine", multiContent);
+            var response = await this._httpClient.PostAsync($"{ _BaseAddress}/device/deploy", multiContent);
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
@@ -72,26 +72,11 @@ namespace OverlayManagementClient.Repositories
             }
         }
 
-        public async Task DeleteSwitchAsync(string key)
-        {
-            await PrepareAuthenticatedClient();
-
-            var response = await _httpClient.DeleteAsync($"{ _BaseAddress}/management/delete/switch/{key}");
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                return;
-            }
-
-            throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
-        }
-
-
         public async void RemoveMachineAsync(string groupid, Guid guid)
         {
             await PrepareAuthenticatedClient();
 
-            var response = await this._httpClient.GetAsync($"{ _BaseAddress}/management/suspend/machine?groupid={groupid}&guid={guid}");
+            var response = await this._httpClient.GetAsync($"{ _BaseAddress}/device/suspend?groupid={groupid}&guid={guid}");
 
             if (response.StatusCode != HttpStatusCode.OK)
             {

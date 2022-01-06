@@ -64,8 +64,10 @@ namespace OverlayManagementService
 
 
 
-            services.AddScoped<IOverlayConnectionService, VMOverlayConnectionService>();
-            services.AddScoped<IOverlayManagementService, VMOverlayManagementService>();
+            services.AddScoped<IOverlayNetworkConnectionService, OverlayNetworkConnectionService>();
+            services.AddScoped<IOverlayNetworkManagementService, OverlayNetworkManagementService>();
+            services.AddScoped<ISwitchManagementService, SwitchManagementService>();
+            services.AddScoped<ITargetDeviceManagementService, TargetDeviceManagementService>();
             services.AddSingleton<INetworkRepository, NetworkRepository>();
             services.AddSingleton<ISwitchRepository, SwitchRepository>();
             services.AddScoped<IAddress, IPAddress>();

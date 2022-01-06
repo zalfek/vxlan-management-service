@@ -18,24 +18,32 @@ using OverlayManagementService.Models;
 namespace OverlayManagementService.Controllers
 {
 
+    /// <summary>
+    /// This Controller provides endpoints for users to manage their connections.
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     public class ConnectionController : ControllerBase
     {
         private readonly ILogger<ConnectionController> _logger;
-        private readonly IOverlayConnectionService _vmOverlayConnectionService;
+        private readonly IOverlayNetworkConnectionService _vmOverlayConnectionService;
         private readonly IHttpContextAccessor _accessor;
 
         // The Web API will only accept tokens 1) for users, and 2) having the "access_as_user" scope for this API
         static readonly string[] scopeRequiredByApi = new string[] { "access_as_user" };
 
-        public ConnectionController(ILogger<ConnectionController> logger, IOverlayConnectionService vmOverlayConnectionService, IHttpContextAccessor accessor)
+        public ConnectionController(ILogger<ConnectionController> logger, IOverlayNetworkConnectionService vmOverlayConnectionService, IHttpContextAccessor accessor)
         {
             _logger = logger;
             _vmOverlayConnectionService = vmOverlayConnectionService;
             _accessor = accessor;
         }
 
+        /// <summary>
+        /// Endpoing for querying the list of neworks assigned to User.
+        /// </summary>
+        /// <permission cref="Member"><permission>
+        /// <returns>IEnumerable with ClientConnection</returns>
         [Authorize(Policy = "Member")]
         [HttpGet("list/networks")]
         public IEnumerable<ClientConnection> GetAllNetworks()
@@ -49,7 +57,12 @@ namespace OverlayManagementService.Controllers
             return _vmOverlayConnectionService.GetAllNetworks(groups);
         }
 
-
+        /// <summary>
+        /// Endpoint that allows to trigger the tunnel setup for client.
+        /// </summary>
+        /// <permission cref="Member"><permission>
+        /// <param name="groupId">Group id to witch network is assigned</param>
+        /// <returns>ClientConnection</returns>
         [Authorize(Policy = "Member")]
         [HttpGet("get/network/{groupId}")]
         public ClientConnection CreateConnection(string groupId)
@@ -64,6 +77,11 @@ namespace OverlayManagementService.Controllers
             return _vmOverlayConnectionService.CreateConnection(groupId, user);
         }
 
+        /// <summary>
+        /// Endpoint that allows to suspend the client side tunnel.
+        /// </summary>
+        /// <permission cref="Member"><permission>
+        /// <param name="groupId">Group id to which network is assigned</param>
         [Authorize(Policy = "Member")]
         [HttpGet("suspend/connection/{groupId}")]
         public void SuspendConnection(string groupId)
