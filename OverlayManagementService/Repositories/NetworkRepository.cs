@@ -25,7 +25,7 @@ namespace OverlayManagementService.Repositories
         private readonly JsonSerializerSettings _jsonSerializerSettings;
         public NetworkRepository()
         {
-            _logger = new LoggerFactory().CreateLogger<INetworkRepository>();
+            _logger = LoggerFactory.Create(logging => logging.AddConsole()).CreateLogger<INetworkRepository>();
             _backupPath = Path.Combine(AppContext.BaseDirectory, "Resources", "NetworkData.json");
             _jsonSerializerSettings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
             _dbMock = (IDictionary<string, IOverlayNetwork>)JsonConvert.DeserializeObject<Dictionary<string, IOverlayNetwork>>(File.ReadAllText(_backupPath), _jsonSerializerSettings);
@@ -74,7 +74,7 @@ namespace OverlayManagementService.Repositories
         /// <summary>
         /// Method allows to update exiing Network object in in memory database for the specific group id.
         /// </summary>
-        /// <param name="groupId">Id of Azure Active Derictory group for which Network was deployed</param>
+        /// <param name="overlayNetwork">OverlayNetwork object</param>
         public IOverlayNetwork UpdateOverlayNetwork(IOverlayNetwork overlayNetwork)
         {
             _logger.LogInformation("Updating the state of network in database");
