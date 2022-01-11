@@ -15,8 +15,8 @@ namespace OverlayManagementService.Network
         public IOpenVirtualSwitch OpenVirtualSwitch { get; set; }
         public void RemoveClient(Student client);
         public string AddClient(Student client);
-        public void RemoveVMachine(Guid guid);
-        public void AddVMachine(IVirtualMachine virtualMachine);
+        public void RemoveTargetDevice(Guid guid);
+        public void AddTargetDevice(ITargetDevice virtualMachine);
         public void DeployNetwork();
         public void CleanUpNetwork();
     }

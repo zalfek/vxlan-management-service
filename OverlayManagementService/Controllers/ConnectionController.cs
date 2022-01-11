@@ -27,22 +27,25 @@ namespace OverlayManagementService.Controllers
     {
         private readonly ILogger<ConnectionController> _logger;
         private readonly IOverlayNetworkConnectionService _vmOverlayConnectionService;
-        private readonly IHttpContextAccessor _accessor;
 
         // The Web API will only accept tokens 1) for users, and 2) having the "access_as_user" scope for this API
         static readonly string[] scopeRequiredByApi = new string[] { "access_as_user" };
 
-        public ConnectionController(ILogger<ConnectionController> logger, IOverlayNetworkConnectionService vmOverlayConnectionService, IHttpContextAccessor accessor)
+        /// <summary>
+        /// Constructor for ConnectionController.
+        /// </summary>
+        /// <param name="logger">logger</param>
+        /// <param name="vmOverlayConnectionService">Overlay Connection service object</param>
+        /// <returns>new ConnectionController object</returns>
+        public ConnectionController(ILogger<ConnectionController> logger, IOverlayNetworkConnectionService vmOverlayConnectionService)
         {
             _logger = logger;
             _vmOverlayConnectionService = vmOverlayConnectionService;
-            _accessor = accessor;
         }
 
         /// <summary>
         /// Endpoing for querying the list of neworks assigned to User.
         /// </summary>
-        /// <permission cref="Member"><permission>
         /// <returns>IEnumerable with ClientConnection</returns>
         [Authorize(Policy = "Member")]
         [HttpGet("list/networks")]
@@ -60,7 +63,6 @@ namespace OverlayManagementService.Controllers
         /// <summary>
         /// Endpoint that allows to trigger the tunnel setup for client.
         /// </summary>
-        /// <permission cref="Member"><permission>
         /// <param name="groupId">Group id to witch network is assigned</param>
         /// <returns>ClientConnection</returns>
         [Authorize(Policy = "Member")]
@@ -80,7 +82,6 @@ namespace OverlayManagementService.Controllers
         /// <summary>
         /// Endpoint that allows to suspend the client side tunnel.
         /// </summary>
-        /// <permission cref="Member"><permission>
         /// <param name="groupId">Group id to which network is assigned</param>
         [Authorize(Policy = "Member")]
         [HttpGet("suspend/connection/{groupId}")]

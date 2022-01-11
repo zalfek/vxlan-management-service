@@ -7,6 +7,9 @@ using System.Collections.Generic;
 
 namespace OverlayManagementService.Network
 {
+    /// <summary>
+    /// Class encapsulates functionality required for neteork deployment, cleanup, connecting target devices and clients.
+    /// </summary>
     public class VXLANOverlayNetwork : IOverlayNetwork
     {
         public VXLANOverlayNetwork()
@@ -18,20 +21,22 @@ namespace OverlayManagementService.Network
             Vni = vNI;
             GroupId = groupId;
             OpenVirtualSwitch = openVirtualSwitch;
-            VirtualMachines = new List<IVirtualMachine>();
+            VirtualMachines = new List<ITargetDevice>();
             Clients = new List<Student>();
-            IsDeployed = false;
             IpAddress = ipAddress;
         }
 
         public string Vni { get; set; }
         public string GroupId { get; set; }
         public IOpenVirtualSwitch OpenVirtualSwitch { get; set; }
-        public List<IVirtualMachine> VirtualMachines { get; set; }
+        public List<ITargetDevice> VirtualMachines { get; set; }
         public List<Student> Clients { get; set; }
-        public bool IsDeployed { get; set; }
         public IAddress IpAddress { get; set; }
 
+        /// <summary>
+        /// Method triggers deployment of the VXLAN connection towards client.
+        /// </summary>
+        /// <param name="client">Student DTO object</param>
         public string AddClient(Student client)
         {
             Clients.Add(client);
@@ -39,28 +44,41 @@ namespace OverlayManagementService.Network
             return IpAddress.GenerarteUniqueIPV4Address();
         }
 
-        public void AddVMachine(IVirtualMachine virtualMachine)
+        /// <summary>
+        /// Method triggers deployment of the VXLAN connection towards taregt device.
+        /// </summary>
+        /// <param name="taregtDevice">TargetDevice object</param>
+        public void AddTargetDevice(ITargetDevice taregtDevice)
         {
-            virtualMachine.DeployVMConnection(IpAddress.GenerarteUniqueIPV4Address());
-            OpenVirtualSwitch.DeployVXLANInterface(virtualMachine);
-            VirtualMachines.Add(virtualMachine);
+            taregtDevice.DeployVMConnection(IpAddress.GenerarteUniqueIPV4Address());
+            OpenVirtualSwitch.DeployVXLANInterface(taregtDevice);
+            VirtualMachines.Add(taregtDevice);
         }
 
+        /// <summary>
+        /// Method triggers cleanup of entire network. All devices are removed from the network and network is being deleted.
+        /// </summary>
         public void CleanUpNetwork()
         {
             VirtualMachines.ForEach(vm => { 
                 vm.CleanUpVMConnection();
-                OpenVirtualSwitch.RemoveVMConnection(vm);
+                OpenVirtualSwitch.RemoveTargetConnection(vm);
             });
-            OpenVirtualSwitch.CleanUpOVSConnection(Vni);
+            OpenVirtualSwitch.CleanUpBridge(Vni);
         }
 
+        /// <summary>
+        /// Method triggers network deployment.
+        /// </summary>
         public void DeployNetwork()
         {
-            OpenVirtualSwitch.DeployOVSConnection(Vni);
-            IsDeployed = true;
+            OpenVirtualSwitch.DeployBridge(Vni);
         }
 
+        /// <summary>
+        /// Method triggers client removal from network.
+        /// </summary>
+        /// <param name="client">Student DTO object</param>
         public void RemoveClient(Student client)
         {
             for (int i = Clients.Count - 1; i > -1; --i)
@@ -72,10 +90,14 @@ namespace OverlayManagementService.Network
             OpenVirtualSwitch.CleanUpClientVXLANInterface(Vni, client.IpAddress);
         }
 
-        public void RemoveVMachine(Guid guid)
+        /// <summary>
+        /// Method triggers target device removal from the network.
+        /// </summary>
+        /// <param name="guid">Guid of the target device</param>
+        public void RemoveTargetDevice(Guid guid)
         {
-            IVirtualMachine virtualMachine = VirtualMachines.Find(x => x.Guid == guid);
-            OpenVirtualSwitch.RemoveVMConnection(virtualMachine);
+            ITargetDevice virtualMachine = VirtualMachines.Find(x => x.Guid == guid);
+            OpenVirtualSwitch.RemoveTargetConnection(virtualMachine);
             virtualMachine.CleanUpVMConnection();
             VirtualMachines.Remove(virtualMachine);
         }

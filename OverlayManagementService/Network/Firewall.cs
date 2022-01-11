@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementService.Network
 {
+    /// <summary>
+    /// Class encapsulates IP tables functionality for allowing client connections.
+    /// </summary>
     public class Firewall : IFirewall
     {
         private readonly ILogger<IFirewall> _logger;
@@ -18,6 +21,10 @@ namespace OverlayManagementService.Network
             _managementIp = managementIp;
         }
 
+        /// <summary>
+        /// Method adds an exception for provided ip address to allow in7out connections for client.
+        /// </summary>
+        /// <param name="ip"></param>
         public void AddException(string ip)
         {
             ConnectionInfo sSHConnectionInfo = new(_managementIp, "vagrant", new AuthenticationMethod[]{
@@ -47,6 +54,10 @@ namespace OverlayManagementService.Network
             sshclient.Disconnect();
         }
 
+        /// <summary>
+        /// Method removes existing exception for the provided ip address.
+        /// </summary>
+        /// <param name="ip"></param>
         public void RemoveException(string ip)
         {
             ConnectionInfo sSHConnectionInfo = new(_managementIp, "vagrant", new AuthenticationMethod[]{

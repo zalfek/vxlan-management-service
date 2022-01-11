@@ -20,7 +20,7 @@ namespace OverlayConnectionClient.Network
 
         public LinuxVXLANInterface(string name, string vNI, string dstPort, string dstIP, string localIP)
         {
-            _logger = new LoggerFactory().CreateLogger<LinuxVXLANInterface>();
+            _logger = LoggerFactory.Create(logging => logging.AddConsole()).CreateLogger<LinuxVXLANInterface>();
             Name = name;
             VNI = vNI;
             DstPort = dstPort;

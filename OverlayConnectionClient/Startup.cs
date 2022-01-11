@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
+using OverlayConnectionClient.Factories;
 using OverlayConnectionClient.Repositories;
 using OverlayConnectionClient.Services;
 using System;
@@ -51,7 +52,8 @@ namespace OverlayConnectionClient
                  .AddMicrosoftIdentityUI();
             services.AddScoped<IVXLANConnectionService, VXLANConnectionService>();
             services.AddScoped<INetworkRepository, NetworkRepository>();
-            services.AddSingleton<IRepository, JsonRepository>();
+            services.AddScoped<ILinuxVxlanInterfaceFactory, LinuxVxlanInterfaceFactory>();
+            services.AddSingleton<IInterfaceRepository, InterfaceRepository>();
             services.AddHttpClient<INetworkRepository, NetworkRepository>().ConfigurePrimaryHttpMessageHandler(() => {
                 var handler = new HttpClientHandler();
                 handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;

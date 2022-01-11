@@ -10,15 +10,15 @@ namespace OverlayManagementService.Network
     {
         public string Key { get; set; }
         public void AddBridge(IBridge bridge);
-        public void DeployVXLANInterface(IVirtualMachine virtualMachine);
+        public void DeployVXLANInterface(ITargetDevice virtualMachine);
         public void DeployClientVXLANInterface(string vni, string ip);
         public void CleanUpClientVXLANInterface(string vni, string ip);
         public IDictionary<string, IBridge> Bridges { get; set; }
-        public void DeployOVSConnection(string vni);
-        public void CleanUpOVSConnection(string vni);
+        public void DeployBridge(string vni);
+        public void CleanUpBridge(string vni);
         public string PrivateIP { get; set; }
         public string PublicIP { get; set; }
         public string ManagementIp { get; set; }
-        public void RemoveVMConnection(IVirtualMachine virtualMachine);
+        public void RemoveTargetConnection(ITargetDevice virtualMachine);
     }
 }

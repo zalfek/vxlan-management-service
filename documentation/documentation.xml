@@ -1,0 +1,770 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OverlayManagementService</name>
+    </assembly>
+    <members>
+        <member name="T:OverlayManagementService.Controllers.ConnectionController">
+            <summary>
+            This Controller provides endpoints for users to manage their connections.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Controllers.ConnectionController.#ctor(Microsoft.Extensions.Logging.ILogger{OverlayManagementService.Controllers.ConnectionController},OverlayManagementService.Services.IOverlayNetworkConnectionService)">
+            <summary>
+            Constructor for ConnectionController.
+            </summary>
+            <param name="logger">logger</param>
+            <param name="vmOverlayConnectionService">Overlay Connection service object</param>
+            <returns>new ConnectionController object</returns>
+        </member>
+        <member name="M:OverlayManagementService.Controllers.ConnectionController.GetAllNetworks">
+            <summary>
+            Endpoing for querying the list of neworks assigned to User.
+            </summary>
+            <returns>IEnumerable with ClientConnection</returns>
+        </member>
+        <member name="M:OverlayManagementService.Controllers.ConnectionController.CreateConnection(System.String)">
+            <summary>
+            Endpoint that allows to trigger the tunnel setup for client.
+            </summary>
+            <param name="groupId">Group id to witch network is assigned</param>
+            <returns>ClientConnection</returns>
+        </member>
+        <member name="M:OverlayManagementService.Controllers.ConnectionController.SuspendConnection(System.String)">
+            <summary>
+            Endpoint that allows to suspend the client side tunnel.
+            </summary>
+            <param name="groupId">Group id to which network is assigned</param>
+        </member>
+        <member name="T:OverlayManagementService.Controllers.NetworkManagementController">
+            <summary>
+            This Controller provides endpoints for managing network and switches.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Controllers.NetworkManagementController.#ctor(Microsoft.Extensions.Logging.ILogger{OverlayManagementService.Controllers.NetworkManagementController},OverlayManagementService.Services.IOverlayNetworkManagementService)">
+            <summary>
+            Constructor for NetworkManagementController.
+            </summary>
+            <param name="logger">logger</param>
+            <param name="overlayNetworkManagementService">Overlay Network management service object</param>
+            <returns>new NetworkManagementController object</returns>
+        </member>
+        <member name="M:OverlayManagementService.Controllers.NetworkManagementController.GetNetwork(System.String)">
+            <summary>
+            Endpoint that allows to get network by Virtual Network Identifier.
+            </summary>
+            <param name="vni">Virtual Network Identifier</param>
+            <returns>IOverlayNetwork object</returns>
+        </member>
+        <member name="M:OverlayManagementService.Controllers.NetworkManagementController.DeployNetwork(OverlayManagementService.Dtos.OVSConnection)">
+            <summary>
+            Endpoint that allows to deploy the network.
+            </summary>
+            <param name="oVSConnection">OVSConnection DTO containing network information</param>
+            <returns>IOverlayNetwork object</returns>
+        </member>
+        <member name="M:OverlayManagementService.Controllers.NetworkManagementController.DeleteNetwork(System.String)">
+            <summary>
+            Endpoint that allows to delete the network.
+            </summary>
+            <param name="groupId">Group id to which network is assigned</param>
+        </member>
+        <member name="M:OverlayManagementService.Controllers.NetworkManagementController.GetOverlayNetworks">
+            <summary>
+            Endpoint that allows to get the list of all deployed networks.
+            </summary>
+            <returns>IEnumerable of IOverlayNetwork objects</returns>
+        </member>
+        <member name="M:OverlayManagementService.Controllers.NetworkManagementController.UpdateNetwork(OverlayManagementService.Network.IOverlayNetwork)">
+            <summary>
+            Endpoint that allows to update the network. 
+            </summary>
+            <param name="overlayNetwork">IOverlayNetwork object containing updated information</param>
+            <returns>updated IOverlayNetwork object</returns>
+        </member>
+        <member name="T:OverlayManagementService.Controllers.SwitchManagementController">
+            <summary>
+            This Controller provides endpoints for managing network and switches.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Controllers.SwitchManagementController.#ctor(Microsoft.Extensions.Logging.ILogger{OverlayManagementService.Controllers.SwitchManagementController},OverlayManagementService.Services.ISwitchManagementService)">
+            <summary>
+            Constructor for SwitchManagementController.
+            </summary>
+            <param name="logger">logger</param>
+            <param name="switchManagementService">Switch management service object</param>
+            <returns>new SwitchManagementController object</returns>
+        </member>
+        <member name="M:OverlayManagementService.Controllers.SwitchManagementController.GetSwitch(System.String)">
+            <summary>
+            Endpoint that allows to get switch by switch key.
+            </summary>
+            <param name="key">Key that that identifies the switch f.e thu</param>
+            <returns>IOpenVirtuaSwitch object</returns>
+        </member>
+        <member name="M:OverlayManagementService.Controllers.SwitchManagementController.RegisterSwitch(OverlayManagementService.Dtos.OvsRegistration)">
+            <summary>
+            Endpoint that allows to register the switch.
+            </summary>
+            <param name="ovsRegistration">OvsRegistration DTO containing switch information</param>
+            <returns>IOpenVirtuaSwitch object</returns>
+        </member>
+        <member name="M:OverlayManagementService.Controllers.SwitchManagementController.GetSwitches">
+            <summary>
+            Endpoint that allows to get the list of all deployed switches.
+            </summary>
+            <returns>IEnumerable of IOpenVirtualSwitch objects</returns>
+        </member>
+        <member name="M:OverlayManagementService.Controllers.SwitchManagementController.DeleteSwitch(System.String)">
+            <summary>
+            Endpoint that allows to delete the switch. 
+            </summary>
+            <param name="key">Key that that identifies the switch f.e thu</param>
+        </member>
+        <member name="T:OverlayManagementService.Controllers.TargetDeviceManagementController">
+            <summary>
+            This Controller provides endpoints for managing taregt devices.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Controllers.TargetDeviceManagementController.#ctor(Microsoft.Extensions.Logging.ILogger{OverlayManagementService.Controllers.TargetDeviceManagementController},OverlayManagementService.Services.ITargetDeviceManagementService)">
+            <summary>
+            Constructor for TargetDeviceManagementController.
+            </summary>
+            <param name="logger">logger</param>
+            <param name="taregetDeviceManagementService">Target management service object</param>
+            <returns>new TargetDeviceManagementController object</returns>
+        </member>
+        <member name="M:OverlayManagementService.Controllers.TargetDeviceManagementController.DeployMachine(OverlayManagementService.Dtos.VmConnection)">
+            <summary>
+            Endpoint that allows to deploy device.
+            </summary>
+            <param name="vmConnection">VMConnection DTO</param>
+            <returns>IOverlayNetwork object</returns>
+        </member>
+        <member name="M:OverlayManagementService.Controllers.TargetDeviceManagementController.SuspendMachine(System.String,System.Guid)">
+            <summary>
+            Endpoint that allows to remove the non-client device from network.
+            </summary>
+            <param name="groupId">Group id to which network is assigned</param>
+            <param name="guid">Guid of the device</param>
+            <returns>updated IOverlayNetwork object</returns>
+        </member>
+        <member name="T:OverlayManagementService.Infrastructure.GroupPolicyHandler">
+            <summary>
+            GroupPolicyHandler deals with custom Policy-based authorization.
+            GroupPolicyHandler evaluates the GroupPolicyRequirement against AuthorizationHandlerContext 
+            by calling CheckUsersGroupMembership method to determine if authorization is allowed.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Infrastructure.GroupPolicyHandler.HandleRequirementAsync(Microsoft.AspNetCore.Authorization.AuthorizationHandlerContext,OverlayManagementService.Infrastructure.GroupPolicyRequirement)">
+            <summary>
+            Makes a decision if authorization is allowed based on GroupPolicyRequirement.
+            </summary>
+            <param name="context"></param>
+            <param name="requirement"></param>
+            <returns></returns>
+        </member>
+        <member name="T:OverlayManagementService.Infrastructure.GroupPolicyRequirement">
+            <summary>
+            GroupPolicyRequirement contains data parameter that 
+            GroupPolicyHandler uses to evaluate against the current user principal or session data.
+            </summary>
+        </member>
+        <member name="T:OverlayManagementService.Network.Bridge">
+            <summary>
+            Class which encapsulates Open Virtual Switch functionality. Each VNI has a separate Bridge
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Network.Bridge.DeployVXLANInterface(System.String)">
+            <summary>
+            Triggers deployment of the VXLAN interface on the bridge.
+            </summary>
+            <param name="destIp">Destination IP address</param>
+        </member>
+        <member name="M:OverlayManagementService.Network.Bridge.DeployClientVXLANInterface(System.String)">
+            <summary>
+            Triggers deployment of VXLAN interface towards client.
+            </summary>
+            <param name="destIp">Destination IP address</param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:OverlayManagementService.Network.Bridge.CleanUpBridge" -->
+        <member name="M:OverlayManagementService.Network.Bridge.DeployBridge">
+            <summary>
+            Deploys the bridge to Open Virtual switch
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Network.Bridge.CleanUpClientVXLANInterface(System.String)">
+            <summary>
+            Triggers cleanup of the client VXLAN interface on Open Virtual Switch
+            </summary>
+            <param name="ip">Ip address of a client</param>
+        </member>
+        <member name="M:OverlayManagementService.Network.Bridge.CleanUpTargetVXLANInterface(System.String)">
+            <summary>
+            Triggers cleanup of a target device VXAN interface on Open Virtual switch.
+            </summary>
+            <param name="ip">Ip address of target device</param>
+        </member>
+        <member name="T:OverlayManagementService.Network.Firewall">
+            <summary>
+            Class encapsulates IP tables functionality for allowing client connections.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Network.Firewall.AddException(System.String)">
+            <summary>
+            Method adds an exception for provided ip address to allow in7out connections for client.
+            </summary>
+            <param name="ip"></param>
+        </member>
+        <member name="M:OverlayManagementService.Network.Firewall.RemoveException(System.String)">
+            <summary>
+            Method removes existing exception for the provided ip address.
+            </summary>
+            <param name="ip"></param>
+        </member>
+        <member name="T:OverlayManagementService.Network.IPAddress">
+            <summary>
+            CLass which encapsulates logic for generating an unique IPV4 Address.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Network.IPAddress.GenerarteUniqueIPV4Address">
+            <summary>
+            Method Generates an IPV4 address which will be unique within the network with specific VNI.
+            </summary>
+        </member>
+        <member name="T:OverlayManagementService.Network.LinuxVXLANInterface">
+            <summary>
+            Class which encapsulates VXLAN interface deployment and cleanup functionality on target device.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Network.LinuxVXLANInterface.CleanUpInterface(System.String,System.String,System.String)">
+            <summary>
+            Method deletes the VXLAN interface(towards Open Virtual Switch) from target device.
+            </summary>
+            <param name="username">username to access the target device</param>
+            <param name="key">GUID of the machine which was used for naming the private key for this targetdevice</param>
+            <param name="managementIp">Management ip ov the target device</param>
+        </member>
+        <member name="M:OverlayManagementService.Network.LinuxVXLANInterface.DeployInterface(System.String,System.String,System.String,System.String)">
+            <summary>
+            Method deploys the VXLAN interface(towards Open Virtual Switch) to a target device.
+            </summary>
+            <param name="username">username to access the target device</param>
+            <param name="key">GUID of the machine which was used for naming the private key for this targetdevice</param>
+            <param name="managementIp">Management ip ov the target device</param>
+        </member>
+        <member name="T:OverlayManagementService.Network.OpenVirtualSwitch">
+            <summary>
+            Class which encapsulates functionality needed for deployment of the VXLAN on Open Virtual Switch.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Network.OpenVirtualSwitch.AddBridge(OverlayManagementService.Network.IBridge)">
+            <summary>
+            Method allows to add a new Bridge to a list of bridges in OVS.
+            </summary>
+            <param name="bridge">Bridge object</param>
+        </member>
+        <member name="M:OverlayManagementService.Network.OpenVirtualSwitch.DeployVXLANInterface(OverlayManagementService.Network.ITargetDevice)">
+            <summary>
+            Method triggers deployment of the VXLAN interface to OVS bridge.
+            </summary>
+            <param name="virtualMachine">IVIrtualMachine(target device) object </param>
+        </member>
+        <member name="M:OverlayManagementService.Network.OpenVirtualSwitch.DeployClientVXLANInterface(System.String,System.String)">
+            <summary>
+            Method triggers deployment of the client VXLAN interface to OVS bridge.
+            </summary>
+            <param name="vni">VNI of the network to which interface should be deployed</param>
+            <param name="ip">IP address of the client</param>
+        </member>
+        <member name="M:OverlayManagementService.Network.OpenVirtualSwitch.CleanUpClientVXLANInterface(System.String,System.String)">
+            <summary>
+            Method triggers cleanup of the client VXLAN interface to OVS bridge.
+            </summary>
+            <param name="vni">VNI of the network where interface was deployed</param>
+            <param name="ip">IP address of the client</param>
+        </member>
+        <member name="M:OverlayManagementService.Network.OpenVirtualSwitch.DeployBridge(System.String)">
+            <summary>
+            Method triggers Bridge deployment on OVS.
+            </summary>
+            <param name="vni">VNI of the network where bridge should be deployed</param>
+        </member>
+        <member name="M:OverlayManagementService.Network.OpenVirtualSwitch.CleanUpBridge(System.String)">
+            <summary>
+            Method deploys the VXLAN interface to OVS bridge.
+            </summary>
+            <param name="vni">VNI of the network where bridge was deployed</param>
+        </member>
+        <member name="M:OverlayManagementService.Network.OpenVirtualSwitch.RemoveTargetConnection(OverlayManagementService.Network.ITargetDevice)">
+            <summary>
+            Method triggers cleanup of the VXLAN interface(Target) from OVS bridge.
+            </summary>
+            <param name="targetDevice">TargetDevice object</param>
+        </member>
+        <member name="T:OverlayManagementService.Network.TargetDevice">
+            <summary>
+            Class which encapsulates functionality needed for deployment of the VXLAN on Target device.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Network.TargetDevice.CleanUpVMConnection">
+            <summary>
+            Method triggers cleanup of the VXLAN interface on target device.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Network.TargetDevice.DeployVMConnection(System.String)">
+            <summary>
+            Method triggers deployment of the VXLAN interface on target device.
+            </summary>
+            <param name="vxlanIp">ip address which was assigned to the target device</param>
+        </member>
+        <member name="T:OverlayManagementService.Network.VirtualNetworkIdentifier">
+            <summary>
+            CLass which encapsulates logic for generating an unique VNI.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Network.VirtualNetworkIdentifier.GenerateUniqueVNI">
+            <summary>
+            Method Generates unique VNI.
+            </summary>
+        </member>
+        <member name="T:OverlayManagementService.Network.VXLANInterface">
+            <summary>
+            Class which encapsulates VXLAN interface deployment and cleanup functionality on Open Virtual Switch.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Network.VXLANInterface.CleanUpVXLANInterface(System.String,System.String,System.String)">
+            <summary>
+            Method deletes the VXLAN interface from OVS bridge.
+            </summary>
+            <param name="username">username to access the OVS</param>
+            <param name="key">Switch prefix which was used for naming the private key for this OVS</param>
+            <param name="managementIp">Management ip ov the OVS</param>
+        </member>
+        <member name="M:OverlayManagementService.Network.VXLANInterface.DeployVXLANInterface(System.String,System.String,System.String)">
+            <summary>
+            Method deploys the VXLAN interface to OVS bridge.
+            </summary>
+            <param name="username">username to access the OVS</param>
+            <param name="key">Switch prefix which was used for naming the private key for this OVS</param>
+            <param name="managementIp">Management ip ov the OVS</param>
+        </member>
+        <member name="T:OverlayManagementService.Network.VXLANOverlayNetwork">
+            <summary>
+            Class encapsulates functionality required for neteork deployment, cleanup, connecting target devices and clients.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Network.VXLANOverlayNetwork.AddClient(OverlayManagementService.Models.Student)">
+            <summary>
+            Method triggers deployment of the VXLAN connection towards client.
+            </summary>
+            <param name="client">Student DTO object</param>
+        </member>
+        <member name="M:OverlayManagementService.Network.VXLANOverlayNetwork.AddTargetDevice(OverlayManagementService.Network.ITargetDevice)">
+            <summary>
+            Method triggers deployment of the VXLAN connection towards taregt device.
+            </summary>
+            <param name="taregtDevice">TargetDevice object</param>
+        </member>
+        <member name="M:OverlayManagementService.Network.VXLANOverlayNetwork.CleanUpNetwork">
+            <summary>
+            Method triggers cleanup of entire network. All devices are removed from the network and network is being deleted.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Network.VXLANOverlayNetwork.DeployNetwork">
+            <summary>
+            Method triggers network deployment.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Network.VXLANOverlayNetwork.RemoveClient(OverlayManagementService.Models.Student)">
+            <summary>
+            Method triggers client removal from network.
+            </summary>
+            <param name="client">Student DTO object</param>
+        </member>
+        <member name="M:OverlayManagementService.Network.VXLANOverlayNetwork.RemoveTargetDevice(System.Guid)">
+            <summary>
+            Method triggers target device removal from the network.
+            </summary>
+            <param name="guid">Guid of the target device</param>
+        </member>
+        <member name="T:OverlayManagementService.Repositories.FirewallRepository">
+            <summary>
+            Class encapsulates the logic reguired to persist Firewall objects.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Repositories.FirewallRepository.AddFirewall(System.String,OverlayManagementService.Network.IFirewall)">
+            <summary>
+            Method allows to add firewall to the in memory database which is aafterward backed up into the json file.
+            </summary>
+            <param name="key">Open Virtual Switch prefix</param>
+            <param name="firewall"> Firerwall object</param>
+        </member>
+        <member name="M:OverlayManagementService.Repositories.FirewallRepository.GetFirewall(System.String)">
+             <summary>
+            Method allows to get the Firewall object from in memory database for the specific OVS.
+             </summary>
+             <param name="key">Open Virtual Switch prefix</param>
+             <returns>Firewall Object</returns>
+        </member>
+        <member name="M:OverlayManagementService.Repositories.FirewallRepository.RemoveFirewall(System.String)">
+            <summary>
+            Method allows to remove the Firewall object from in memory database for the specific OVS.
+            </summary>
+            <param name="key">Open Virtual Switch prefix</param>
+        </member>
+        <member name="T:OverlayManagementService.Repositories.NetworkRepository">
+            <summary>
+            Class encapsulates the logic reguired to persist Network objects.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Repositories.NetworkRepository.DeleteOverlayNetwork(System.String)">
+            <summary>
+            Method allows to remove the Network object from in memory database for the specific group id.
+            </summary>
+            <param name="groupId">Id of Azure Active Derictory group for which Network was deployed</param>
+        </member>
+        <member name="M:OverlayManagementService.Repositories.NetworkRepository.GetOverlayNetwork(System.String)">
+            <summary>
+            Method allows to get the Network object from in memory database for the specific group id.
+            </summary>
+            <param name="groupId">Id of Azure Active Derictory group for which Network was deployed</param>
+        </member>
+        <member name="M:OverlayManagementService.Repositories.NetworkRepository.SaveOverlayNetwork(OverlayManagementService.Network.IOverlayNetwork)">
+            <summary>
+            Method allows to save the Network object to in memory database for the specific group id.
+            </summary>
+            <param name="overlayNetwork">OverlayNetwork object</param>
+        </member>
+        <member name="M:OverlayManagementService.Repositories.NetworkRepository.UpdateOverlayNetwork(OverlayManagementService.Network.IOverlayNetwork)">
+            <summary>
+            Method allows to update exiing Network object in in memory database for the specific group id.
+            </summary>
+            <param name="groupId">Id of Azure Active Derictory group for which Network was deployed</param>
+        </member>
+        <member name="M:OverlayManagementService.Repositories.NetworkRepository.GetAllNetworks">
+            <summary>
+            Method allows to get all deployed Network objects from in memory database.
+            </summary>
+            <returns>Dictionary with maping Azure AD group to Overlay Network</returns>
+        </member>
+        <member name="M:OverlayManagementService.Repositories.NetworkRepository.GetOverlayNetworkByVni(System.String)">
+            <summary>
+            Method allows to get the Network object from in memory database with specific VNI.
+            </summary>
+            <param name="vni">VNI of the network</param>
+        </member>
+        <member name="M:OverlayManagementService.Repositories.NetworkRepository.GetOverlayNetwork(System.Security.Claims.Claim)">
+            <summary>
+            Method allows to get the Network object from in memory database for the specific group claim.
+            </summary>
+            <param name="claim">claim from the access token</param>
+        </member>
+        <member name="T:OverlayManagementService.Repositories.SwitchRepository">
+            <summary>
+            Class encapsulates the logic reguired to persist Switch objects.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Repositories.SwitchRepository.DeleteSwitch(System.String)">
+            <summary>
+            Method allows to remove the Switch object from in memory database for the specific switch prefix.
+            </summary>
+            <param name="key">Open Virtual Switch prefix</param>
+        </member>
+        <member name="M:OverlayManagementService.Repositories.SwitchRepository.GetSwitch(System.String)">
+            <summary>
+            Method allows to get the Switch object from in memory database for the specific switch prefix.
+            </summary>
+            <param name="key">Open Virtual Switch prefix</param>
+        </member>
+        <member name="M:OverlayManagementService.Repositories.SwitchRepository.SaveSwitch(OverlayManagementService.Network.IOpenVirtualSwitch)">
+            <summary>
+            Method allows to save the Switch object to in memory database with the specific prefix.
+            </summary>
+            <param name="openVirtualSwitch">OpenVirtualSwitch object</param>
+        </member>
+        <member name="M:OverlayManagementService.Repositories.SwitchRepository.UpdateSwitch(OverlayManagementService.Network.IOpenVirtualSwitch)">
+            <summary>
+            Method allows to update exiing Switch object in in-memory database.
+            </summary>
+            <param name="openVirtualSwitch">OpenVirtualSwitch object</param>
+        </member>
+        <member name="M:OverlayManagementService.Repositories.SwitchRepository.GetAllSwitches">
+            <summary>
+            Method allows to get all deployed switch objects from in memory database.
+            </summary>
+            <returns>Dictionary with maping Azure AD group to OpenVirtualSwitch</returns>
+        </member>
+        <member name="T:OverlayManagementService.Services.ClientsRemovalService">
+            <summary>
+            This Service is running in background and removes all clent connections at midnight.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Services.ClientsRemovalService.#ctor(Microsoft.Extensions.Logging.ILogger{OverlayManagementService.Services.ClientsRemovalService},OverlayManagementService.Repositories.INetworkRepository,OverlayManagementService.Repositories.IFirewallRepository)">
+            <summary>
+            Constructor for ClientsRemovalService.
+            </summary>
+            <param name="logger">logger</param>
+            <param name="networkRepository">Network repository object</param>
+            <param name="firewallRepository">firewall repository object</param>
+            <returns>new ClientsRemovalService object</returns>
+        </member>
+        <member name="M:OverlayManagementService.Services.ClientsRemovalService.StartAsync(System.Threading.CancellationToken)">
+            <summary>
+            Method that sets the timer for periodic removal of client connections.
+            </summary>
+            <param name="stoppingToken">Cancellation Token</param>
+            <returns>Task execution result</returns>
+        </member>
+        <member name="T:OverlayManagementService.Services.KeyKeeper">
+            <summary>
+            Singleton which allows to store SSH key files for access to Target devices and Open Virtual Switch.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Services.KeyKeeper.#ctor">
+            <summary>
+            Constructor for KeyKeeper.
+            </summary>
+            <returns>new KeyKeeper object</returns>
+        </member>
+        <member name="M:OverlayManagementService.Services.KeyKeeper.GetInstance">
+            <summary>
+            Getter for KeyKeeper Instance.
+            </summary>
+            <returns>KeyKeeper instance</returns>
+        </member>
+        <member name="M:OverlayManagementService.Services.KeyKeeper.GetKeyLocation(System.String)">
+            <summary>
+            Method allows to get the path to the specific ssh key file.
+            </summary>
+            <param name="key">Key under which ssh key was saved</param>
+            <returns>Path to ssh key file</returns>
+        </member>
+        <member name="M:OverlayManagementService.Services.KeyKeeper.PutKey(System.String,Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            Method allows to save new ssh key file.
+            </summary>
+            <param name="key">key to use as filename for the ssh key file</param>
+            <param name="keyFile">ssh key file</param>
+        </member>
+        <member name="T:OverlayManagementService.Services.OverlayNetworkConnectionService">
+            <summary>
+            Service class(Facade) which acts as interface for all Network connection related operations.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Services.OverlayNetworkConnectionService.#ctor(OverlayManagementService.Repositories.INetworkRepository,Microsoft.Extensions.Logging.ILogger{OverlayManagementService.Services.OverlayNetworkConnectionService},OverlayManagementService.Factories.IClientConnectionFactory,OverlayManagementService.Repositories.IFirewallRepository)">
+            <summary>
+            Constructor for OverlayNetworkConnectionService.
+            </summary>
+            <param name="logger">logger</param>
+            <param name="networkRepository">Network repository object</param>
+            <param name="clientConnectionFactory">Factory object which will be responsible for creation of Client Connection DTO's</param>
+            <param name="firewallRepository">Firewall repository object</param>
+            <returns>new OverlayNetworkConnectionService object</returns>
+        </member>
+        <member name="M:OverlayManagementService.Services.OverlayNetworkConnectionService.GetAllNetworks(System.Collections.Generic.IEnumerable{System.Security.Claims.Claim})">
+            <summary>
+            Method that queries for assigned network based on provided claims.
+            </summary>
+            <param name="claims">List of claims</param>
+            <returns>IEnumerable of ClientConnection objects</returns>
+        </member>
+        <member name="M:OverlayManagementService.Services.OverlayNetworkConnectionService.CreateConnection(System.String,OverlayManagementService.Models.Student)">
+            <summary>
+            Method that preapares the data required for joining the specific network and creates a tunnel for client on switch side.
+            </summary>
+            <param name="groupId">Group id to which network is assigned</param>
+            <param name="client">Student DTO</param>
+            <returns>ClientConnection object containing information required for joining the network</returns>
+        </member>
+        <member name="M:OverlayManagementService.Services.OverlayNetworkConnectionService.SuspendConnection(System.String,OverlayManagementService.Models.Student)">
+            <summary>
+            Method that removes the connection to client from Open virtual switch side.
+            </summary>
+            <param name="groupId">Group id to which network is assigned</param>
+            <param name="client">Student DTO</param>
+        </member>
+        <member name="T:OverlayManagementService.Services.OverlayNetworkManagementService">
+            <summary>
+            Service class(Facade) which acts as interface for all Network management related operations.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Services.OverlayNetworkManagementService.#ctor(Microsoft.Extensions.Logging.ILogger{OverlayManagementService.Services.OverlayNetworkManagementService},OverlayManagementService.Repositories.INetworkRepository,OverlayManagementService.Network.IIdentifier,OverlayManagementService.Factories.INetworkFactory,OverlayManagementService.Factories.IBridgeFactory,OverlayManagementService.Factories.IIdentifierFactory{OverlayManagementService.Network.IPAddress},OverlayManagementService.Repositories.ISwitchRepository,Microsoft.Extensions.Configuration.IConfiguration,OverlayManagementService.Services.ITargetDeviceManagementService)">
+            <summary>
+            Constructor for OverlayNetworkManagementService.
+            </summary>
+            <param name="logger">logger</param>
+            <param name="networkRepository">Network repository object</param>
+            <param name="vniResolver">Virtual Network Identifier object  which will be responsible for providing unique VNI's to networks</param>
+            <param name="networkFactory">Factory object which will be responsible for creation of Network objects</param>
+            <param name="bridgeFactory">Factory object which will be responsible for creation of Bridge objects</param>
+            <param name="ipResolverFactory">Factory object which will be responsible for creation of Ip address resolver objects</param>
+            <param name="switchRepository">Switch repository object</param>
+            <param name="configuration">Configuration that can be used to obtain important information</param>
+            <param name="targetDeviceManagementService">Target Device Management Service object which is responsible for removing target devices from network</param>
+            <returns>new OverlayNetworkManagementService object</returns>
+        </member>
+        <member name="M:OverlayManagementService.Services.OverlayNetworkManagementService.DeleteNetwork(System.String)">
+            <summary>
+            Method that that triggers all events that are required to suspend the network.
+            </summary>
+            <param name="groupId">Id of a group to which the network is assigned</param>
+        </member>
+        <member name="M:OverlayManagementService.Services.OverlayNetworkManagementService.DeployNetwork(OverlayManagementService.Dtos.OVSConnection)">
+            <summary>
+            Method that that triggers all events that are required to deploy the network.
+            </summary>
+            <param name="oVSConnection">OVSConnection DTO that holds all necessary data for network deployment</param>
+            <returns>OverlayNetwork object</returns>
+        </member>
+        <member name="M:OverlayManagementService.Services.OverlayNetworkManagementService.GetAllNetworks">
+            <summary>
+            Method for getting all deployed networks.
+            </summary>
+            <returns>IEnumerable containing  OverlayNetwork objects</returns>
+        </member>
+        <member name="M:OverlayManagementService.Services.OverlayNetworkManagementService.GetNetworkByVni(System.String)">
+            <summary>
+            Method for getting deployed network with specific VNI.
+            </summary>
+            <param name="vni">Virtual Network Identifier</param>
+            <returns>OverlayNetwork object</returns>
+        </member>
+        <member name="M:OverlayManagementService.Services.OverlayNetworkManagementService.UpdateNetwork(OverlayManagementService.Network.IOverlayNetwork)">
+            <summary>
+            Method that that triggers all events that are required to update existing the network.
+            TODO
+            </summary>
+            <param name="overlayNetwork">Overlay Network Object with contains required changes</param>
+            <returns>OverlayNetwork object</returns>
+        </member>
+        <member name="T:OverlayManagementService.Services.SwitchManagementService">
+            <summary>
+            Service class(Facade) which acts as interface for all Switch management related operations.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Services.SwitchManagementService.#ctor(Microsoft.Extensions.Logging.ILogger{OverlayManagementService.Services.SwitchManagementService},OverlayManagementService.Repositories.INetworkRepository,OverlayManagementService.Repositories.ISwitchRepository,OverlayManagementService.Repositories.IFirewallRepository,OverlayManagementService.Factories.IFirewallFactory,OverlayManagementService.Factories.IOpenVirtualSwitchFactory,OverlayManagementService.Services.IKeyKeeper)">
+            <summary>
+            Constructor for SwitchManagementService.
+            </summary>
+            <param name="logger">logger</param>
+            <param name="networkRepository">Network repository object</param>
+            <param name="switchRepository">Switch repository object</param>
+            <param name="firewallRepository">Firewall repository object</param>
+            <param name="firewallFactory">Factory object which will be responsible for creation of Firewall objects</param>
+            <param name="openVirtualSwitchFactory">Factory object which will be responsible for creation of Open Virtual Switch objects</param>
+            <param name="keyKeeper">KeyKeeper object</param>
+            <returns>new SwitchManagementService object</returns>
+        </member>
+        <member name="M:OverlayManagementService.Services.SwitchManagementService.AddSwitch(OverlayManagementService.Dtos.OvsRegistration)">
+            <summary>
+            Method that that triggers all events that are required to deploy the switch.
+            </summary>
+            <param name="ovsRegistration">OvsRegistration DTO that holds all necessary data for switch deployment</param>
+            <returns>OpenVirtualSwitch object</returns>
+        </member>
+        <member name="M:OverlayManagementService.Services.SwitchManagementService.RemoveSwitch(System.String)">
+            <summary>
+            Method that that triggers all events that are required to remove the switch.
+            </summary>
+            <param name="key">Switch prefix under which Switch should be registered f.e "thu"</param>
+        </member>
+        <member name="M:OverlayManagementService.Services.SwitchManagementService.GetAllSwitches">
+            <summary>
+            Method for getting all deployed switches.
+            </summary>
+            <returns>IEnumerable containing  OpenVirtualSwitch objects</returns>
+        </member>
+        <member name="M:OverlayManagementService.Services.SwitchManagementService.GetSwitch(System.String)">
+            <summary>
+            Method for getting deployed switch with specific prefix.
+            </summary>
+            <param name="key">Switch prefix</param>
+            <returns>OpenVirtualSwitch object</returns>
+        </member>
+        <member name="T:OverlayManagementService.Services.TargetDeviceManagementService">
+            <summary>
+            Service class(Facade) which acts as interface for all target device management related operations.
+            </summary>
+        </member>
+        <member name="M:OverlayManagementService.Services.TargetDeviceManagementService.#ctor(Microsoft.Extensions.Logging.ILogger{OverlayManagementService.Services.TargetDeviceManagementService},OverlayManagementService.Repositories.INetworkRepository,OverlayManagementService.Factories.ITargetDeviceFactory,Microsoft.Extensions.Configuration.IConfiguration,OverlayManagementService.Services.IKeyKeeper)">
+            <summary>
+            Constructor for TargetDeviceManagementService.
+            </summary>
+            <param name="logger">logger</param>
+            <param name="networkRepository">Network repository object</param>
+            <param name="configuration">Configuration that can be used to obtain important information</param>
+            <param name="targetDeviceFactory">Factory object which will be responsible for creation of TargetDevice objects</param>
+            <param name="keyKeeper">KeyKeeper object</param>
+            <returns>new TargetDeviceManagementService object</returns>
+        </member>
+        <member name="M:OverlayManagementService.Services.TargetDeviceManagementService.RegisterMachine(OverlayManagementService.Dtos.VmConnection)">
+            <summary>
+            Method that that triggers all events that are required to deploy the target device.
+            </summary>
+            <param name="vmConnection">VmConnection DTO that holds all necessary data for device deployment</param>
+            <returns>OverlayNetwork object</returns>
+        </member>
+        <member name="M:OverlayManagementService.Services.TargetDeviceManagementService.UnRegisterMachine(System.String,System.Guid)">
+            <summary>
+            Method that that triggers all events that are required to remove the target device.
+            </summary>
+            <param name="groupId">Id of a group to which bellongs the network to which device was previously deployed</param>
+            <param name="guid">Id which was assigned to device on deployment</param>
+        </member>
+        <member name="M:OverlayManagementClient.Services.GraphService.GetSignedInUsersGroups(Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext)">
+            <summary>
+            This method inspects the claims collection created from the ID or Access token issued to a user and returns the groups that are present in the token.
+            If groups claims are already present in Session then it returns the list of groups by calling GetSessionGroupList method.
+            If it detects groups overage, the method then makes calls to ProcessUserGroupsForOverage method.
+            </summary>
+            <param name="context">TokenValidatedContext</param>
+        </member>
+        <member name="M:OverlayManagementClient.Services.GraphService.GetUserGroupsFromSession(Microsoft.AspNetCore.Http.ISession)">
+            <summary>
+            Retrieves all the groups saved in Session.
+            </summary>
+            <param name="_httpContextSession"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OverlayManagementClient.Services.GraphService.HasOverageOccurred(System.Security.Claims.ClaimsPrincipal)">
+            <summary>
+            Checks if 'Group Overage' claim exists for signed-in user.
+            </summary>
+            <param name="identity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OverlayManagementClient.Services.GraphService.IsAccessToken(System.Security.Claims.ClaimsIdentity)">
+            <summary>
+            ID Token does not contain 'scp' claim.
+            This claims exist for Access Token.
+            </summary>
+            <param name="identity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OverlayManagementClient.Services.GraphService.ProcessUserGroupsForOverage(Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext)">
+            <summary>
+            This method is called for Groups overage scenario.
+            The method makes calls to Microsoft Graph to fetch the group membership of the authenticated user.
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OverlayManagementClient.Services.GraphService.ProcessIGraphServiceMemberOfCollectionPage(Microsoft.Graph.IUserMemberOfCollectionWithReferencesPage)">
+            <summary>
+            Returns all the groups that the user is a direct member of.
+            </summary>
+            <param name="membersCollectionPage">First page having collection of directory roles and groups</param>
+            <returns>List of groups</returns>
+        </member>
+        <member name="M:OverlayManagementClient.Services.GraphService.CheckUsersGroupMembership(Microsoft.AspNetCore.Authorization.AuthorizationHandlerContext,System.String,Microsoft.AspNetCore.Http.IHttpContextAccessor)">
+            <summary>
+            Checks if user is member of the required group.
+            </summary>
+            <param name="context"></param>
+            <param name="GroupName"></param>
+            <param name="_httpContextAccessor"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

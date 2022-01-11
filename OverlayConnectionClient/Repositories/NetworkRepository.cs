@@ -5,10 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
 using Newtonsoft.Json;
 using OverlayConnectionClient.Models;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -19,23 +16,25 @@ namespace OverlayConnectionClient.Repositories
     public class NetworkRepository : INetworkRepository
     {
 
-        private readonly IHttpContextAccessor _contextAccessor;
         private readonly HttpClient _httpClient;
         private readonly string _Scope = string.Empty;
         private readonly string _BaseAddress = string.Empty;
         private readonly ITokenAcquisition _tokenAcquisition;
         private readonly ILogger<NetworkRepository> _logger;
 
-        public NetworkRepository(ITokenAcquisition tokenAcquisition, HttpClient httpClient, IConfiguration configuration, IHttpContextAccessor contextAccessor, ILogger<NetworkRepository> logger)
+        public NetworkRepository(ITokenAcquisition tokenAcquisition, HttpClient httpClient, IConfiguration configuration, ILogger<NetworkRepository> logger)
         {
             _httpClient = httpClient;
             _tokenAcquisition = tokenAcquisition;
-            _contextAccessor = contextAccessor;
             _Scope = configuration["OverlayManagementService:OverlayManagementServiceScope"];
             _BaseAddress = configuration["OverlayManagementService:OverlayManagementServiceBaseAddress"];
             _logger = logger;
         }
 
+        /// <summary>
+        /// Method allows to get all deployed Networks from the OverlayManagementService API.
+        /// </summary>
+        /// <returns>IEnumerable with OverlayNetwork DTO's</returns>
         public async Task<IEnumerable<OverlayNetwork>> GetNetworksAsync()
         {
             await PrepareAuthenticatedClient();
@@ -62,6 +61,12 @@ namespace OverlayConnectionClient.Repositories
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
+        /// <summary>
+        /// Method allows to get a Network assigned to a specific group id.
+        /// This request will also trigger deployment of the vxlan interface on Open Virtual Switch towards client
+        /// </summary>
+        /// <param name="groupId">Id of Azure Active Derictory group for which Network was deployed</param>
+        /// <returns>OverlayNetwork DTO as Task result</returns>
         public async Task<OverlayNetwork> GetNetworkAsync(string groupId)
         {
             await PrepareAuthenticatedClient();
@@ -80,7 +85,10 @@ namespace OverlayConnectionClient.Repositories
             throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
         }
 
-
+        /// <summary>
+        /// Method allows to suspend connection to a Network with a specific group id.
+        /// </summary>
+        /// <param name="groupId">Id of Azure Active Derictory group for which Network was deployed</param>
         public async void RemoveClientAsync(string groupId)
         {
             await PrepareAuthenticatedClient();

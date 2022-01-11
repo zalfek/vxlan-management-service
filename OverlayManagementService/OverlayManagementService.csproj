@@ -1,9 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>aspnet-OverlayManagementService-996E7DDA-FA82-45A9-88E3-35401A590100</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	 <!--<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	  <DocumentationFile>C:/Projects/vxlan-management-service/documentation/documentation.xml</DocumentationFile>-->
     <DockerfileContext>.</DockerfileContext>
   </PropertyGroup>
 

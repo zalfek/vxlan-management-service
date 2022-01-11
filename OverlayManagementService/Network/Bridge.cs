@@ -9,10 +9,19 @@ using System.Text.Json.Serialization;
 
 namespace OverlayManagementService.Network
 {
+    /// <summary>
+    /// Class which encapsulates Open Virtual Switch functionality. Each VNI has a separate Bridge
+    /// </summary>
     public class Bridge: IBridge
     {
         private readonly ILogger<IBridge> _logger;
         private readonly IVxlanInterfaceFactory _vxlanInterfaceFactory;
+        public string Vni { get; set; }
+        public string Name { get; set; }
+        public List<IVXLANInterface> VXLANInterfaces { get; set; }
+        public string ManagementIp { get; set; }
+        public string Username { get; set; }
+        public string Key { get; set; }
 
         public Bridge(string username, string key, string name, string vni, string managementIp)
         {
@@ -26,50 +35,35 @@ namespace OverlayManagementService.Network
             _vxlanInterfaceFactory = new VxlanInterfaceFactory();
         }
 
-        public string Vni { get; set; }
-        public string Name { get; set; }
-        public List<IVXLANInterface> VXLANInterfaces { get; set; }
-        public string ManagementIp { get; set; }
-        public string Username { get; set; }
-        public string Key { get; set; }
-
-        public void DeployVXLANInterface(IVirtualMachine virtualMachine)
+        /// <summary>
+        /// Triggers deployment of the VXLAN interface on the bridge.
+        /// </summary>
+        /// <param name="destIp">Destination IP address</param>
+        public void DeployVXLANInterface(string destIp)
         {
             _logger.LogInformation("Creating new vxlan interface");
-               IVXLANInterface vXLANInterface = _vxlanInterfaceFactory.CreateInterface(
-                Username,
-                Key,
-                Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14),
-                "vxlan",
-                virtualMachine.CommunicationIP,
-                Vni,
-                Name,
-                ManagementIp
-                );
+               IVXLANInterface vXLANInterface = _vxlanInterfaceFactory.CreateInterface(destIp, Vni, Name);
             _logger.LogInformation("Deploying vxlan interface");
-            vXLANInterface.DeployVXLANInterface();
+            vXLANInterface.DeployVXLANInterface(Username, Key, ManagementIp);
             VXLANInterfaces.Add(vXLANInterface);
         }
 
-
-        public void DeployClientVXLANInterface(string ip)
+        /// <summary>
+        /// Triggers deployment of VXLAN interface towards client.
+        /// </summary>
+        /// <param name="destIp">Destination IP address</param>
+        public void DeployClientVXLANInterface(string destIp)
         {
             _logger.LogInformation("Creating new vxlan interface");
-            IVXLANInterface vXLANInterface = _vxlanInterfaceFactory.CreateInterface(
-                Username,
-                Key,
-                Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 14),
-                "vxlan",
-                ip,
-                Vni,
-                Name,
-                ManagementIp
-                );
+            IVXLANInterface vXLANInterface = _vxlanInterfaceFactory.CreateInterface(destIp, Vni, Name);
             _logger.LogInformation("Deploying vxlan interface");
-            vXLANInterface.DeployVXLANInterface();
+            vXLANInterface.DeployVXLANInterface(Username, Key, ManagementIp);
             VXLANInterfaces.Add(vXLANInterface);
         }
 
+        /// <summary>
+        // Deletes the bridge from the Open Virtual Switch
+        /// </summary>
         public void CleanUpBridge()
         {
             ConnectionInfo sSHConnectionInfo = new(ManagementIp, Username, new AuthenticationMethod[]{
@@ -89,6 +83,9 @@ namespace OverlayManagementService.Network
             sshclient.Disconnect();
         }
 
+        /// <summary>
+        /// Deploys the bridge to Open Virtual switch
+        /// </summary>
         public void DeployBridge()
         {
             ConnectionInfo sSHConnectionInfo = new(ManagementIp, Username, new AuthenticationMethod[]{
@@ -108,21 +105,29 @@ namespace OverlayManagementService.Network
             sshclient.Disconnect();
         }
 
+        /// <summary>
+        /// Triggers cleanup of the client VXLAN interface on Open Virtual Switch
+        /// </summary>
+        /// <param name="ip">Ip address of a client</param>
         public void CleanUpClientVXLANInterface(string ip)
         {
             _logger.LogInformation("Searching for vxlan interface");
             IVXLANInterface vXLANInterface = VXLANInterfaces.Find(x => x.RemoteIp == ip);
             _logger.LogInformation("Removing vxlan interface");
-            vXLANInterface.CleanUpVXLANInterface();
+            vXLANInterface.CleanUpVXLANInterface(Username, Key, ManagementIp);
             VXLANInterfaces.Remove(vXLANInterface);
         }
 
+        /// <summary>
+        /// Triggers cleanup of a target device VXAN interface on Open Virtual switch.
+        /// </summary>
+        /// <param name="ip">Ip address of target device</param>
         public void CleanUpTargetVXLANInterface(string ip)
         {
             _logger.LogInformation("Searching for vxlan interface");
             IVXLANInterface vXLANInterface = VXLANInterfaces.Find(x => x.RemoteIp == ip);
             _logger.LogInformation("Removing vxlan interface");
-            vXLANInterface.CleanUpVXLANInterface();
+            vXLANInterface.CleanUpVXLANInterface(Username, Key, ManagementIp);
             VXLANInterfaces.Remove(vXLANInterface);
         }
 

@@ -74,7 +74,7 @@ namespace OverlayManagementService
             services.AddScoped<IIdentifier, VirtualNetworkIdentifier>();
             services.AddScoped<INetworkFactory, NetworkFactory>();
             services.AddScoped<IBridgeFactory, BridgeFactory>();
-            services.AddScoped<IVirtualMachineFactory, VirtualMachineFactory>();
+            services.AddScoped<ITargetDeviceFactory, TargetDeviceFactory>();
             services.AddScoped<IClientConnectionFactory, ClientConnectionFactory>();
             services.AddScoped<IIdentifierFactory<IPAddress>, IdentifierFactory<IPAddress>>();
             services.AddScoped<IIdentifierFactory<VirtualNetworkIdentifier>, IdentifierFactory<VirtualNetworkIdentifier>>();

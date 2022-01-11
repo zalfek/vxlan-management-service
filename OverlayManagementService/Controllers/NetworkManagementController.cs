@@ -23,6 +23,12 @@ namespace OverlayManagementService.Controllers
         private readonly ILogger<NetworkManagementController> _logger;
         static readonly string[] scopeRequiredByApi = new string[] { "access_as_user" };
 
+        /// <summary>
+        /// Constructor for NetworkManagementController.
+        /// </summary>
+        /// <param name="logger">logger</param>
+        /// <param name="overlayNetworkManagementService">Overlay Network management service object</param>
+        /// <returns>new NetworkManagementController object</returns>
         public NetworkManagementController(ILogger<NetworkManagementController> logger, IOverlayNetworkManagementService overlayNetworkManagementService)
         {
             _logger = logger;
@@ -32,7 +38,6 @@ namespace OverlayManagementService.Controllers
         /// <summary>
         /// Endpoint that allows to get network by Virtual Network Identifier.
         /// </summary>
-        /// <permission cref="Admin"><permission>
         /// <param name="vni">Virtual Network Identifier</param>
         /// <returns>IOverlayNetwork object</returns>
         [Authorize(Policy = "Admin")]
@@ -47,7 +52,6 @@ namespace OverlayManagementService.Controllers
         /// <summary>
         /// Endpoint that allows to deploy the network.
         /// </summary>
-        /// <permission cref="Admin"><permission>
         /// <param name="oVSConnection">OVSConnection DTO containing network information</param>
         /// <returns>IOverlayNetwork object</returns>
         [Authorize(Policy = "Admin")]
@@ -63,7 +67,6 @@ namespace OverlayManagementService.Controllers
         /// <summary>
         /// Endpoint that allows to delete the network.
         /// </summary>
-        /// <permission cref="Admin"><permission>
         /// <param name="groupId">Group id to which network is assigned</param>
         [Authorize(Policy = "Admin")]
         [HttpDelete("delete/{groupId}")]
@@ -79,7 +82,6 @@ namespace OverlayManagementService.Controllers
         /// <summary>
         /// Endpoint that allows to get the list of all deployed networks.
         /// </summary>
-        /// <permission cref="Admin"><permission>
         /// <returns>IEnumerable of IOverlayNetwork objects</returns>
         [Authorize(Policy = "Admin")]
         [HttpGet("list")]
@@ -94,7 +96,6 @@ namespace OverlayManagementService.Controllers
         /// <summary>
         /// Endpoint that allows to update the network. 
         /// </summary>
-        /// <permission cref="Admin"><permission>
         /// <param name="overlayNetwork">IOverlayNetwork object containing updated information</param>
         /// <returns>updated IOverlayNetwork object</returns>
         [Authorize(Policy = "Admin")]

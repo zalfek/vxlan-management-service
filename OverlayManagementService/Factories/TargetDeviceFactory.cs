@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementService.Factories
 {
-    public class VirtualMachineFactory : IVirtualMachineFactory
+    public class TargetDeviceFactory : ITargetDeviceFactory
     {
-        public IVirtualMachine CreateVirtualMachine(Guid guid, string username, string key, string managementAddress, string vni, string destAddress, string communicationAddress)
+        public ITargetDevice CreateTargetDevice(Guid guid, string username, string key, string managementAddress, string vni, string destAddress, string communicationAddress)
         {
 
             if (System.Net.IPAddress.TryParse(managementAddress, out System.Net.IPAddress managementIp))
@@ -60,7 +60,7 @@ namespace OverlayManagementService.Factories
                 communicationIp = Dns.GetHostEntry(communicationAddress).AddressList[0];
             }
 
-            return new VirtualMachine(
+            return new TargetDevice(
                 guid,
                 username,
                 key,

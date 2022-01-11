@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementService.Network
 {
+
+    /// <summary>
+    /// CLass which encapsulates logic for generating an unique VNI.
+    /// </summary>
     public class VirtualNetworkIdentifier : IIdentifier
     {
         private readonly ILogger<IIdentifier> _logger;
@@ -20,7 +24,9 @@ namespace OverlayManagementService.Network
             PreviousVNI = 0;
         }
 
-
+        /// <summary>
+        /// Method Generates unique VNI.
+        /// </summary>
         public string GenerateUniqueVNI()
         {
             PreviousVNI++;

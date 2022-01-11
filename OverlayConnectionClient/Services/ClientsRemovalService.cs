@@ -1,39 +1,37 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using OverlayManagementService.Network;
-using OverlayManagementService.Repositories;
+using OverlayConnectionClient.Network;
+using OverlayConnectionClient.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OverlayManagementService.Services
+namespace OverlayConnectionClient.Services
 {
 
     /// <summary>
-    /// This Service is running in background and removes all clent connections at midnight.
+    /// This Service is running in background and removes all vxlan interfaces at midnight.
     /// </summary>
     public class ClientsRemovalService : IHostedService, IDisposable
     {
         private int executionCount = 0;
         private readonly ILogger<ClientsRemovalService> _logger;
         private Timer _timer;
-        private readonly INetworkRepository _networkRepository;
-        private readonly IFirewallRepository _firewallRepository;
+        private readonly IInterfaceRepository _interfaceRepository;
+
 
         /// <summary>
         /// Constructor for ClientsRemovalService.
         /// </summary>
         /// <param name="logger">logger</param>
-        /// <param name="networkRepository">Network repository object</param>
-        /// <param name="firewallRepository">firewall repository object</param>
+        /// <param name="jsonRepository">Json file repository object</param>
         /// <returns>new ClientsRemovalService object</returns>
-        public ClientsRemovalService(ILogger<ClientsRemovalService> logger, INetworkRepository networkRepository, IFirewallRepository firewallRepository)
+        public ClientsRemovalService(ILogger<ClientsRemovalService> logger, IInterfaceRepository jsonRepository)
         {
             _logger = logger;
-            _networkRepository = networkRepository;
-            _firewallRepository = firewallRepository;
+            _interfaceRepository = jsonRepository;
         }
 
         /// <summary>
@@ -57,18 +55,12 @@ namespace OverlayManagementService.Services
            "Timed Hosted Service is working. Count: {Count}", count);
             _logger.LogInformation(
            "Initiating daily client removal");
-            IDictionary<string, IOverlayNetwork> networks = _networkRepository.GetAllNetworks();
-            foreach (KeyValuePair<string, IOverlayNetwork> keyValuePair in networks)
+            IDictionary<string, ILinuxVXLANInterface> networks = _interfaceRepository.GetAllInterfaces();
+            foreach (KeyValuePair<string, ILinuxVXLANInterface> keyValuePair in networks)
             {
-                _logger.LogInformation("Removing clients from network with id: " + keyValuePair.Value.GroupId);
-                IFirewall firewall = _firewallRepository.GetFirewall(keyValuePair.Value.OpenVirtualSwitch.Key);
-                for (int i = keyValuePair.Value.Clients.Count - 1; i > -1; --i)
-                {
-                    _logger.LogInformation("Removing firewall exception for " + keyValuePair.Value.Clients[i]);
-                    firewall.RemoveException(keyValuePair.Value.Clients[i].IpAddress);
-                    _logger.LogInformation("Removing from network client with ip: " + keyValuePair.Value.Clients[i]);
-                    keyValuePair.Value.RemoveClient(keyValuePair.Value.Clients[i]);
-                }
+                _logger.LogInformation("Removing interface from network with id: " + keyValuePair.Value.VNI);
+                _interfaceRepository.DeleteInterface(keyValuePair.Key);
+                keyValuePair.Value.CleanUpInterface();
             }
         }
 

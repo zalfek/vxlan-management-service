@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementService.Network
 {
+    /// <summary>
+    /// CLass which encapsulates logic for generating an unique IPV4 Address.
+    /// </summary>
     public class IPAddress : IAddress
     {
         private readonly ILogger<IPAddress> _logger;
@@ -23,6 +26,9 @@ namespace OverlayManagementService.Network
             LastIPV4.Add(3);
     }
 
+        /// <summary>
+        /// Method Generates an IPV4 address which will be unique within the network with specific VNI.
+        /// </summary>
         public string GenerarteUniqueIPV4Address()
         {
             _logger.LogInformation("Generating new IP address");

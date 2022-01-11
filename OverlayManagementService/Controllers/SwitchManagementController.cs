@@ -23,6 +23,12 @@ namespace OverlayManagementService.Controllers
         private readonly ILogger<SwitchManagementController> _logger;
         static readonly string[] scopeRequiredByApi = new string[] { "access_as_user" };
 
+        /// <summary>
+        /// Constructor for SwitchManagementController.
+        /// </summary>
+        /// <param name="logger">logger</param>
+        /// <param name="switchManagementService">Switch management service object</param>
+        /// <returns>new SwitchManagementController object</returns>
         public SwitchManagementController(ILogger<SwitchManagementController> logger, ISwitchManagementService switchManagementService)
         {
             _logger = logger;
@@ -32,7 +38,6 @@ namespace OverlayManagementService.Controllers
         /// <summary>
         /// Endpoint that allows to get switch by switch key.
         /// </summary>
-        /// <permission cref="Admin"><permission>
         /// <param name="key">Key that that identifies the switch f.e thu</param>
         /// <returns>IOpenVirtuaSwitch object</returns>
         [Authorize(Policy = "Admin")]
@@ -47,7 +52,6 @@ namespace OverlayManagementService.Controllers
         /// <summary>
         /// Endpoint that allows to register the switch.
         /// </summary>
-        /// <permission cref="Admin"><permission>
         /// <param name="ovsRegistration">OvsRegistration DTO containing switch information</param>
         /// <returns>IOpenVirtuaSwitch object</returns>
         [Authorize(Policy = "Admin")]
@@ -62,7 +66,6 @@ namespace OverlayManagementService.Controllers
         /// <summary>
         /// Endpoint that allows to get the list of all deployed switches.
         /// </summary>
-        /// <permission cref="Admin"><permission>
         /// <returns>IEnumerable of IOpenVirtualSwitch objects</returns>
         [Authorize(Policy = "Admin")]
         [HttpGet("list")]
@@ -76,7 +79,6 @@ namespace OverlayManagementService.Controllers
          /// <summary>
         /// Endpoint that allows to delete the switch. 
         /// </summary>
-        /// <permission cref="Admin"><permission>
         /// <param name="key">Key that that identifies the switch f.e thu</param>
         [Authorize(Policy = "Admin")]
         [HttpDelete("delete/{key}")]
