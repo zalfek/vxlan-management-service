@@ -20,8 +20,8 @@ namespace OverlayManagementService.Services.Tests
         private readonly Mock<IAddress> _ipAddressMock = new();
         private readonly Mock<IOpenVirtualSwitch> _openVirtualSwitchMock = new();
         private readonly Mock<IOverlayNetwork> _overlayNetworkMock = new();
-        private readonly Mock<IVirtualMachineFactory> _virtualMachineFactoryMock = new();
-        private readonly Mock<IVirtualMachine> _virtualMachineMock = new();
+        private readonly Mock<ITargetDeviceFactory> _virtualMachineFactoryMock = new();
+        private readonly Mock<ITargetDevice> _virtualMachineMock = new();
         private readonly Mock<IKeyKeeper> _KeyKeeperMock = new();
         private readonly Mock<IConfiguration> _configurationMock = new();
 
@@ -50,8 +50,8 @@ namespace OverlayManagementService.Services.Tests
 
             _ipAddressMock.Setup(v => v.GenerarteUniqueIPV4Address()).Returns(It.IsAny<string>());
             _networkRepositorMock.Setup(x => x.GetOverlayNetwork(It.IsAny<string>())).Returns(_overlayNetworkMock.Object);
-            _virtualMachineFactoryMock.Setup(v => v.CreateVirtualMachine(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(_virtualMachineMock.Object);
-            _overlayNetworkMock.Setup(sw => sw.AddVMachine(It.IsAny<IVirtualMachine>()));
+            _virtualMachineFactoryMock.Setup(v => v.CreateTargetDevice(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(_virtualMachineMock.Object);
+            _overlayNetworkMock.Setup(sw => sw.AddTargetDevice(It.IsAny<ITargetDevice>()));
             _overlayNetworkMock.SetupGet(x => x.Vni).Returns(It.IsAny<string>());
             _overlayNetworkMock.SetupGet(x => x.OpenVirtualSwitch).Returns(_openVirtualSwitchMock.Object);
             _openVirtualSwitchMock.SetupGet(x => x.PrivateIP).Returns(It.IsAny<string>());
@@ -73,7 +73,7 @@ namespace OverlayManagementService.Services.Tests
             string groupId = "46a2e969-c558-4892-8e45-9cc2875b8268";
             Guid guid = Guid.NewGuid();
             _networkRepositorMock.Setup(x => x.GetOverlayNetwork(It.IsAny<string>())).Returns(_overlayNetworkMock.Object);
-            _overlayNetworkMock.Setup(n => n.RemoveVMachine(It.IsAny<Guid>()));
+            _overlayNetworkMock.Setup(n => n.RemoveTargetDevice(It.IsAny<Guid>()));
             _networkRepositorMock.Setup(r => r.SaveOverlayNetwork(It.IsAny<IOverlayNetwork>()));
 
 

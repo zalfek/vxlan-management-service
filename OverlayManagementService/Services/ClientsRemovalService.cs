@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementService.Services
 {
+
+    /// <summary>
+    /// This Service is running in background and removes all clent connections at midnight.
+    /// </summary>
     public class ClientsRemovalService : IHostedService, IDisposable
     {
         private int executionCount = 0;
@@ -18,6 +22,13 @@ namespace OverlayManagementService.Services
         private readonly INetworkRepository _networkRepository;
         private readonly IFirewallRepository _firewallRepository;
 
+        /// <summary>
+        /// Constructor for ClientsRemovalService.
+        /// </summary>
+        /// <param name="logger">logger</param>
+        /// <param name="networkRepository">Network repository object</param>
+        /// <param name="firewallRepository">firewall repository object</param>
+        /// <returns>new ClientsRemovalService object</returns>
         public ClientsRemovalService(ILogger<ClientsRemovalService> logger, INetworkRepository networkRepository, IFirewallRepository firewallRepository)
         {
             _logger = logger;
@@ -25,6 +36,11 @@ namespace OverlayManagementService.Services
             _firewallRepository = firewallRepository;
         }
 
+        /// <summary>
+        /// Method that sets the timer for periodic removal of client connections.
+        /// </summary>
+        /// <param name="stoppingToken">Cancellation Token</param>
+        /// <returns>Task execution result</returns>
         public Task StartAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Timed Hosted Service running.");

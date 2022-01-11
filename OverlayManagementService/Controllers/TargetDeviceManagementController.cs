@@ -23,6 +23,12 @@ namespace OverlayManagementService.Controllers
         private readonly ILogger<TargetDeviceManagementController> _logger;
         static readonly string[] scopeRequiredByApi = new string[] { "access_as_user" };
 
+        /// <summary>
+        /// Constructor for TargetDeviceManagementController.
+        /// </summary>
+        /// <param name="logger">logger</param>
+        /// <param name="taregetDeviceManagementService">Target management service object</param>
+        /// <returns>new TargetDeviceManagementController object</returns>
         public TargetDeviceManagementController(ILogger<TargetDeviceManagementController> logger, ITargetDeviceManagementService taregetDeviceManagementService)
         {
             _logger = logger;
@@ -32,7 +38,6 @@ namespace OverlayManagementService.Controllers
         /// <summary>
         /// Endpoint that allows to deploy device.
         /// </summary>
-        /// <permission cref="Admin"><permission>
         /// <param name="vmConnection">VMConnection DTO</param>
         /// <returns>IOverlayNetwork object</returns>
         [Authorize(Policy = "Admin")]
@@ -47,7 +52,6 @@ namespace OverlayManagementService.Controllers
         /// <summary>
         /// Endpoint that allows to remove the non-client device from network.
         /// </summary>
-        /// <permission cref="Admin"><permission>
         /// <param name="groupId">Group id to which network is assigned</param>
         /// <param name="guid">Guid of the device</param>
         /// <returns>updated IOverlayNetwork object</returns>

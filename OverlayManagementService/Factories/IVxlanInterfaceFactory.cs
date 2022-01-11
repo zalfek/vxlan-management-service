@@ -8,6 +8,6 @@ namespace OverlayManagementService.Factories
 {
     public interface IVxlanInterfaceFactory
     {
-        public IVXLANInterface CreateInterface(string username, string key, string name, string type, string remoteIp, string vni, string bridgeName, string managementIp);
+        public IVXLANInterface CreateInterface(string remoteIp, string vni, string bridgeName);
     }
 }

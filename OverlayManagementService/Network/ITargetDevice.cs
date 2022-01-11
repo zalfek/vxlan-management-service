@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementService.Network
 {
-    public interface IVirtualMachine
+    public interface ITargetDevice
     {
         public string ManagementIp { get; set; }
         public string Vni { get; set; }

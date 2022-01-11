@@ -12,7 +12,7 @@ namespace OverlayManagementService.Infrastructure
     /// </summary>
     public class GroupPolicyHandler : AuthorizationHandler<GroupPolicyRequirement>
     {
-        private IHttpContextAccessor _httpContextAccessor;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public GroupPolicyHandler(IHttpContextAccessor httpContextAccessor)
         {

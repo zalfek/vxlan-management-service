@@ -23,7 +23,7 @@ namespace OverlayManagementClient.Services
         /// <param name="context">TokenValidatedContext</param>
         public static async Task<List<string>> GetSignedInUsersGroups(TokenValidatedContext context)
         {
-            List<string> groupClaims = new List<string>();
+            List<string> groupClaims = new();
 
             // Checks if the incoming token contained a 'Group Overage' claim.
             if (HasOverageOccurred(context.Principal))
@@ -87,7 +87,7 @@ namespace OverlayManagementClient.Services
         /// <returns></returns>
         private static async Task<List<string>> ProcessUserGroupsForOverage(TokenValidatedContext context)
         {
-            List<string> groupClaims = new List<string>();
+            List<string> groupClaims = new();
             try
             {
                 // Before instatntiating GraphServiceClient, the app should have granted admin consent for 'GroupMember.Read.All' permission.
@@ -186,7 +186,7 @@ namespace OverlayManagementClient.Services
         /// <returns>List of groups</returns>
         private static List<Group> ProcessIGraphServiceMemberOfCollectionPage(IUserMemberOfCollectionWithReferencesPage membersCollectionPage)
         {
-            List<Group> allGroups = new List<Group>();
+            List<Group> allGroups = new();
 
             try
             {

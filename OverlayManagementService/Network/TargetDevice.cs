@@ -6,10 +6,13 @@ using System.Text.Json.Serialization;
 
 namespace OverlayManagementService.Network
 {
-    public class VirtualMachine : IVirtualMachine
+    /// <summary>
+    /// Class which encapsulates functionality needed for deployment of the VXLAN on Target device.
+    /// </summary>
+    public class TargetDevice : ITargetDevice
     {
 
-        public VirtualMachine(Guid guid, string username, string key, string managementIp, string vni, string destIP, string communicationIP)
+        public TargetDevice(Guid guid, string username, string key, string managementIp, string vni, string destIP, string communicationIP)
         {
             Key = key;
             Username = username;
@@ -18,7 +21,7 @@ namespace OverlayManagementService.Network
             Vni = vni;
             DestIp = destIP;
             CommunicationIP = communicationIP;
-            VXLANInterface = new LinuxVXLANInterface(Username , guid.ToString(),  Key + "-vxlan" + Vni, Vni, "4789", DestIp, managementIp);
+            VXLANInterface = new LinuxVXLANInterface(Key + "-vxlan" + Vni, Vni, "4789", DestIp);
         }
 
         public Guid Guid { get; set; }
@@ -31,15 +34,22 @@ namespace OverlayManagementService.Network
         public string Key { get; set; }
         public string Username { get; set; }
 
+        /// <summary>
+        /// Method triggers cleanup of the VXLAN interface on target device.
+        /// </summary>
         public void CleanUpVMConnection()
         {
-            VXLANInterface.CleanUpInterface();
+            VXLANInterface.CleanUpInterface(Username, Guid.ToString(), ManagementIp);
         }
 
+        /// <summary>
+        /// Method triggers deployment of the VXLAN interface on target device.
+        /// </summary>
+        /// <param name="vxlanIp">ip address which was assigned to the target device</param>
         public void DeployVMConnection(string vxlanIp)
         {
             VxlanIp = vxlanIp;
-            VXLANInterface.DeployInterface(vxlanIp);
+            VXLANInterface.DeployInterface(Username, Guid.ToString(), ManagementIp, vxlanIp);
         }
     }
 }

@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementService.Network
 {
+    /// <summary>
+    /// Class which encapsulates VXLAN interface deployment and cleanup functionality on target device.
+    /// </summary>
     public class LinuxVXLANInterface : ILinuxVXLANInterface
     {
         private readonly ILogger<ILinuxVXLANInterface> _logger;
@@ -16,28 +19,28 @@ namespace OverlayManagementService.Network
         public readonly string VNI;
         public readonly string DstPort;
         public readonly string DstIP;
-        public readonly string ManagementIp;
-        public string Username;
-        public string Key;
 
-        public LinuxVXLANInterface(string username, string key, string name, string vNI, string dstPort, string dstIP, string managementIp)
+        public LinuxVXLANInterface(string name, string vNI, string dstPort, string dstIP)
         {
             _logger = LoggerFactory.Create(logging => logging.AddConsole()).CreateLogger<ILinuxVXLANInterface>();
             Name = name;
             VNI = vNI;
             DstPort = dstPort;
             DstIP = dstIP;
-            ManagementIp = managementIp;
-            Username = username;
-            Key = key;
         }
 
-        public void CleanUpInterface()
+        /// <summary>
+        /// Method deletes the VXLAN interface(towards Open Virtual Switch) from target device.
+        /// </summary>
+        /// <param name="username">username to access the target device</param>
+        /// <param name="key">GUID of the machine which was used for naming the private key for this targetdevice</param>
+        /// <param name="managementIp">Management ip ov the target device</param>
+        public void CleanUpInterface(string username, string key, string managementIp)
         {
 
-            ConnectionInfo sSHConnectionInfo = new(ManagementIp, Username, new AuthenticationMethod[]{
-             new PrivateKeyAuthenticationMethod(Username, new PrivateKeyFile[]{
-                    new PrivateKeyFile(KeyKeeper.GetInstance().GetKeyLocation(Key))
+            ConnectionInfo sSHConnectionInfo = new(managementIp, username, new AuthenticationMethod[]{
+             new PrivateKeyAuthenticationMethod(username, new PrivateKeyFile[]{
+                    new PrivateKeyFile(KeyKeeper.GetInstance().GetKeyLocation(key))
                 }),
             });
 
@@ -52,12 +55,18 @@ namespace OverlayManagementService.Network
             sshclient.Disconnect();
         }
 
-        public void DeployInterface(string vxlanIp)
+        /// <summary>
+        /// Method deploys the VXLAN interface(towards Open Virtual Switch) to a target device.
+        /// </summary>
+        /// <param name="username">username to access the target device</param>
+        /// <param name="key">GUID of the machine which was used for naming the private key for this targetdevice</param>
+        /// <param name="managementIp">Management ip ov the target device</param>
+        public void DeployInterface(string username, string key, string managementIp, string vxlanIp)
         {
 
-            ConnectionInfo sSHConnectionInfo = new(ManagementIp, Username, new AuthenticationMethod[]{
-             new PrivateKeyAuthenticationMethod(Username, new PrivateKeyFile[]{
-                    new PrivateKeyFile(KeyKeeper.GetInstance().GetKeyLocation(Key))
+            ConnectionInfo sSHConnectionInfo = new(managementIp, username, new AuthenticationMethod[]{
+             new PrivateKeyAuthenticationMethod(username, new PrivateKeyFile[]{
+                    new PrivateKeyFile(KeyKeeper.GetInstance().GetKeyLocation(key))
                 }),
             });
 

@@ -12,6 +12,10 @@ using System.Threading.Tasks;
 
 namespace OverlayManagementService.Repositories
 {
+
+    /// <summary>
+    /// Class encapsulates the logic reguired to persist Network objects.
+    /// </summary>
     public class NetworkRepository : INetworkRepository
     {
 
@@ -27,6 +31,10 @@ namespace OverlayManagementService.Repositories
             _dbMock = (IDictionary<string, IOverlayNetwork>)JsonConvert.DeserializeObject<Dictionary<string, IOverlayNetwork>>(File.ReadAllText(_backupPath), _jsonSerializerSettings);
         }
 
+        /// <summary>
+        /// Method allows to remove the Network object from in memory database for the specific group id.
+        /// </summary>
+        /// <param name="groupId">Id of Azure Active Derictory group for which Network was deployed</param>
         public void DeleteOverlayNetwork(string groupId)
         {
             _logger.LogInformation("Removing network with id: " + groupId + " from database");
@@ -34,11 +42,19 @@ namespace OverlayManagementService.Repositories
             File.WriteAllText(_backupPath, JsonConvert.SerializeObject(_dbMock, _jsonSerializerSettings));
         }
 
+        /// <summary>
+        /// Method allows to get the Network object from in memory database for the specific group id.
+        /// </summary>
+        /// <param name="groupId">Id of Azure Active Derictory group for which Network was deployed</param>
         public IOverlayNetwork GetOverlayNetwork(string groupId)
         {
             return _dbMock[groupId];
         }
 
+        /// <summary>
+        /// Method allows to save the Network object to in memory database for the specific group id.
+        /// </summary>
+        /// <param name="overlayNetwork">OverlayNetwork object</param>
         public IOverlayNetwork SaveOverlayNetwork(IOverlayNetwork overlayNetwork)
         {
             if (_dbMock.ContainsKey(overlayNetwork.GroupId))
@@ -55,6 +71,10 @@ namespace OverlayManagementService.Repositories
             return overlayNetwork;
         }
 
+        /// <summary>
+        /// Method allows to update exiing Network object in in memory database for the specific group id.
+        /// </summary>
+        /// <param name="groupId">Id of Azure Active Derictory group for which Network was deployed</param>
         public IOverlayNetwork UpdateOverlayNetwork(IOverlayNetwork overlayNetwork)
         {
             _logger.LogInformation("Updating the state of network in database");
@@ -63,11 +83,19 @@ namespace OverlayManagementService.Repositories
             return overlayNetwork;
         }
 
+        /// <summary>
+        /// Method allows to get all deployed Network objects from in memory database.
+        /// </summary>
+        /// <returns>Dictionary with maping Azure AD group to Overlay Network</returns>
         public IDictionary<string, IOverlayNetwork> GetAllNetworks()
         {
             return _dbMock;
         }
 
+        /// <summary>
+        /// Method allows to get the Network object from in memory database with specific VNI.
+        /// </summary>
+        /// <param name="vni">VNI of the network</param>
         public IOverlayNetwork GetOverlayNetworkByVni(string vni)
         {
             foreach (KeyValuePair<string, IOverlayNetwork> keyValuePair in _dbMock)
@@ -79,6 +107,10 @@ namespace OverlayManagementService.Repositories
             throw new KeyNotFoundException();
         }
 
+        /// <summary>
+        /// Method allows to get the Network object from in memory database for the specific group claim.
+        /// </summary>
+        /// <param name="claim">claim from the access token</param>
         public IOverlayNetwork GetOverlayNetwork(Claim claim)
         {
             if (_dbMock.ContainsKey(claim.Value))
