@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OverlayManagementClient.Models
 {
-    public class VirtualMachine
+    public class TargetDevice
     {
         public Guid Guid { get; set; }
         public string VNI { get; set; }

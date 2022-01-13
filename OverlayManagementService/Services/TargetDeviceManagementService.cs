@@ -51,7 +51,7 @@ namespace OverlayManagementService.Services
         }
 
         /// <summary>
-        /// Method that that triggers all events that are required to deploy the target device.
+        /// Method that triggers all events that are required to deploy the target device.
         /// </summary>
         /// <param name="vmConnection">VmConnection DTO that holds all necessary data for device deployment</param>
         /// <returns>OverlayNetwork object</returns>

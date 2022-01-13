@@ -4,6 +4,8 @@
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>aspnet-OverlayManagementClient-83566DCC-0198-40FB-B3B5-E83ECB0B590F</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	  <!--<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	  <DocumentationFile>C:/Projects/vxlan-management-service/documentation/OMC-documentation.xml</DocumentationFile>-->
   </PropertyGroup>
 
   <ItemGroup>

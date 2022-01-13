@@ -134,7 +134,7 @@
         </div>
         <br>
         <div class="collapse" id="targetVM">
-            @if (Model.VirtualMachines.Count() == 0)
+            @if (Model.TargetDevices.Count() == 0)
             {
                 <div id="target" class=" card card-body">
                     <p>No target machines paired.</p>
@@ -143,7 +143,7 @@
             else
             {
         <div class=" card card-body">
-            @foreach (var targetMachine in Model.VirtualMachines)
+            @foreach (var targetMachine in Model.TargetDevices)
             {
             <form method="post">
                 <div class="border border-1 p-3">

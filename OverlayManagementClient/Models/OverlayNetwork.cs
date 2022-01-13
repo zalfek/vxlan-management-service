@@ -8,8 +8,7 @@ namespace OverlayManagementClient.Models
         public string VNI { get; set; }
         public string GroupId { get; set; }
         public OpenVirtualSwitch OpenVirtualSwitch { get; set; }
-        public List<VirtualMachine> VirtualMachines { get; set; }
+        public List<TargetDevice> TargetDevices { get; set; }
         public List<Student> Clients { get; set; }
-        public bool IsDeployed { get; set; }
     }
 }

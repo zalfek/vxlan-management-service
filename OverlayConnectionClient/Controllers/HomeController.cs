@@ -31,7 +31,7 @@ namespace OverlayConnectionClient.Controllers
         }
 
         /// <summary>
-        /// Endpoing accessing homepage.
+        /// Endpoing to access homepage.
         /// </summary>
         public IActionResult Index()
         {

@@ -18,12 +18,14 @@ namespace OverlayManagementClient.Repositories
     {
         public static void AddMachineRepository(this IServiceCollection services)
         {
-            services.AddHttpClient<IMachineRepository, DeviceRepository>();
+            services.AddHttpClient<IDeviceRepository, DeviceRepository>();
         }
     }
 
-
-    public class DeviceRepository : IMachineRepository
+    /// <summary>
+    /// Class encapsulates logic for target device related communication with API.
+    /// </summary>
+    public class DeviceRepository : IDeviceRepository
     {
         private readonly HttpClient _httpClient;
         private readonly string _Scope = string.Empty;
@@ -46,7 +48,11 @@ namespace OverlayManagementClient.Repositories
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public async void AddMachineAsync(VmConnection vmConnection)
+        /// <summary>
+        /// Method allows to deploy a device to the network by calling OverlayManagementService API.
+        /// </summary>
+        /// <param name="vmConnection">VmConnection DTO containing all neceserry data from device deployment</param>
+        public async void AddDeviceAsync(VmConnection vmConnection)
         {
             await PrepareAuthenticatedClient();
 
@@ -71,12 +77,16 @@ namespace OverlayManagementClient.Repositories
                 throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
             }
         }
-
-        public async void RemoveMachineAsync(string groupid, Guid guid)
+        /// <summary>
+        /// Method allows to remove target device from network by calling OverlayManagementService API.
+        /// </summary>
+        /// <param name="groupId">Id of Azure Active Derictory group for which Network was deployed</param>
+        /// <param name="guid">guid of the device to be removed from network</param>
+        public async void RemoveDeviceAsync(string groupId, Guid guid)
         {
             await PrepareAuthenticatedClient();
 
-            var response = await this._httpClient.GetAsync($"{ _BaseAddress}/device/suspend?groupid={groupid}&guid={guid}");
+            var response = await this._httpClient.GetAsync($"{ _BaseAddress}/device/suspend?groupid={groupId}&guid={guid}");
 
             if (response.StatusCode != HttpStatusCode.OK)
             {

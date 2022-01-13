@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OverlayConnectionClient</name>
+    </assembly>
+    <members>
+        <member name="T:OverlayConnectionClient.Controllers.HomeController">
+            <summary>
+            This Controller provides endpoints for users to manage their connections.
+            </summary>
+        </member>
+        <member name="M:OverlayConnectionClient.Controllers.HomeController.#ctor(Microsoft.Extensions.Logging.ILogger{OverlayConnectionClient.Controllers.HomeController},OverlayConnectionClient.Services.IVXLANConnectionService)">
+            <summary>
+            Constructor for HomeController.
+            </summary>
+            <param name="logger">logger</param>
+            <param name="vXLANConnectionService">VXLAN Connection Service service object</param>
+            <returns>new HomeController object</returns>
+        </member>
+        <member name="M:OverlayConnectionClient.Controllers.HomeController.Index">
+            <summary>
+            Endpoing to access homepage.
+            </summary>
+        </member>
+        <member name="M:OverlayConnectionClient.Controllers.HomeController.CreateConnection(System.String)">
+            <summary>
+            Endpoint that allows to trigger the tunnel setup for client.
+            </summary>
+            <param name="groupId">Group id to witch network is assigned</param>
+        </member>
+        <member name="M:OverlayConnectionClient.Controllers.HomeController.Disconnect(System.String)">
+            <summary>
+            Endpoint that allows to suspend the client side tunnel.
+            </summary>
+            <param name="groupId">Group id to which network is assigned</param>
+        </member>
+        <member name="T:OverlayConnectionClient.Repositories.InterfaceRepository">
+            <summary>
+            Class encapsulates the logic reguired to store interface objects in in-memory database.
+            </summary>
+        </member>
+        <member name="M:OverlayConnectionClient.Repositories.InterfaceRepository.#ctor">
+            <summary>
+            Constructior for InterfaceRepository
+            </summary>
+        </member>
+        <member name="M:OverlayConnectionClient.Repositories.InterfaceRepository.DeleteInterface(System.String)">
+            <summary>
+            Method allows to remove the interface object from in memory database for the specific group id.
+            </summary>
+            <param name="groupId">Id of Azure Active Derictory group for which Network was deployed</param>
+        </member>
+        <member name="M:OverlayConnectionClient.Repositories.InterfaceRepository.GetVXLANInterface(System.String)">
+            <summary>
+            Method allows to get the VXLAN Interface object from in memory database for the specific group id.
+            </summary>
+            <param name="groupId">Id of Azure Active Derictory group for which Network was deployed</param>
+        </member>
+        <member name="M:OverlayConnectionClient.Repositories.InterfaceRepository.SaveInterface(System.String,OverlayConnectionClient.Network.ILinuxVXLANInterface)">
+            <summary>
+            Method allows to save the interface object to in memory database for the specific group id.
+            </summary>
+            <param name="linuxVXLANInterface">LinuxVXLANInterface object</param>
+            <param name="groupId">Id of Azure Active Derictory group for which Network was deployed</param>
+        </member>
+        <member name="M:OverlayConnectionClient.Repositories.InterfaceRepository.GetAllInterfaces">
+            <summary>
+            Method allows to get all deployed Interface objects from in memory database.
+            </summary>
+            <returns>Dictionary with maping Azure AD group to Linux VXLAN Interface</returns>
+        </member>
+        <member name="M:OverlayConnectionClient.Repositories.NetworkRepository.GetNetworksAsync">
+            <summary>
+            Method allows to get all deployed Networks from the OverlayManagementService API.
+            </summary>
+            <returns>IEnumerable with OverlayNetwork DTO's</returns>
+        </member>
+        <member name="M:OverlayConnectionClient.Repositories.NetworkRepository.GetNetworkAsync(System.String)">
+            <summary>
+            Method allows to get a Network assigned to a specific group id.
+            This request will also trigger deployment of the vxlan interface on Open Virtual Switch towards client
+            </summary>
+            <param name="groupId">Id of Azure Active Derictory group for which Network was deployed</param>
+            <returns>OverlayNetwork DTO as Task result</returns>
+        </member>
+        <member name="M:OverlayConnectionClient.Repositories.NetworkRepository.RemoveClientAsync(System.String)">
+            <summary>
+            Method allows to suspend connection to a Network with a specific group id.
+            </summary>
+            <param name="groupId">Id of Azure Active Derictory group for which Network was deployed</param>
+        </member>
+        <member name="T:OverlayConnectionClient.Services.ClientsRemovalService">
+            <summary>
+            This Service is running in background and removes all vxlan interfaces at midnight.
+            </summary>
+        </member>
+        <member name="M:OverlayConnectionClient.Services.ClientsRemovalService.#ctor(Microsoft.Extensions.Logging.ILogger{OverlayConnectionClient.Services.ClientsRemovalService},OverlayConnectionClient.Repositories.IInterfaceRepository)">
+            <summary>
+            Constructor for ClientsRemovalService.
+            </summary>
+            <param name="logger">logger</param>
+            <param name="jsonRepository">Json file repository object</param>
+            <returns>new ClientsRemovalService object</returns>
+        </member>
+        <member name="M:OverlayConnectionClient.Services.ClientsRemovalService.StartAsync(System.Threading.CancellationToken)">
+            <summary>
+            Method that sets the timer for periodic removal of client connections.
+            </summary>
+            <param name="stoppingToken">Cancellation Token</param>
+            <returns>Task execution result</returns>
+        </member>
+        <member name="T:OverlayConnectionClient.Services.VXLANConnectionService">
+            <summary>
+            Service class(Facade) which acts as interface for all Network connection related operations.
+            </summary>
+        </member>
+        <member name="M:OverlayConnectionClient.Services.VXLANConnectionService.#ctor(Microsoft.Extensions.Logging.ILogger{OverlayConnectionClient.Services.VXLANConnectionService},OverlayConnectionClient.Repositories.INetworkRepository,OverlayConnectionClient.Repositories.IInterfaceRepository,OverlayConnectionClient.Factories.ILinuxVxlanInterfaceFactory)">
+            <summary>
+            Constructor for OverlayNetworkConnectionService.
+            </summary>
+            <param name="logger">logger</param>
+            <param name="networkRepository">Network repository object</param>
+            <param name="linuxVxlanInterfaceFactory">Factory object which will be responsible for creation of VXLAN Interfaces</param>
+            <param name="interfaceRepository">Interface repository object</param>
+            <returns>new OverlayNetworkConnectionService object</returns>
+        </member>
+        <member name="M:OverlayConnectionClient.Services.VXLANConnectionService.CreateConnection(System.String)">
+            <summary>
+            Method that initiates client side connection deployment.
+            </summary>
+            <param name="groupId">Group id to which network is assigned</param>
+        </member>
+        <member name="M:OverlayConnectionClient.Services.VXLANConnectionService.CleanUpConnection(System.String)">
+            <summary>
+            Method initiates cleanup of the client side connection.
+            </summary>
+            <param name="groupId">Group id to which network is assigned</param>
+        </member>
+        <member name="M:OverlayConnectionClient.Services.VXLANConnectionService.GetAllNetworks">
+            <summary>
+            Method that queries for assigned networks.
+            </summary>
+            <returns>IEnumerable of OverlayNetwork objects</returns>
+        </member>
+    </members>
+</doc>
