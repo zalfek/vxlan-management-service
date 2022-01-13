@@ -21,6 +21,10 @@ namespace OverlayManagementClient.Repositories
             services.AddHttpClient<ISwitchRepository, SwitchRepository>();
         }
     }
+
+    /// <summary>
+    /// Class encapsulates logic for switch related communication with API.
+    /// </summary>
     public class SwitchRepository : ISwitchRepository
     {
 
@@ -45,6 +49,10 @@ namespace OverlayManagementClient.Repositories
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
+        /// <summary>
+        /// Method allows to get all registered switches from the OverlayManagementService API.
+        /// </summary>
+        /// <returns>IEnumerable with OpenVirtualSwitch DTO's</returns>
         public async Task<IEnumerable<OpenVirtualSwitch>> GetSwitchesAsync()
         {
             await PrepareAuthenticatedClient();
@@ -60,6 +68,11 @@ namespace OverlayManagementClient.Repositories
             throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
         }
 
+        /// <summary>
+        /// Method allows to get a switch with a specific prefix from the OverlayManagementService API.
+        /// </summary>
+        /// <param name="key">Open Virtual Switch prefix</param>
+        /// <returns>OpenVirtualSwitch as Task result</returns>
         public async Task<OpenVirtualSwitch> GetSwitchAsync(string key)
         {
             await PrepareAuthenticatedClient();
@@ -75,6 +88,10 @@ namespace OverlayManagementClient.Repositories
             throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
         }
 
+        /// <summary>
+        /// Method allows toregister a switch by calling OverlayManagementService API.
+        /// </summary>
+        /// <param name="ovsRegistration">OvsRegistration DTO containing all neceserry data from switch registration</param>
         public async void AddSwitchAsync(OvsRegistration ovsRegistration)
         {
 
@@ -102,7 +119,10 @@ namespace OverlayManagementClient.Repositories
             }
         }
 
-
+        /// <summary>
+        /// Method allows to clean up the switch by calling OverlayManagementService API.
+        /// </summary>
+        /// <param name="key">Open Virtual Switch prefix</param>
         public async Task DeleteSwitchAsync(string key)
         {
             await PrepareAuthenticatedClient();

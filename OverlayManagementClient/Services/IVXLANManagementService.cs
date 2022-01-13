@@ -1,8 +1,6 @@
 ﻿using OverlayManagementClient.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace OverlayManagementClient.Services
 {
@@ -16,8 +14,8 @@ namespace OverlayManagementClient.Services
         public IEnumerable<OpenVirtualSwitch> GetSwitches();
         public OpenVirtualSwitch GetSwitch(string key);
         public void AddSwitch(OvsRegistration ovsRegistration);
-        public void AddMachine(VmConnection vmConnection);
-        public void RemoveMachine(string groupid, Guid guid);
+        public void AddTargetDevice(VmConnection vmConnection);
+        public void RemoveTargetDevice(string groupid, Guid guid);
         public void DeleteSwitch(string key);
     }
 }

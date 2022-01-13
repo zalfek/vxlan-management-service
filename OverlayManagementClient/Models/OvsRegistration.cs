@@ -1,17 +1,20 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+
 
 namespace OverlayManagementClient.Models
 {
     public class OvsRegistration
     {
+        [Required]
         public string PrivateIP { get; set; }
+        [Required]
         public string PublicIP { get; set; }
+        [Required]
         public string Key { get; set; }
+        [Required]
         public string ManagementIp { get; set; }
+        [Required]
         public IFormFile KeyFile { get; set; }
 
     }

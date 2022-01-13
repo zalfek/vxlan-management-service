@@ -440,7 +440,7 @@
             <summary>
             Method allows to update exiing Network object in in memory database for the specific group id.
             </summary>
-            <param name="groupId">Id of Azure Active Derictory group for which Network was deployed</param>
+            <param name="overlayNetwork">OverlayNetwork object</param>
         </member>
         <member name="M:OverlayManagementService.Repositories.NetworkRepository.GetAllNetworks">
             <summary>
@@ -700,7 +700,7 @@
         </member>
         <member name="M:OverlayManagementService.Services.TargetDeviceManagementService.RegisterMachine(OverlayManagementService.Dtos.VmConnection)">
             <summary>
-            Method that that triggers all events that are required to deploy the target device.
+            Method that triggers all events that are required to deploy the target device.
             </summary>
             <param name="vmConnection">VmConnection DTO that holds all necessary data for device deployment</param>
             <returns>OverlayNetwork object</returns>

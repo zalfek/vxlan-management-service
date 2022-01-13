@@ -24,6 +24,9 @@ namespace OverlayManagementClient.Repositories
         }
     }
 
+    /// <summary>
+    /// Class encapsulates logic for overlay network related communication with API.
+    /// </summary>
     public class NetworkRepository : INetworkRepository
     {
 
@@ -40,6 +43,11 @@ namespace OverlayManagementClient.Repositories
             _BaseAddress = configuration["OverlayManagementService:OverlayManagementServiceBaseAddress"];
         }
 
+        /// <summary>
+        /// Method allows to deploy a network by calling OverlayManagementService API.
+        /// </summary>
+        /// <param name="oVSConnection">OVSConnection DTO containing all neceserry data from network deployment</param>
+        /// <returns>OverlayNetwork as Task result</returns>
         public async Task<OverlayNetwork> AddNetworkAsync(OVSConnection oVSConnection)
         {
             await PrepareAuthenticatedClient();
@@ -59,6 +67,10 @@ namespace OverlayManagementClient.Repositories
             throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
         }
 
+        /// <summary>
+        /// Method allows to suspend network by calling OverlayManagementService API.
+        /// </summary>
+        /// <param name="groupId">Id of Azure Active Derictory group for which Network was deployed</param>
         public async Task DeleteNetworkAsync(string groupId)
         {
             await PrepareAuthenticatedClient();
@@ -73,6 +85,11 @@ namespace OverlayManagementClient.Repositories
             throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
         }
 
+        /// <summary>
+        /// Method allows to Update already deployed network by calling OverlayManagementService API.
+        /// </summary>
+        /// <param name="overlayNetwork">Updated OverlayNetwork object</param>
+        /// <returns>OverlayNetwork as Task result</returns>
         public async Task<OverlayNetwork> EditNetworkAsync(OverlayNetwork overlayNetwork)
         {
             await PrepareAuthenticatedClient();
@@ -92,6 +109,10 @@ namespace OverlayManagementClient.Repositories
             throw new HttpRequestException($"Invalid status code in the HttpResponseMessage: {response.StatusCode}.");
         }
 
+        /// <summary>
+        /// Method allows to get all deployed Networks from the OverlayManagementService API.
+        /// </summary>
+        /// <returns>IEnumerable with OverlayNetwork DTO's</returns>
         public async Task<IEnumerable<OverlayNetwork>> GetNetworksAsync()
         {
             await PrepareAuthenticatedClient();
@@ -115,6 +136,11 @@ namespace OverlayManagementClient.Repositories
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
+        /// <summary>
+        /// Method allows to get a Network with a specific vni from the OverlayManagementService API.
+        /// </summary>
+        /// <param name="vni">Virtual Network Identifier</param>
+        /// <returns>OverlayNetwork as Task result</returns>
         public async Task<OverlayNetwork> GetNetworkAsync(string vni)
         {
             await PrepareAuthenticatedClient();
