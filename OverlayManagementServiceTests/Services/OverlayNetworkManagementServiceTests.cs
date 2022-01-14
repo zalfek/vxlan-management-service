@@ -69,7 +69,7 @@ namespace OverlayManagementService.Services.Tests
                 GroupId = "1"
             };
 
-            _vniMock.Setup(v => v.GenerateUniqueVNI()).Returns(It.IsAny<string>());
+            _vniMock.Setup(v => v.ReserveVNI()).Returns(It.IsAny<string>());
             _networkFactoryMock.Setup(n => n.CreateOverlayNetwork(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IOpenVirtualSwitch>(), It.IsAny<IAddress>())).Returns(_overlayNetworkMock.Object);
             _bridgeFactoryMock.Setup(n => n.CreateBridge(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(_bridgeMock.Object);
             _networkRepositorMock.Setup(x => x.SaveOverlayNetwork(It.IsAny<IOverlayNetwork>())).Returns(_overlayNetworkMock.Object);

@@ -72,6 +72,7 @@ namespace OverlayManagementService.Services
             IOverlayNetwork overlayNetwork = _networkRepository.GetOverlayNetwork(groupId);
             _logger.LogInformation("Initiating network Clean up");
             overlayNetwork.CleanUpNetwork();
+            _vniResolver.ReleaseVNI(overlayNetwork.Vni);
             _logger.LogInformation("Deleting network from repository");
             _networkRepository.DeleteOverlayNetwork(groupId);
         }
@@ -85,7 +86,7 @@ namespace OverlayManagementService.Services
         {
             _logger.LogInformation("Searching for switch with key: " + oVSConnection.Key + " in switch repository");
             IOpenVirtualSwitch openVirtualSwitch = _switchRepository.GetSwitch(oVSConnection.Key);
-            string vni = _vniResolver.GenerateUniqueVNI();
+            string vni = _vniResolver.ReserveVNI();
             _logger.LogInformation("New VNI generated: " + vni);
             _logger.LogInformation("Adding new bridge to OVS");
             openVirtualSwitch.AddBridge(

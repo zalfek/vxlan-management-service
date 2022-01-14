@@ -12,8 +12,8 @@ namespace OverlayManagementService.Network
     public class IPAddress : IAddress
     {
         private readonly ILogger<IPAddress> _logger;
-        private static List<string> IPs;
-        private static List<int> LastIPV4;
+        private List<string> IPs;
+        private List<int> LastIPV4;
 
         public IPAddress()
         {
