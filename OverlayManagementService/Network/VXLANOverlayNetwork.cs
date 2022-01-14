@@ -1,7 +1,4 @@
-using Newtonsoft.Json;
-using OverlayManagementService.Dtos;
 using OverlayManagementService.Models;
-using OverlayManagementService.Network;
 using System;
 using System.Collections.Generic;
 
@@ -60,7 +57,8 @@ namespace OverlayManagementService.Network
         /// </summary>
         public void CleanUpNetwork()
         {
-            TargetDevices.ForEach(vm => { 
+            TargetDevices.ForEach(vm =>
+            {
                 vm.CleanUpVMConnection();
                 OpenVirtualSwitch.RemoveTargetConnection(vm);
             });
@@ -83,7 +81,8 @@ namespace OverlayManagementService.Network
         {
             for (int i = Clients.Count - 1; i > -1; --i)
             {
-                if (Clients[i].IpAddress == client.IpAddress) { 
+                if (Clients[i].IpAddress == client.IpAddress)
+                {
                     Clients.RemoveAt(i);
                 }
             }

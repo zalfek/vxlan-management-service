@@ -1,9 +1,7 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,11 +11,7 @@ using Microsoft.Identity.Web.UI;
 using OverlayConnectionClient.Factories;
 using OverlayConnectionClient.Repositories;
 using OverlayConnectionClient.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace OverlayConnectionClient
 {
@@ -54,9 +48,12 @@ namespace OverlayConnectionClient
             services.AddScoped<INetworkRepository, NetworkRepository>();
             services.AddScoped<ILinuxVxlanInterfaceFactory, LinuxVxlanInterfaceFactory>();
             services.AddSingleton<IInterfaceRepository, InterfaceRepository>();
-            services.AddHttpClient<INetworkRepository, NetworkRepository>().ConfigurePrimaryHttpMessageHandler(() => {
-                var handler = new HttpClientHandler();
-                handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+            services.AddHttpClient<INetworkRepository, NetworkRepository>().ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var handler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                };
                 return handler;
             });
         }

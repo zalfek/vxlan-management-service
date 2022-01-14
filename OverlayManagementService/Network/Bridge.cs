@@ -1,18 +1,15 @@
-﻿
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using OverlayManagementService.Factories;
 using OverlayManagementService.Services;
 using Renci.SshNet;
-using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace OverlayManagementService.Network
 {
     /// <summary>
     /// Class which encapsulates Open Virtual Switch functionality. Each VNI has a separate Bridge
     /// </summary>
-    public class Bridge: IBridge
+    public class Bridge : IBridge
     {
         private readonly ILogger<IBridge> _logger;
         private readonly IVxlanInterfaceFactory _vxlanInterfaceFactory;
@@ -42,7 +39,7 @@ namespace OverlayManagementService.Network
         public void DeployVXLANInterface(string destIp)
         {
             _logger.LogInformation("Creating new vxlan interface");
-               IVXLANInterface vXLANInterface = _vxlanInterfaceFactory.CreateInterface(destIp, Vni, Name);
+            IVXLANInterface vXLANInterface = _vxlanInterfaceFactory.CreateInterface(destIp, Vni, Name);
             _logger.LogInformation("Deploying vxlan interface");
             vXLANInterface.DeployVXLANInterface(Username, Key, ManagementIp);
             VXLANInterfaces.Add(vXLANInterface);

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
 using Newtonsoft.Json;
@@ -39,7 +37,7 @@ namespace OverlayConnectionClient.Repositories
         {
             await PrepareAuthenticatedClient();
             var request = $"{ _BaseAddress}/connection/list/networks";
-            _logger.LogInformation("Sending request to API: " +request);
+            _logger.LogInformation("Sending request to API: " + request);
             var response = await _httpClient.GetAsync(request);
             if (response.StatusCode == HttpStatusCode.OK)
             {

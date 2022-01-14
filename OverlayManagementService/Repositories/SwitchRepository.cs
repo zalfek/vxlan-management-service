@@ -5,9 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace OverlayManagementService.Repositories
 {
@@ -26,7 +24,7 @@ namespace OverlayManagementService.Repositories
             _logger = new LoggerFactory().CreateLogger<ISwitchRepository>();
             _backupPath = Path.Combine(AppContext.BaseDirectory, "Resources", "SwitchData.json");
             _jsonSerializerSettings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
-            _dbMock =JsonConvert.DeserializeObject<ConcurrentDictionary<string, IOpenVirtualSwitch>>(File.ReadAllText(_backupPath), _jsonSerializerSettings);
+            _dbMock = JsonConvert.DeserializeObject<ConcurrentDictionary<string, IOpenVirtualSwitch>>(File.ReadAllText(_backupPath), _jsonSerializerSettings);
         }
 
         /// <summary>

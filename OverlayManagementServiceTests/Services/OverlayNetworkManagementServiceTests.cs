@@ -1,5 +1,4 @@
-﻿using OverlayManagementService.Services;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -7,7 +6,6 @@ using OverlayManagementService.Dtos;
 using OverlayManagementService.Factories;
 using OverlayManagementService.Network;
 using OverlayManagementService.Repositories;
-using System;
 using System.Collections.Generic;
 
 namespace OverlayManagementService.Services.Tests

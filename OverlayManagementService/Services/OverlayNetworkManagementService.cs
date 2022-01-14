@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using OverlayManagementService.Dtos;
 using OverlayManagementService.Factories;
 using OverlayManagementService.Network;
 using OverlayManagementService.Repositories;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.Configuration;
 
 namespace OverlayManagementService.Services
 {
@@ -108,7 +108,8 @@ namespace OverlayManagementService.Services
             _networkRepository.SaveOverlayNetwork(overlayNetwork);
             _logger.LogInformation("Initiating network deployment");
             overlayNetwork.DeployNetwork();
-            if (oVSConnection.VmConnection != null) {
+            if (oVSConnection.VmConnection != null)
+            {
                 _logger.LogInformation("Registering new device in the network");
                 _targetDeviceManagementService.RegisterMachine(oVSConnection.VmConnection);
             }

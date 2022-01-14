@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.NetworkInformation;
+﻿using System.Net.NetworkInformation;
 
 namespace OverlayConnectionClient.Models
 {
@@ -17,9 +16,9 @@ namespace OverlayConnectionClient.Models
             NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
             foreach (NetworkInterface adapter in adapters)
             {
-                if(adapter.Name == "vxlan" + VNI) { return true; }
+                if (adapter.Name == "vxlan" + VNI) { return true; }
             }
-                return false;
+            return false;
         }
 
     }

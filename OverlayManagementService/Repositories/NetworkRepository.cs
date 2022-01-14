@@ -1,16 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using OverlayManagementService.Dtos;
 using OverlayManagementService.Network;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OverlayManagementService.Repositories
 {
@@ -111,8 +107,9 @@ namespace OverlayManagementService.Repositories
         {
             foreach (KeyValuePair<string, IOverlayNetwork> keyValuePair in _dbMock)
             {
-                if (keyValuePair.Value.Vni == vni) { 
-                    return keyValuePair.Value; 
+                if (keyValuePair.Value.Vni == vni)
+                {
+                    return keyValuePair.Value;
                 }
             }
             throw new KeyNotFoundException();
@@ -134,7 +131,8 @@ namespace OverlayManagementService.Repositories
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        private void DoBackup() {
+        private void DoBackup()
+        {
             File.WriteAllText(_backupPath, JsonConvert.SerializeObject(_dbMock, _jsonSerializerSettings));
         }
 

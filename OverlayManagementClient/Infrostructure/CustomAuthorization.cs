@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
 using OverlayManagementClient.Services;
+using System.Threading.Tasks;
 
 namespace OverlayManagementClient.Infrastructure
 {

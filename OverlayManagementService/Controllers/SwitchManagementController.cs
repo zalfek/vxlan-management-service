@@ -2,13 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web.Resource;
-using Microsoft.Net.Http.Headers;
 using OverlayManagementService.Dtos;
 using OverlayManagementService.Network;
 using OverlayManagementService.Services;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace OverlayManagementService.Controllers
 {
@@ -76,7 +73,7 @@ namespace OverlayManagementService.Controllers
             return _switchManagementService.GetAllSwitches();
         }
 
-         /// <summary>
+        /// <summary>
         /// Endpoint that allows to delete the switch. 
         /// </summary>
         /// <param name="key">Key that that identifies the switch f.e thu</param>

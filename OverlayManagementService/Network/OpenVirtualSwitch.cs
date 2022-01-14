@@ -26,13 +26,14 @@ namespace OverlayManagementService.Network
             PublicIP = publicIp;
             Bridges = new Dictionary<string, IBridge>();
             ManagementIp = managementIp;
-    }
+        }
 
         /// <summary>
         /// Method allows to add a new Bridge to a list of bridges in OVS.
         /// </summary>
         /// <param name="bridge">Bridge object</param>
-        public void AddBridge(IBridge bridge) {
+        public void AddBridge(IBridge bridge)
+        {
             Bridges.Add(bridge.Vni, bridge);
         }
 

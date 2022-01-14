@@ -1,15 +1,10 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using OverlayManagementService.Dtos;
 using OverlayManagementService.Factories;
 using OverlayManagementService.Network;
 using OverlayManagementService.Repositories;
-using Renci.SshNet;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 
 namespace OverlayManagementService.Services
 {
@@ -84,13 +79,14 @@ namespace OverlayManagementService.Services
         {
             foreach (var network in _networkRepository.GetAllNetworks().Values.ToArray())
             {
-                if(network.OpenVirtualSwitch.Key == key) {
+                if (network.OpenVirtualSwitch.Key == key)
+                {
                     _logger.LogInformation("Initiating network Clean up");
                     network.CleanUpNetwork();
                     _logger.LogInformation("Deleting network from repository");
                     _networkRepository.DeleteOverlayNetwork(network.GroupId);
                 }
-            } 
+            }
             _logger.LogInformation("Removing switch from repository");
             _switchRepository.DeleteSwitch(key);
             _logger.LogInformation("Removing Firewalll from repository");

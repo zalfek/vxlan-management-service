@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using OverlayManagementClient.Models;
+﻿using OverlayManagementClient.Models;
 using OverlayManagementClient.Repositories;
+using System;
+using System.Collections.Generic;
 
 namespace OverlayManagementClient.Services
 {
@@ -71,7 +71,7 @@ namespace OverlayManagementClient.Services
         /// Method invokes network update up by triggering an API call on Network Repository.
         /// </summary>
         /// <param name="overlayNetwork">Updated OverlayNetwork object </param>
-         /// <returns>OverlayNetwork object</returns>
+        /// <returns>OverlayNetwork object</returns>
         public OverlayNetwork EditNetwork(OverlayNetwork overlayNetwork)
         {
             return _networkRepository.EditNetworkAsync(overlayNetwork).Result;
