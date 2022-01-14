@@ -1,19 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
-using OverlayManagementService.Network;
 using OverlayManagementService.Dtos;
-using System;
+using OverlayManagementService.Models;
+using OverlayManagementService.Services;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
-using OverlayManagementService.Services;
-using Microsoft.Identity.Web;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
-using OverlayManagementService.Models;
 
 namespace OverlayManagementService.Controllers
 {
@@ -71,9 +67,9 @@ namespace OverlayManagementService.Controllers
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
             Student user = new()
-            { 
-            Name = HttpContext.User.GetDisplayName(),
-            IpAddress = "192.168.40.4" //_accessor.HttpContext?.Connection?.RemoteIpAddress?.MapToIPv4().ToString()
+            {
+                Name = HttpContext.User.GetDisplayName(),
+                IpAddress = "192.168.40.4" //_accessor.HttpContext?.Connection?.RemoteIpAddress?.MapToIPv4().ToString()
             };
             _logger.LogInformation("Processing GET request: " + HttpContext.Request.Path);
             return _vmOverlayConnectionService.CreateConnection(groupId, user);

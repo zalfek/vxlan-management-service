@@ -1,11 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using OverlayManagementService.Services;
 using Renci.SshNet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace OverlayManagementService.Network
 {
@@ -13,7 +8,7 @@ namespace OverlayManagementService.Network
     /// <summary>
     /// Class which encapsulates VXLAN interface deployment and cleanup functionality on Open Virtual Switch.
     /// </summary>
-    public class VXLANInterface : IVXLANInterface                                                                                                   
+    public class VXLANInterface : IVXLANInterface
     {
         public string Name { get; set; }
         public string BridgeName { get; set; }

@@ -4,7 +4,6 @@ using OverlayManagementService.Network;
 using OverlayManagementService.Repositories;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -45,8 +44,8 @@ namespace OverlayManagementService.Services
         {
             _logger.LogInformation("Timed Hosted Service running.");
             int hourSpan = 24 - DateTime.Now.Hour;
-            _timer = new Timer(RemoveClientConnection, null, TimeSpan.Zero,
-                TimeSpan.FromHours(hourSpan));
+            _timer = new Timer(RemoveClientConnection, null, TimeSpan.FromHours(hourSpan),
+                TimeSpan.FromHours(24));
             return Task.CompletedTask;
         }
 

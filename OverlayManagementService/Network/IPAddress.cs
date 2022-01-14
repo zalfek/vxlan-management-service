@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace OverlayManagementService.Network
 {
@@ -12,8 +10,8 @@ namespace OverlayManagementService.Network
     public class IPAddress : IAddress
     {
         private readonly ILogger<IPAddress> _logger;
-        private static List<string> IPs;
-        private static List<int> LastIPV4;
+        private List<string> IPs;
+        private List<int> LastIPV4;
 
         public IPAddress()
         {
@@ -24,7 +22,7 @@ namespace OverlayManagementService.Network
             LastIPV4.Add(168);
             LastIPV4.Add(5);
             LastIPV4.Add(3);
-    }
+        }
 
         /// <summary>
         /// Method Generates an IPV4 address which will be unique within the network with specific VNI.

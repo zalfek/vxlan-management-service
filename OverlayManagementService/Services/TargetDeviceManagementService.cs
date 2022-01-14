@@ -1,15 +1,10 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using OverlayManagementService.Dtos;
 using OverlayManagementService.Factories;
 using OverlayManagementService.Network;
 using OverlayManagementService.Repositories;
-using Renci.SshNet;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 
 namespace OverlayManagementService.Services
 {
@@ -86,7 +81,7 @@ namespace OverlayManagementService.Services
         {
             _logger.LogInformation("Searching for group id " + groupId + " in network repository");
             IOverlayNetwork overlayNetwork = _networkRepository.GetOverlayNetwork(groupId);
-            _logger.LogInformation("Removing Machine "+ guid + " from network");
+            _logger.LogInformation("Removing Machine " + guid + " from network");
             overlayNetwork.RemoveTargetDevice(guid);
             _logger.LogInformation("Saving updated newtwork to repository");
             _networkRepository.SaveOverlayNetwork(overlayNetwork);

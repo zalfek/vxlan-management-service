@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using OverlayConnectionClient.Models;
-using Microsoft.Extensions.Logging;
-using OverlayConnectionClient.Repositories;
-using OverlayConnectionClient.Network;
+﻿using Microsoft.Extensions.Logging;
 using OverlayConnectionClient.Factories;
+using OverlayConnectionClient.Models;
+using OverlayConnectionClient.Network;
+using OverlayConnectionClient.Repositories;
+using System.Collections.Generic;
 
 namespace OverlayConnectionClient.Services
 {
@@ -74,7 +74,7 @@ namespace OverlayConnectionClient.Services
             {
                 throw;
             }
-            
+
         }
 
         /// <summary>

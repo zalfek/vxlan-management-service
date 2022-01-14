@@ -2,13 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web.Resource;
-using Microsoft.Net.Http.Headers;
 using OverlayManagementService.Dtos;
 using OverlayManagementService.Network;
 using OverlayManagementService.Services;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace OverlayManagementService.Controllers
 {

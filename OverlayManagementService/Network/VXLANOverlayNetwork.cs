@@ -1,7 +1,4 @@
-using Newtonsoft.Json;
-using OverlayManagementService.Dtos;
 using OverlayManagementService.Models;
-using OverlayManagementService.Network;
 using System;
 using System.Collections.Generic;
 
@@ -21,7 +18,7 @@ namespace OverlayManagementService.Network
             Vni = vNI;
             GroupId = groupId;
             OpenVirtualSwitch = openVirtualSwitch;
-            VirtualMachines = new List<ITargetDevice>();
+            TargetDevices = new List<ITargetDevice>();
             Clients = new List<Student>();
             IpAddress = ipAddress;
         }
@@ -29,7 +26,7 @@ namespace OverlayManagementService.Network
         public string Vni { get; set; }
         public string GroupId { get; set; }
         public IOpenVirtualSwitch OpenVirtualSwitch { get; set; }
-        public List<ITargetDevice> VirtualMachines { get; set; }
+        public List<ITargetDevice> TargetDevices { get; set; }
         public List<Student> Clients { get; set; }
         public IAddress IpAddress { get; set; }
 
@@ -52,7 +49,7 @@ namespace OverlayManagementService.Network
         {
             taregtDevice.DeployVMConnection(IpAddress.GenerarteUniqueIPV4Address());
             OpenVirtualSwitch.DeployVXLANInterface(taregtDevice);
-            VirtualMachines.Add(taregtDevice);
+            TargetDevices.Add(taregtDevice);
         }
 
         /// <summary>
@@ -60,7 +57,8 @@ namespace OverlayManagementService.Network
         /// </summary>
         public void CleanUpNetwork()
         {
-            VirtualMachines.ForEach(vm => { 
+            TargetDevices.ForEach(vm =>
+            {
                 vm.CleanUpVMConnection();
                 OpenVirtualSwitch.RemoveTargetConnection(vm);
             });
@@ -83,7 +81,8 @@ namespace OverlayManagementService.Network
         {
             for (int i = Clients.Count - 1; i > -1; --i)
             {
-                if (Clients[i].IpAddress == client.IpAddress) { 
+                if (Clients[i].IpAddress == client.IpAddress)
+                {
                     Clients.RemoveAt(i);
                 }
             }
@@ -96,10 +95,10 @@ namespace OverlayManagementService.Network
         /// <param name="guid">Guid of the target device</param>
         public void RemoveTargetDevice(Guid guid)
         {
-            ITargetDevice virtualMachine = VirtualMachines.Find(x => x.Guid == guid);
+            ITargetDevice virtualMachine = TargetDevices.Find(x => x.Guid == guid);
             OpenVirtualSwitch.RemoveTargetConnection(virtualMachine);
             virtualMachine.CleanUpVMConnection();
-            VirtualMachines.Remove(virtualMachine);
+            TargetDevices.Remove(virtualMachine);
         }
 
     }

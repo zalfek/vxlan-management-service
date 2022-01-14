@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using OverlayManagementService.Dtos;
 using OverlayManagementService.Factories;
 using OverlayManagementService.Network;
 using OverlayManagementService.Repositories;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.Configuration;
 
 namespace OverlayManagementService.Services
 {
@@ -72,6 +72,7 @@ namespace OverlayManagementService.Services
             IOverlayNetwork overlayNetwork = _networkRepository.GetOverlayNetwork(groupId);
             _logger.LogInformation("Initiating network Clean up");
             overlayNetwork.CleanUpNetwork();
+            _vniResolver.ReleaseVNI(overlayNetwork.Vni);
             _logger.LogInformation("Deleting network from repository");
             _networkRepository.DeleteOverlayNetwork(groupId);
         }
@@ -85,7 +86,7 @@ namespace OverlayManagementService.Services
         {
             _logger.LogInformation("Searching for switch with key: " + oVSConnection.Key + " in switch repository");
             IOpenVirtualSwitch openVirtualSwitch = _switchRepository.GetSwitch(oVSConnection.Key);
-            string vni = _vniResolver.GenerateUniqueVNI();
+            string vni = _vniResolver.ReserveVNI();
             _logger.LogInformation("New VNI generated: " + vni);
             _logger.LogInformation("Adding new bridge to OVS");
             openVirtualSwitch.AddBridge(
@@ -107,7 +108,8 @@ namespace OverlayManagementService.Services
             _networkRepository.SaveOverlayNetwork(overlayNetwork);
             _logger.LogInformation("Initiating network deployment");
             overlayNetwork.DeployNetwork();
-            if (oVSConnection.VmConnection != null) {
+            if (oVSConnection.VmConnection != null)
+            {
                 _logger.LogInformation("Registering new device in the network");
                 _targetDeviceManagementService.RegisterMachine(oVSConnection.VmConnection);
             }

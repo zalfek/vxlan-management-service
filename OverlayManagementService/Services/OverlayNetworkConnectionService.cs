@@ -4,7 +4,6 @@ using OverlayManagementService.Factories;
 using OverlayManagementService.Models;
 using OverlayManagementService.Network;
 using OverlayManagementService.Repositories;
-using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 
@@ -49,7 +48,8 @@ namespace OverlayManagementService.Services
             foreach (var claim in claims)
             {
                 IOverlayNetwork network = _networkRepository.GetOverlayNetwork(claim);
-                if (network != null) {
+                if (network != null)
+                {
                     _logger.LogInformation("Network found: " + network.ToString());
                     ClientConnection clientConnection = _clientConnectionFactory.CreateClientConnectionDto(network.Vni, claim.Value, network.OpenVirtualSwitch.PublicIP, null);
                     networks.Add(clientConnection);

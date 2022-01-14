@@ -44,7 +44,7 @@ namespace OverlayConnectionClient.Controllers
         /// <param name="groupId">Group id to witch network is assigned</param>
         [HttpPost]
         public IActionResult CreateConnection(string groupId)
-        { 
+        {
             try
             {
                 _vXLANConnectionService.CreateConnection(groupId);

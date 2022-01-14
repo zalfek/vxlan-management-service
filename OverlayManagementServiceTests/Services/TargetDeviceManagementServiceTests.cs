@@ -6,7 +6,6 @@ using OverlayManagementService.Dtos;
 using OverlayManagementService.Factories;
 using OverlayManagementService.Network;
 using OverlayManagementService.Repositories;
-using OverlayManagementService.Services;
 using System;
 
 namespace OverlayManagementService.Services.Tests
@@ -32,7 +31,7 @@ namespace OverlayManagementService.Services.Tests
                 _networkRepositorMock.Object,
                 _virtualMachineFactoryMock.Object,
                 _configurationMock.Object,
-                _KeyKeeperMock.Object  
+                _KeyKeeperMock.Object
                 );
         }
 

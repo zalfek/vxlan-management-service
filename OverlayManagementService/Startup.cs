@@ -1,16 +1,11 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Graph;
 using Microsoft.Identity.Web;
-using Microsoft.Identity.Web.UI;
 using Microsoft.OpenApi.Models;
 using OverlayManagementService.Factories;
 using OverlayManagementService.Infrastructure;
@@ -70,20 +65,19 @@ namespace OverlayManagementService
             services.AddScoped<ITargetDeviceManagementService, TargetDeviceManagementService>();
             services.AddSingleton<INetworkRepository, NetworkRepository>();
             services.AddSingleton<ISwitchRepository, SwitchRepository>();
-            services.AddScoped<IAddress, IPAddress>();
-            services.AddScoped<IIdentifier, VirtualNetworkIdentifier>();
+            services.AddSingleton<IIdentifier, VirtualNetworkIdentifier>();
             services.AddScoped<INetworkFactory, NetworkFactory>();
             services.AddScoped<IBridgeFactory, BridgeFactory>();
             services.AddScoped<ITargetDeviceFactory, TargetDeviceFactory>();
             services.AddScoped<IClientConnectionFactory, ClientConnectionFactory>();
             services.AddScoped<IIdentifierFactory<IPAddress>, IdentifierFactory<IPAddress>>();
             services.AddScoped<IIdentifierFactory<VirtualNetworkIdentifier>, IdentifierFactory<VirtualNetworkIdentifier>>();
-            services.AddHostedService<ClientsRemovalService>();
             services.AddScoped<IFirewallFactory, FirewallFactory>();
             services.AddSingleton<IFirewallRepository, FirewallRepository>();
             services.AddSingleton<IKeyKeeper, KeyKeeper>();
             services.AddScoped<IOpenVirtualSwitchFactory, OpenVirtualSwitchFactory>();
             services.AddScoped<IVxlanInterfaceFactory, VxlanInterfaceFactory>();
+            services.AddHostedService<ClientsRemovalService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

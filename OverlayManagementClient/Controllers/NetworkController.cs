@@ -5,10 +5,7 @@ using Microsoft.Extensions.Logging;
 using OverlayManagementClient.Models;
 using OverlayManagementClient.Services;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace OverlayManagementClient.Controllers
 {

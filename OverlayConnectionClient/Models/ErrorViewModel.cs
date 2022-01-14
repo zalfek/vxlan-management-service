@@ -1,5 +1,3 @@
-using System;
-
 namespace OverlayConnectionClient.Models
 {
     public class ErrorViewModel

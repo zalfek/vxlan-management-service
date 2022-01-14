@@ -1,5 +1,3 @@
-using System;
-
 namespace OverlayManagementClient.Models
 {
     public class ErrorViewModel

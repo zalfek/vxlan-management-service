@@ -1,18 +1,13 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OverlayManagementService.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using OverlayManagementService.Dtos;
-using OverlayManagementService.Repositories;
-using OverlayManagementService.Network;
-using Microsoft.Extensions.Logging;
-using System.Security.Claims;
 using OverlayManagementService.Factories;
 using OverlayManagementService.Models;
+using OverlayManagementService.Network;
+using OverlayManagementService.Repositories;
+using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace OverlayManagementService.Services.Tests
 {
@@ -23,7 +18,6 @@ namespace OverlayManagementService.Services.Tests
         private readonly Mock<INetworkRepository> _networkRepositoryMock = new();
         private readonly Mock<ILogger<OverlayNetworkConnectionService>> _loggerMock = new();
         private readonly Mock<IClientConnectionFactory> _clientConnectionFactoryMock = new();
-        private readonly Mock<IFirewallFactory> _firewallFactoryMock = new();
         private readonly Mock<IFirewallRepository> _firewallRepositoryMock = new();
         private readonly Mock<IOverlayNetwork> _overlayNetworkMock = new();
         private readonly Mock<IOpenVirtualSwitch> _openVirtualSwitchMock = new();

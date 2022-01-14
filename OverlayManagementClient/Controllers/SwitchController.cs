@@ -77,7 +77,7 @@ namespace OverlayManagementClient.Controllers
         /// <param name="groupId">Open virtual switch prefix</param>
         [Authorize(Policy = "Admin")]
         public ActionResult Delete(string key)
-        {         
+        {
             try
             {
                 _vXLANManagementService.DeleteSwitch(key);
