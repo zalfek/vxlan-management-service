@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OverlayManagementService.Dtos;
 using System.Collections.Generic;
 
 namespace OverlayManagementService.Network
@@ -40,7 +41,7 @@ namespace OverlayManagementService.Network
         /// <summary>
         /// Method triggers deployment of the VXLAN interface to OVS bridge.
         /// </summary>
-        /// <param name="virtualMachine">IVIrtualMachine(target device) object </param>
+        /// <param name="virtualMachine">ITargetDevice object </param>
         public void DeployVXLANInterface(ITargetDevice virtualMachine)
         {
             _logger.LogInformation("Initiating vxlan interface deployment on Bridge with VNI: " + virtualMachine.Vni + " with remote ip: " + virtualMachine.CommunicationIP);
@@ -102,6 +103,16 @@ namespace OverlayManagementService.Network
         public void RemoveTargetConnection(ITargetDevice targetDevice)
         {
             Bridges[targetDevice.Vni].CleanUpTargetVXLANInterface(targetDevice.CommunicationIP);
+        }
+
+        /// <summary>
+        /// Method triggers deployment of the VXLAN interface to OVS bridge towards the external switch.
+        /// </summary>
+        /// <param name="externalSwitchEndpoint">ExternalSwitchEndpoint DTO</param>
+        public void DeployVXLANInterface(ExternalSwitchEndpoint externalSwitchEndpoint)
+        {
+            _logger.LogInformation("Initiating vxlan interface deployment on Bridge with VNI: " + externalSwitchEndpoint.Vni + " with remote ip: " + externalSwitchEndpoint.CommunicationIP);
+            Bridges[externalSwitchEndpoint.Vni].DeployVXLANInterface(externalSwitchEndpoint.CommunicationIP);
         }
     }
 }

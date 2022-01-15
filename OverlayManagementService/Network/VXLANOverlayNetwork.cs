@@ -1,3 +1,4 @@
+using OverlayManagementService.Dtos;
 using OverlayManagementService.Models;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,15 @@ namespace OverlayManagementService.Network
             Clients.Add(client);
             OpenVirtualSwitch.DeployClientVXLANInterface(Vni, client.IpAddress);
             return IpAddress.GenerarteUniqueIPV4Address();
+        }
+
+        /// <summary>
+        /// Method triggers deployment of the VXLAN connection towards external switch.
+        /// </summary>
+        /// <param name="externalSwitchEndpoint">ExternalSwitchEndpoint DTO object that contains information about network and target switch</param>
+        public void AddExternalSwitchEndpoint(ExternalSwitchEndpoint externalSwitchEndpoint)
+        {
+            OpenVirtualSwitch.DeployVXLANInterface(externalSwitchEndpoint);
         }
 
         /// <summary>

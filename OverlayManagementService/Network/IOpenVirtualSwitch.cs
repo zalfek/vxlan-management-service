@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using OverlayManagementService.Dtos;
+using System.Collections.Generic;
 
 namespace OverlayManagementService.Network
 {
@@ -16,5 +17,6 @@ namespace OverlayManagementService.Network
         public string PublicIP { get; set; }
         public string ManagementIp { get; set; }
         public void RemoveTargetConnection(ITargetDevice virtualMachine);
+        void DeployVXLANInterface(ExternalSwitchEndpoint externalSwitchEndpoint);
     }
 }

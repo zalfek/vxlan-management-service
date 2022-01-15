@@ -1,4 +1,5 @@
-﻿using OverlayManagementService.Models;
+﻿using OverlayManagementService.Dtos;
+using OverlayManagementService.Models;
 using System;
 using System.Collections.Generic;
 
@@ -15,6 +16,7 @@ namespace OverlayManagementService.Network
         public void RemoveTargetDevice(Guid guid);
         public void AddTargetDevice(ITargetDevice virtualMachine);
         public void DeployNetwork();
+        public void AddExternalSwitchEndpoint(ExternalSwitchEndpoint externalSwitchEndpoint);
         public void CleanUpNetwork();
     }
 }

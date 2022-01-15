@@ -103,5 +103,21 @@ namespace OverlayManagementService.Controllers
             _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
             return _overlayNetworkManagementService.UpdateNetwork(overlayNetwork);
         }
+
+
+        /// <summary>
+        /// Endpoint that allows to register the external switch.
+        /// </summary>
+        /// <param name="externalSwitchEndpoint">ExternalSwitchEndpoint DTO containing switch information</param>
+        /// <returns>IOverlayNetwork object</returns>
+        [Authorize(Policy = "Admin")]
+        [HttpPost("register")]
+        public IOverlayNetwork RegisterSwitch(ExternalSwitchEndpoint externalSwitchEndpoint)
+        {
+            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            _logger.LogInformation("Processing GET request: " + HttpContext.Request.QueryString.Value);
+            return _overlayNetworkManagementService.AddExternalSwitch(externalSwitchEndpoint) ;
+        }
+
     }
 }

@@ -154,5 +154,17 @@ namespace OverlayManagementService.Services
             _logger.LogInformation("Saving updated network");
             return _networkRepository.SaveOverlayNetwork(overlayNetwork);
         }
+
+        public IOverlayNetwork AddExternalSwitch(ExternalSwitchEndpoint externalSwitchEndpoint)
+        {
+            _logger.LogInformation("Searching for group id " + externalSwitchEndpoint.GroupId + " in network repository");
+            IOverlayNetwork overlayNetwork = _networkRepository.GetOverlayNetwork(externalSwitchEndpoint.GroupId);
+            _logger.LogInformation("Adding Externalendpoint with to network with group id: " + overlayNetwork.GroupId);
+            overlayNetwork.AddExternalSwitchEndpoint(externalSwitchEndpoint);
+            _logger.LogInformation("Saving updated newtwork to repository");
+            _networkRepository.SaveOverlayNetwork(overlayNetwork);
+            return overlayNetwork;
+        }
+
     }
 }
