@@ -124,8 +124,8 @@ VXLAN management service for Technische Hochschule Ulm
       - `sudo apt-get install -y dotnet-sdk-5.0`
    2. Copy the `OverlayConnectionClient.service` file to `/etc/systemd/system/OverlayConnectionClient.service`
    3. Change the ownership and permissions:
-      - `sudo chown vagrant <path to build artifacts>/OverlayConnectionClient`
-      - `sudo chmod 777 /home/vagrant/srv/OverlayConnectionClient/OverlayConnectionClient`
+      - `sudo chown <username> <path to build artifacts>/OverlayConnectionClient`
+      - `sudo chmod 777 /<path to>/OverlayConnectionClient/OverlayConnectionClient`
    4. Reload daemon, configure the service to load at startup and install dev certificates:
       - `sudo systemctl daemon-reload`
       - `sudo systemctl start OverlayConnectionClient`
@@ -144,3 +144,15 @@ VXLAN management service for Technische Hochschule Ulm
    2. Create ssh key(public and private) for switch access.
    3. Certificate should be valid to access the device under root user(or any other user provided in the Management service config).
    4. Go to Overlay Management Client and provide the required info(management, private, public ip and key) and upload ssh key to open access to Overlay Management service
+
+### Deployment of test environment
+
+   1. Install vagrant from https://www.vagrantup.com/
+   2. Build an Overlay Connection Client project to a specific directory using `dotnet publish -c Debug --runtime linux-x64 /p:EnvironmentName=Development -o <path to>/OverlayConnectionClient/`
+   3. Change in Vagrantfile for client 1 and 2 following path `dnode.vm.provision :file, source: "../../../srv/", destination: "srv"` to the chosen one to build the project.
+   4. Go to `<project root>/TestEnvironment/clean_setup`
+   5. Execute `vagrant up` in cmd. This should bring up 6 virtual machines.
+   4. Go to client 1 and 2 and execute the following command: `dotnet dev-certs https`
+   5. Check that service is runing by executing `sudo systemctl status OverlayConnectionClient`
+   6. Start Overlay Management Service and Overlay Management Client from Visual Studio on the host machine.
+   7. From now on test environment should be ready and client user interface it is accessable via `https://<ip of a linux box>:5001`.

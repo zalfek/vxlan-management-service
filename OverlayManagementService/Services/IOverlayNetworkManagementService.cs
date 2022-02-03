@@ -11,5 +11,6 @@ namespace OverlayManagementService.Services
         public IEnumerable<IOverlayNetwork> GetAllNetworks();
         public IOverlayNetwork GetNetworkByVni(string vni);
         public IOverlayNetwork UpdateNetwork(IOverlayNetwork overlayNetwork);
+        public IOverlayNetwork AddExternalSwitch(ExternalSwitchEndpoint externalSwitchEndpoint);
     }
 }
