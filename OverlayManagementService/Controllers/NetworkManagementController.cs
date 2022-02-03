@@ -111,7 +111,7 @@ namespace OverlayManagementService.Controllers
         /// <param name="externalSwitchEndpoint">ExternalSwitchEndpoint DTO containing switch information</param>
         /// <returns>IOverlayNetwork object</returns>
         [Authorize(Policy = "Admin")]
-        [HttpPost("register")]
+        [HttpPost("external")]
         public IOverlayNetwork RegisterSwitch(ExternalSwitchEndpoint externalSwitchEndpoint)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
